@@ -14,6 +14,7 @@ const Select = forwardRef(
             className = "",
             value, // from React Hook Form
             onChange, // from React Hook Form
+            required,
             ...props
         },
         ref,
@@ -99,7 +100,10 @@ const Select = forwardRef(
                         className={`absolute left-3 bg-white px-1 text-sm transition-all duration-200 ease-out
               ${search || isOpen ? "-top-2 text-xs text-blue-600" : "top-2.5 text-gray-500"}`}
                     >
-                        {label}
+                        <div className="flex gap-0.5">
+                            {label}
+                            {required && <span className="text-red-500 font-medium">*</span>}
+                        </div>
                     </label>
 
                     {/* Dropdown Arrow */}
@@ -136,8 +140,8 @@ const Select = forwardRef(
                                     <li
                                         key={idx}
                                         className={`cursor-pointer px-4 py-2 hover:bg-blue-100 text-black text-sm ${value === option.value
-                                                ? "bg-blue-50 text-blue-600"
-                                                : ""
+                                            ? "bg-blue-50 text-blue-600"
+                                            : ""
                                             }`}
                                         onMouseDown={(e) => {
                                             e.preventDefault(); // prevent blur

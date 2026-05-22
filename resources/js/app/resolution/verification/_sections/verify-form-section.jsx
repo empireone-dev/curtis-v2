@@ -45,6 +45,7 @@ export default function VerifyFormSection() {
                     id="serial_number"
                     label="Serial Number (e.g. A1234567890123456)"
                     error={errors.serial_number?.message}
+                    maxLength={17}
                     required={true}
                     {...register("serial_number", {
                         required: "Serial number is required",

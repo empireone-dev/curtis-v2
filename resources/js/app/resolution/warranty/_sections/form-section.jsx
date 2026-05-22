@@ -7,6 +7,7 @@ import { countries } from "@/app/_json/country.json";
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import Checkbox from '@/app/_components/checkbox';
 
 export default function FormSection() {
     const [processing, setProcessing] = useState(false);
@@ -38,22 +39,34 @@ export default function FormSection() {
             city: "",
             address: "",
             issue: "",
+            is_returned: null,
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
         }
     });
 
     const watchValues = watch()
-    // Corrected: Loop through the object to set each value individually
+    const productFilter = products.slice(2);
+
+    useEffect(() => {
+        const searchTerm = watchValues.item_number?.toLowerCase() || "";
+        const searchProductsList = productFilter.find((product) =>
+            product.some((value) =>
+                typeof value === 'string' && value.toLowerCase().includes(searchTerm)
+            )
+        );
+
+        setValue('unit', searchProductsList[2] ?? '');
+        setValue('brand', searchProductsList[0] ?? '');
+        setValue('class', searchProductsList[3] ?? '');
+    }, [watchValues.item_number])
+
     useEffect(() => {
         if (product_registration?.id) {
-            const productFilter = products.slice(2); // Exclude the first two elements
             const searching = product_registration?.model === '' ? null : product_registration?.model?.toLowerCase();
 
             const searchProductsList = productFilter.find((product) =>
                 product.some((value) => typeof value === 'string' && value?.toLowerCase().includes(searching))
             );
-
-            console.log('searchProductsList', product_registration)
             setValue('unit', searchProductsList[2] ?? '');
             setValue('brand', searchProductsList[0] ?? '');
             setValue('class', searchProductsList[3] ?? '');
@@ -125,15 +138,23 @@ export default function FormSection() {
                         label="Purchase Date"
                         max={new Date().toISOString().split("T")[0]} // Restricts selection to today or earlier
                         error={errors.purchase_date?.message}
-                        required={false}
-                        {...register("purchase_date")}
+                        required={true}
+                        {...register("purchase_date", { required: "Purchase Date is required" })}
                     />
+
                     <Input
                         id="serial_number"
-                        label="Serial Number"
+                        label="Serial Number (e.g. A1234567890123456)"
                         error={errors.serial_number?.message}
-                        required={false}
-                        {...register("serial_number")}
+                        maxLength={17}
+                        required={true}
+                        {...register("serial_number", {
+                            required: "Serial number is required",
+                            pattern: {
+                                value: /^A\d{16}$/,
+                                message: "Invalid format. Serial number must start with 'A' followed by 15 digits."
+                            },
+                        })}
                     />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -152,22 +173,22 @@ export default function FormSection() {
                         {...register("lname", { required: "Last name is required" })}
                     />
                 </div>
-
+                <Input
+                    id="email"
+                    type="email"
+                    label="Email"
+                    error={errors.email?.message}
+                    required={true}
+                    {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                            message: "Invalid email address"
+                        }
+                    })}
+                />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <Input
-                        id="email"
-                        type="email"
-                        label="Email"
-                        error={errors.email?.message}
-                        required={true}
-                        {...register("email", {
-                            required: "Email is required",
-                            pattern: {
-                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                message: "Invalid email address"
-                            }
-                        })}
-                    />
+
                     <Input
                         id="phone"
                         type="tel"
@@ -176,16 +197,41 @@ export default function FormSection() {
                         required={true}
                         {...register("phone", { required: "Phone number is required" })}
                     />
+                    <Input
+                        id="phone2"
+                        type="tel"
+                        label="Secondary Phone Number"
+                        error={errors.phone2?.message}
+                        {...register("phone2")}
+                    />
                 </div>
 
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <Input
+                    {/* <Input
                         id="item_number"
                         label="Model Number"
                         error={errors.item_number?.message}
                         required={true}
                         {...register("item_number", { required: "Item number is required" })}
+                    /> */}
+                    <Select
+                        label="Model Number"
+                        name="item_number"
+                        options={
+                            productFilter?.map((res) => ({
+                                ...res,
+                                label: res[1],
+                                value: res[1],
+                            })) || []
+                        }
+                        value={watchValues.item_number}
+                        onChange={(val) =>
+                            setValue("item_number", val)
+                        }
+                        required={true}
+                        // {...register("item_number", { required: "Item number is required" })}
+                        error={errors.item_number?.message}
                     />
                     <Input
                         id="unit"
@@ -299,8 +345,15 @@ export default function FormSection() {
                     />
                 </div>
 
+                <Checkbox
+                    name="is_returned"
+                    label="Yes, I've already tried to return it"
+                    checked={watchValues.is_returned}
+                    {...register("is_returned")}
+                // onChange={(e) => setData("is_returned", e.target.checked)}
+                />
                 {/* Remarks Textarea Template */}
-                <div className="flex flex-col w-full">
+                {/* <div className="flex flex-col w-full">
                     <label htmlFor="remarks" className="text-sm font-medium text-gray-700 mb-1">Remarks</label>
                     <textarea
                         id="remarks"
@@ -309,7 +362,7 @@ export default function FormSection() {
                         {...register("remarks")}
                     />
                     {errors.remarks && <span className="text-red-500 text-xs mt-1">{errors.remarks.message}</span>}
-                </div>
+                </div> */}
 
                 {/* Form Action Buttons */}
                 <div className="flex justify-center pt-2 md:pt-4">
