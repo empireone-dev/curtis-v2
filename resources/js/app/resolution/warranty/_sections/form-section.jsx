@@ -38,7 +38,7 @@ export default function FormSection() {
             state: "",
             city: "",
             address: "",
-            issue: "",
+            issue: null,
             is_returned: null,
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
         }
@@ -92,17 +92,18 @@ export default function FormSection() {
     }, [product_registration, setValue]);
 
     const onSubmit = (formData) => {
-        setProcessing(true);
+        alert()
+        // setProcessing(true);
 
-        router.post('/api/ticket', formData, {
-            onFinish: () => setProcessing(false),
-            onError: (backendErrors) => {
-                // Connect Laravel server validation errors back into React Hook Form
-                Object.keys(backendErrors).forEach((key) => {
-                    setError(key, { type: 'server', message: backendErrors[key] });
-                });
-            }
-        });
+        // router.post('/api/ticket', formData, {
+        //     onFinish: () => setProcessing(false),
+        //     onError: (backendErrors) => {
+        //         // Connect Laravel server validation errors back into React Hook Form
+        //         Object.keys(backendErrors).forEach((key) => {
+        //             setError(key, { type: 'server', message: backendErrors[key] });
+        //         });
+        //     }
+        // });
     };
 
 
@@ -328,7 +329,7 @@ export default function FormSection() {
                 <div className="w-full">
                     <Select
                         label="Issue"
-                        required
+                        required={true}
                         name="issue"
                         options={
                             selected_issue?.map((res) => ({
@@ -338,9 +339,10 @@ export default function FormSection() {
                             })) || []
                         }
                         value={watchValues.issue}
-                        onChange={(val) =>
-                            setValue("issue", val)
-                        }
+                        // onChange={(val) =>
+                        //     setValue("issue", val)
+                        // }
+                        {...register("issue", { required: "Issue is required" })}
                         error={errors.issue?.message}
                     />
                 </div>

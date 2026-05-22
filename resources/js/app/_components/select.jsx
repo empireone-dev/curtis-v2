@@ -14,7 +14,7 @@ const Select = forwardRef(
             className = "",
             value, // from React Hook Form
             onChange, // from React Hook Form
-            required,
+            required = false,
             ...props
         },
         ref,
@@ -76,6 +76,7 @@ const Select = forwardRef(
                         type="search"
                         {...props}
                         autoComplete="off"
+                        required={required}
                         ref={ref}
                         id={name}
                         name={name}
