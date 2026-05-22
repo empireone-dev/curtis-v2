@@ -18,6 +18,16 @@ Route::get('/auth/login', function () {
     return Inertia::render('auth/login/page');
 });
 
+
+Route::prefix('resolution')->group(function () {
+    Route::inertia('/', 'resolution/page');
+    Route::inertia('/confirmation', 'resolution/confirmation/page');
+    Route::inertia('/verification', 'resolution/verification/page');
+    Route::inertia('/warranty/{id}', 'resolution/warranty/page');
+    Route::inertia('/parts', 'resolution/parts/page');
+    Route::inertia('/safety_issue', 'resolution/safety_issue/page');
+});
+
 Route::get('/accounts/administrator/dashboard', function () {
     return Inertia::render('accounts/administrator/dashboard/page');
 })->middleware(['auth', 'verified'])->name('dashboard');

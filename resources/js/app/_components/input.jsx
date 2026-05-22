@@ -1,15 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 
-const Input = ({ label, id, type = "text", error, icon, ...props }) => {
+const Input = forwardRef(({ label, id, type = "text", error, icon, required, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     // Determine if we should show the actual characters or dots for passwords
     const inputType = type === "password" && showPassword ? "text" : type;
 
     return (
-        <div className="w-full mb-4 mt-2">
-            {" "}
-            {/* Added mt-2 so the label doesn't clip outside the container */}
+        <div className="w-full">
             <div className="relative">
                 {/* Optional Left Icon */}
                 {icon && (
@@ -19,6 +17,7 @@ const Input = ({ label, id, type = "text", error, icon, ...props }) => {
                 )}
 
                 <input
+                    ref={ref} // CRUCIAL FIX: Attach the forwarded ref here
                     id={id}
                     type={inputType}
                     placeholder=" " // Crucial: must be a blank space for peer-placeholder-shown to work
@@ -27,10 +26,9 @@ const Input = ({ label, id, type = "text", error, icon, ...props }) => {
                         peer w-full h-12 rounded-lg border-2 bg-transparent px-4 text-gray-900 outline-none transition-all duration-200
                         ${icon ? "pl-11" : ""} 
                         ${type === "password" ? "pr-11" : ""}
-                        ${
-                            error
-                                ? "border-red-500 focus:border-red-500"
-                                : "border-gray-300 focus:border-blue-600 hover:border-gray-400"
+                        ${error
+                            ? "border-red-500 focus:border-red-500"
+                            : "border-blue-400 focus:border-blue-600 hover:border-blue-500"
                         }
                     `}
                     {...props}
@@ -45,7 +43,7 @@ const Input = ({ label, id, type = "text", error, icon, ...props }) => {
                         
                         /* 1. Base/Filled State (Sitting on the top border, masking the line) */
                         -top-2.5 translate-y-0 text-xs font-medium
-                        ${error ? "text-red-500" : "text-gray-500"}
+                        ${error ? "text-red-500" : "text-blue-500"}
                         
                         /* 2. Inactive/Empty State (Centered inside the input) */
                         peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-placeholder-shown:font-normal peer-placeholder-shown:text-gray-400
@@ -54,7 +52,10 @@ const Input = ({ label, id, type = "text", error, icon, ...props }) => {
                         ${error ? "peer-focus:text-red-500" : "peer-focus:text-blue-600"}
                     `}
                 >
-                    {label}
+                    <div className="flex gap-0.5">
+                        {label}
+                        {required && <span className="text-red-500 font-medium">*</span>}
+                    </div>
                 </label>
 
                 {/* Password Visibility Toggle */}
@@ -96,6 +97,7 @@ const Input = ({ label, id, type = "text", error, icon, ...props }) => {
                     </button>
                 )}
             </div>
+
             {/* Error Message */}
             {error && (
                 <p className="mt-1.5 text-xs text-red-500 font-medium flex items-center gap-1">
@@ -116,6 +118,9 @@ const Input = ({ label, id, type = "text", error, icon, ...props }) => {
             )}
         </div>
     );
-};
+});
+
+// Setting displayName is highly recommended when using forwardRef to ensure debugging in React DevTools remains easy.
+Input.displayName = "Input";
 
 export default Input;

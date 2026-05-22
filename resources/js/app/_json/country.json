@@ -1,0 +1,989 @@
+{
+    "countries": [
+        {
+            "name": "",
+            "value": "",
+            "regions": []
+        },
+        {
+            "name": "Canada",
+            "value": "CA",
+
+            "regions": [
+                {
+                    "name": "",
+                    "value": "",
+                    "cities": [
+                        {
+                            "name": "",
+                            "zipcode": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Alberta",
+                    "value": "AB",
+                    "cities": [
+                        {
+                            "name": "Edmonton",
+                            "zipcode": "T5A 0A1"
+                        },
+                        {
+                            "name": "Calgary",
+                            "zipcode": "T2A 0A1"
+                        },
+                        {
+                            "name": "Red Deer",
+                            "zipcode": "T4N 0A1"
+                        },
+                        {
+                            "name": "Lethbridge",
+                            "zipcode": "T1J 0A1"
+                        },
+                        {
+                            "name": "Grande Prairie",
+                            "zipcode": "T8V 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "British Columbia",
+                    "value": "BC",
+                    "cities": [
+                        {
+                            "name": "Vancouver",
+                            "zipcode": "V5K 0A1"
+                        },
+                        {
+                            "name": "Victoria",
+                            "zipcode": "V8W 0A1"
+                        },
+                        {
+                            "name": "Surrey",
+                            "zipcode": "V3R 0A1"
+                        },
+                        {
+                            "name": "Burnaby",
+                            "zipcode": "V5G 0A1"
+                        },
+                        {
+                            "name": "Richmond",
+                            "zipcode": "V6Y 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Manitoba",
+                    "value": "MB",
+                    "cities": [
+                        {
+                            "name": "Winnipeg",
+                            "zipcode": "R3C 0A1"
+                        },
+                        {
+                            "name": "Brandon",
+                            "zipcode": "R7A 0A1"
+                        },
+                        {
+                            "name": "Steinbach",
+                            "zipcode": "R5G 0A1"
+                        },
+                        {
+                            "name": "Thompson",
+                            "zipcode": "R8N 0A1"
+                        },
+                        {
+                            "name": "Portage la Prairie",
+                            "zipcode": "R1N 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "New Brunswick",
+                    "value": "NB",
+                    "cities": [
+                        {
+                            "name": "Fredericton",
+                            "zipcode": "E3B 0A1"
+                        },
+                        {
+                            "name": "Saint John",
+                            "zipcode": "E2L 0A1"
+                        },
+                        {
+                            "name": "Moncton",
+                            "zipcode": "E1C 0A1"
+                        },
+                        {
+                            "name": "Dieppe",
+                            "zipcode": "E1A 0A1"
+                        },
+                        {
+                            "name": "Rothesay",
+                            "zipcode": "E2E 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Newfoundland and Labrador",
+                    "value": "NL",
+                    "cities": [
+                        {
+                            "name": "St. John's",
+                            "zipcode": "A1A 0A1"
+                        },
+                        {
+                            "name": "Mount Pearl",
+                            "zipcode": "A1N 0A1"
+                        },
+                        {
+                            "name": "Corner Brook",
+                            "zipcode": "A2H 0A1"
+                        },
+                        {
+                            "name": "Gander",
+                            "zipcode": "A1V 0A1"
+                        },
+                        {
+                            "name": "Grand Falls-Windsor",
+                            "zipcode": "A2A 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Nova Scotia",
+                    "value": "NS",
+                    "cities": [
+                        {
+                            "name": "Halifax",
+                            "zipcode": "B3H 0A1"
+                        },
+                        {
+                            "name": "Dartmouth",
+                            "zipcode": "B2W 0A1"
+                        },
+                        {
+                            "name": "Sydney",
+                            "zipcode": "B1P 0A1"
+                        },
+                        {
+                            "name": "Truro",
+                            "zipcode": "B2N 0A1"
+                        },
+                        {
+                            "name": "New Glasgow",
+                            "zipcode": "B2H 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Ontario",
+                    "value": "ON",
+                    "cities": [
+                        {
+                            "name": "Toronto",
+                            "zipcode": "M5H 0A1"
+                        },
+                        {
+                            "name": "Ottawa",
+                            "zipcode": "K1A 0A1"
+                        },
+                        {
+                            "name": "Mississauga",
+                            "zipcode": "L5A 0A1"
+                        },
+                        {
+                            "name": "Brampton",
+                            "zipcode": "L6T 0A1"
+                        },
+                        {
+                            "name": "Hamilton",
+                            "zipcode": "L8P 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Prince Edward Island",
+                    "value": "PE",
+                    "cities": [
+                        {
+                            "name": "Charlottetown",
+                            "zipcode": "C1A 0A1"
+                        },
+                        {
+                            "name": "Summerside",
+                            "zipcode": "C1N 0A1"
+                        },
+                        {
+                            "name": "Montague",
+                            "zipcode": "C0A 0A1"
+                        },
+                        {
+                            "name": "Cornwall",
+                            "zipcode": "C0A 1H0"
+                        },
+                        {
+                            "name": "Stratford",
+                            "zipcode": "C1B 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Quebec",
+                    "value": "QC",
+                    "cities": [
+                        {
+                            "name": "Montreal",
+                            "zipcode": "H1A 0A1"
+                        },
+                        {
+                            "name": "Quebec City",
+                            "zipcode": "G1A 0A1"
+                        },
+                        {
+                            "name": "Laval",
+                            "zipcode": "H7A 0A1"
+                        },
+                        {
+                            "name": "Gatineau",
+                            "zipcode": "J8A 0A1"
+                        },
+                        {
+                            "name": "Sherbrooke",
+                            "zipcode": "J1H 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Saskatchewan",
+                    "value": "SK",
+                    "cities": [
+                        {
+                            "name": "Saskatoon",
+                            "zipcode": "S7K 0A1"
+                        },
+                        {
+                            "name": "Regina",
+                            "zipcode": "S4P 0A1"
+                        },
+                        {
+                            "name": "Prince Albert",
+                            "zipcode": "S6V 0A1"
+                        },
+                        {
+                            "name": "Moose Jaw",
+                            "zipcode": "S6H 0A1"
+                        },
+                        {
+                            "name": "Swift Current",
+                            "zipcode": "S9H 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Northwest Territories",
+                    "value": "NT",
+                    "cities": [
+                        {
+                            "name": "Yellowknife",
+                            "zipcode": "X1A 0A1"
+                        },
+                        {
+                            "name": "Hay River",
+                            "zipcode": "X0E 0A1"
+                        },
+                        {
+                            "name": "Inuvik",
+                            "zipcode": "X0E 0A1"
+                        },
+                        {
+                            "name": "Behchokǫ̀",
+                            "zipcode": "X0E 0A1"
+                        },
+                        {
+                            "name": "Fort Smith",
+                            "zipcode": "X0E 0A1"
+                        }
+                    ]
+                },
+                {
+                    "name": "Yukon",
+                    "value": "YT",
+                    "cities": [
+                        {
+                            "name": "Whitehorse",
+                            "zipcode": "Y1A 0A1"
+                        },
+                        {
+                            "name": "Dawson City",
+                            "zipcode": "Y0B 1G0"
+                        },
+                        {
+                            "name": "Watson Lake",
+                            "zipcode": "Y0A 1C0"
+                        },
+                        {
+                            "name": "Carcross",
+                            "zipcode": "Y0B 1B0"
+                        },
+                        {
+                            "name": "Haines Junction",
+                            "zipcode": "Y0B 1L0"
+                        }
+                    ]
+                },
+                {
+                    "name": "Nunavut",
+                    "value": "NU",
+                    "cities": [
+                        {
+                            "name": "Iqaluit",
+                            "zipcode": "X0A 0H0"
+                        },
+                        {
+                            "name": "Rankin Inlet",
+                            "zipcode": "X0C 0G0"
+                        },
+                        {
+                            "name": "Arviat",
+                            "zipcode": "X0C 0E0"
+                        },
+                        {
+                            "name": "Kimmirut",
+                            "zipcode": "X0A 0G0"
+                        },
+                        {
+                            "name": "Baker Lake",
+                            "zipcode": "X0C 0A0"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "United States",
+            "value": "US",
+
+            "regions": [
+                {
+                    "name": "",
+                    "value": "",
+                    "cities": [{ "name": "", "zipcode": "00000" }]
+                },
+                {
+                    "name": "Alabama",
+                    "value": "AL",
+                    "cities": [
+                        { "name": "Birmingham", "zipcode": "35203" },
+                        { "name": "Montgomery", "zipcode": "36104" },
+                        { "name": "Mobile", "zipcode": "36602" },
+                        { "name": "Huntsville", "zipcode": "35801" },
+                        { "name": "Tuscaloosa", "zipcode": "35401" }
+                    ]
+                },
+                {
+                    "name": "Alaska",
+                    "value": "AK",
+                    "cities": [
+                        { "name": "Anchorage", "zipcode": "99501" },
+                        { "name": "Fairbanks", "zipcode": "99701" },
+                        { "name": "Juneau", "zipcode": "99801" },
+                        { "name": "Sitka", "zipcode": "99835" },
+                        { "name": "Ketchikan", "zipcode": "99901" }
+                    ]
+                },
+                {
+                    "name": "Arizona",
+                    "value": "AZ",
+                    "cities": [
+                        { "name": "Phoenix", "zipcode": "85001" },
+                        { "name": "Tucson", "zipcode": "85701" },
+                        { "name": "Mesa", "zipcode": "85201" },
+                        { "name": "Chandler", "zipcode": "85224" },
+                        { "name": "Scottsdale", "zipcode": "85251" }
+                    ]
+                },
+                {
+                    "name": "Arkansas",
+                    "value": "AR",
+                    "cities": [
+                        { "name": "Little Rock", "zipcode": "72201" },
+                        { "name": "Fort Smith", "zipcode": "72901" },
+                        { "name": "Fayetteville", "zipcode": "72701" },
+                        { "name": "Springdale", "zipcode": "72762" },
+                        { "name": "Jonesboro", "zipcode": "72401" }
+                    ]
+                },
+                {
+                    "name": "Armed Forces Americas",
+                    "value": "Armed Forces Americas",
+                    "cities": [{ "name": "None", "zipcode": "34000" }]
+                },
+                {
+                    "name": "Armed Forces Africa",
+                    "value": "Armed Forces Africa",
+                    "cities": [{ "name": "None", "zipcode": "09300" }]
+                },
+                {
+                    "name": "Armed Forces Canada",
+                    "value": "Armed Forces Canada",
+                    "cities": [{ "name": "None", "zipcode": "09400" }]
+                },
+                {
+                    "name": "Armed Forces Europe",
+                    "value": "Armed Forces Europe",
+                    "cities": [{ "name": "None", "zipcode": "09000" }]
+                },
+                {
+                    "name": "Armed Forces Middle East",
+                    "value": "Armed Forces Middle East",
+                    "cities": [{ "name": "None", "zipcode": "09800" }]
+                },
+                {
+                    "name": "Armed Forces Pacific",
+                    "value": "Armed Forces Pacific",
+                    "cities": [{ "name": "None", "zipcode": "96200" }]
+                },
+                {
+                    "name": "California",
+                    "value": "CA",
+                    "cities": [
+                        { "name": "Los Angeles", "zipcode": "90001" },
+                        { "name": "San Francisco", "zipcode": "94101" },
+                        { "name": "San Diego", "zipcode": "92101" },
+                        { "name": "San Jose", "zipcode": "95101" },
+                        { "name": "Sacramento", "zipcode": "94203" }
+                    ]
+                },
+                {
+                    "name": "Colorado",
+                    "value": "CO",
+                    "cities": [
+                        { "name": "Denver", "zipcode": "80201" },
+                        { "name": "Colorado Springs", "zipcode": "80901" },
+                        { "name": "Aurora", "zipcode": "80010" },
+                        { "name": "Fort Collins", "zipcode": "80521" },
+                        { "name": "Boulder", "zipcode": "80301" }
+                    ]
+                },
+                {
+                    "name": "Connecticut",
+                    "value": "CT",
+                    "cities": [
+                        { "name": "Bridgeport", "zipcode": "06601" },
+                        { "name": "New Haven", "zipcode": "06501" },
+                        { "name": "Stamford", "zipcode": "06901" },
+                        { "name": "Hartford", "zipcode": "06101" },
+                        { "name": "Waterbury", "zipcode": "06701" }
+                    ]
+                },
+                {
+                    "name": "District of Columbia",
+                    "value": "DC",
+                    "cities": [
+                        { "name": "Bridgeport", "zipcode": "06601" },
+                        { "name": "New Haven", "zipcode": "06501" },
+                        { "name": "Stamford", "zipcode": "06901" },
+                        { "name": "Hartford", "zipcode": "06101" },
+                        { "name": "Waterbury", "zipcode": "06701" }
+                    ]
+                },
+                {
+                    "name": "Delaware",
+                    "value": "DE",
+                    "cities": [
+                        { "name": "Wilmington", "zipcode": "19801" },
+                        { "name": "Dover", "zipcode": "19901" },
+                        { "name": "Newark", "zipcode": "19702" },
+                        { "name": "Middletown", "zipcode": "19709" },
+                        { "name": "Smyrna", "zipcode": "19977" }
+                    ]
+                },
+                {
+                    "name": "Florida",
+                    "value": "FL",
+                    "cities": [
+                        { "name": "Miami", "zipcode": "33101" },
+                        { "name": "Orlando", "zipcode": "32801" },
+                        { "name": "Tampa", "zipcode": "33601" },
+                        { "name": "Jacksonville", "zipcode": "32099" },
+                        { "name": "St. Petersburg", "zipcode": "33701" }
+                    ]
+                },
+                {
+                    "name": "Georgia",
+                    "value": "GA",
+                    "cities": [
+                        { "name": "Atlanta", "zipcode": "30301" },
+                        { "name": "Augusta", "zipcode": "30901" },
+                        { "name": "Columbus", "zipcode": "31901" },
+                        { "name": "Macon", "zipcode": "31201" },
+                        { "name": "Savannah", "zipcode": "31401" }
+                    ]
+                },
+                {
+                    "name": "Guam",
+                    "value": "Guam",
+                    "cities": [
+                        { "name": "Atlanta", "zipcode": "30301" },
+                        { "name": "Augusta", "zipcode": "30901" },
+                        { "name": "Columbus", "zipcode": "31901" },
+                        { "name": "Macon", "zipcode": "31201" },
+                        { "name": "Savannah", "zipcode": "31401" }
+                    ]
+                },
+                {
+                    "name": "Hawaii",
+                    "value": "HI",
+                    "cities": [
+                        { "name": "Honolulu", "zipcode": "96801" },
+                        { "name": "Hilo", "zipcode": "96720" },
+                        { "name": "Kailua", "zipcode": "96734" },
+                        { "name": "Waipahu", "zipcode": "96797" },
+                        { "name": "Kaneohe", "zipcode": "96744" }
+                    ]
+                },
+                {
+                    "name": "Idaho",
+                    "value": "ID",
+                    "cities": [
+                        { "name": "Boise", "zipcode": "83701" },
+                        { "name": "Meridian", "zipcode": "83642" },
+                        { "name": "Nampa", "zipcode": "83651" },
+                        { "name": "Idaho Falls", "zipcode": "83401" },
+                        { "name": "Pocatello", "zipcode": "83201" }
+                    ]
+                },
+                {
+                    "name": "Illinois",
+                    "value": "IL",
+                    "cities": [
+                        { "name": "Chicago", "zipcode": "60601" },
+                        { "name": "Aurora", "zipcode": "60502" },
+                        { "name": "Naperville", "zipcode": "60540" },
+                        { "name": "Joliet", "zipcode": "60431" },
+                        { "name": "Springfield", "zipcode": "62701" }
+                    ]
+                },
+                {
+                    "name": "Indiana",
+                    "value": "IN",
+                    "cities": [
+                        { "name": "Indianapolis", "zipcode": "46201" },
+                        { "name": "Fort Wayne", "zipcode": "46801" },
+                        { "name": "Evansville", "zipcode": "47701" },
+                        { "name": "South Bend", "zipcode": "46601" },
+                        { "name": "Carmel", "zipcode": "46032" }
+                    ]
+                },
+                {
+                    "name": "Iowa",
+                    "value": "IA",
+                    "cities": [
+                        { "name": "Des Moines", "zipcode": "50301" },
+                        { "name": "Cedar Rapids", "zipcode": "52401" },
+                        { "name": "Davenport", "zipcode": "52801" },
+                        { "name": "Sioux City", "zipcode": "51101" },
+                        { "name": "Iowa City", "zipcode": "52240" }
+                    ]
+                },
+                {
+                    "name": "Kansas",
+                    "value": "KS",
+                    "cities": [
+                        { "name": "Wichita", "zipcode": "67201" },
+                        { "name": "Overland Park", "zipcode": "66204" },
+                        { "name": "Kansas City", "zipcode": "66101" },
+                        { "name": "Topeka", "zipcode": "66601" },
+                        { "name": "Olathe", "zipcode": "66061" }
+                    ]
+                },
+                {
+                    "name": "Kentucky",
+                    "value": "KY",
+                    "cities": [
+                        { "name": "Louisville", "zipcode": "40201" },
+                        { "name": "Lexington", "zipcode": "40502" },
+                        { "name": "Bowling Green", "zipcode": "42101" },
+                        { "name": "Owensboro", "zipcode": "42301" },
+                        { "name": "Covington", "zipcode": "41011" }
+                    ]
+                },
+                {
+                    "name": "Louisiana",
+                    "value": "LA",
+                    "cities": [
+                        { "name": "New Orleans", "zipcode": "70112" },
+                        { "name": "Baton Rouge", "zipcode": "70801" },
+                        { "name": "Shreveport", "zipcode": "71101" },
+                        { "name": "Lafayette", "zipcode": "70501" },
+                        { "name": "Lake Charles", "zipcode": "70601" }
+                    ]
+                },
+                {
+                    "name": "Maine",
+                    "value": "ME",
+                    "cities": [
+                        { "name": "Portland", "zipcode": "04101" },
+                        { "name": "Lewiston", "zipcode": "04240" },
+                        { "name": "Bangor", "zipcode": "04401" },
+                        { "name": "South Portland", "zipcode": "04106" },
+                        { "name": "Auburn", "zipcode": "04210" }
+                    ]
+                },
+                {
+                    "name": "Maryland",
+                    "value": "MD",
+                    "cities": [
+                        { "name": "Baltimore", "zipcode": "21201" },
+                        { "name": "Frederick", "zipcode": "21701" },
+                        { "name": "Rockville", "zipcode": "20850" },
+                        { "name": "Gaithersburg", "zipcode": "20877" },
+                        { "name": "Bowie", "zipcode": "20715" }
+                    ]
+                },
+                {
+                    "name": "Massachusetts",
+                    "value": "MA",
+                    "cities": [
+                        { "name": "Boston", "zipcode": "02101" },
+                        { "name": "Worcester", "zipcode": "01601" },
+                        { "name": "Springfield", "zipcode": "01101" },
+                        { "name": "Lowell", "zipcode": "01850" },
+                        { "name": "Cambridge", "zipcode": "02138" }
+                    ]
+                },
+                {
+                    "name": "Michigan",
+                    "value": "MI",
+                    "cities": [
+                        { "name": "Detroit", "zipcode": "48201" },
+                        { "name": "Grand Rapids", "zipcode": "49501" },
+                        { "name": "Warren", "zipcode": "48088" },
+                        { "name": "Sterling Heights", "zipcode": "48310" },
+                        { "name": "Ann Arbor", "zipcode": "48103" }
+                    ]
+                },
+                {
+                    "name": "Minnesota",
+                    "value": "MN",
+                    "cities": [
+                        { "name": "Minneapolis", "zipcode": "55401" },
+                        { "name": "St. Paul", "zipcode": "55101" },
+                        { "name": "Rochester", "zipcode": "55901" },
+                        { "name": "Duluth", "zipcode": "55801" },
+                        { "name": "Bloomington", "zipcode": "55420" }
+                    ]
+                },
+                {
+                    "name": "Mississippi",
+                    "value": "MS",
+                    "cities": [
+                        { "name": "Jackson", "zipcode": "39201" },
+                        { "name": "Gulfport", "zipcode": "39501" },
+                        { "name": "Southaven", "zipcode": "38671" },
+                        { "name": "Hattiesburg", "zipcode": "39401" },
+                        { "name": "Biloxi", "zipcode": "39530" }
+                    ]
+                },
+                {
+                    "name": "Missouri",
+                    "value": "MO",
+                    "cities": [
+                        { "name": "Kansas City", "zipcode": "64101" },
+                        { "name": "St. Louis", "zipcode": "63101" },
+                        { "name": "Springfield", "zipcode": "65801" },
+                        { "name": "Independence", "zipcode": "64050" },
+                        { "name": "Columbia", "zipcode": "65201" }
+                    ]
+                },
+                {
+                    "name": "Montana",
+                    "value": "MT",
+                    "cities": [
+                        { "name": "Billings", "zipcode": "59101" },
+                        { "name": "Missoula", "zipcode": "59801" },
+                        { "name": "Great Falls", "zipcode": "59401" },
+                        { "name": "Bozeman", "zipcode": "59715" },
+                        { "name": "Butte", "zipcode": "59701" }
+                    ]
+                },
+                {
+                    "name": "Nebraska",
+                    "value": "NE",
+                    "cities": [
+                        { "name": "Omaha", "zipcode": "68101" },
+                        { "name": "Lincoln", "zipcode": "68501" },
+                        { "name": "Bellevue", "zipcode": "68005" },
+                        { "name": "Grand Island", "zipcode": "68801" },
+                        { "name": "Kearney", "zipcode": "68845" }
+                    ]
+                },
+                {
+                    "name": "Nevada",
+                    "value": "NV",
+                    "cities": [
+                        { "name": "Las Vegas", "zipcode": "89101" },
+                        { "name": "Henderson", "zipcode": "89002" },
+                        { "name": "Reno", "zipcode": "89501" },
+                        { "name": "North Las Vegas", "zipcode": "89030" },
+                        { "name": "Sparks", "zipcode": "89431" }
+                    ]
+                },
+                {
+                    "name": "New Hampshire",
+                    "value": "NH",
+                    "cities": [
+                        { "name": "Manchester", "zipcode": "03101" },
+                        { "name": "Nashua", "zipcode": "03060" },
+                        { "name": "Concord", "zipcode": "03301" },
+                        { "name": "Dover", "zipcode": "03820" },
+                        { "name": "Rochester", "zipcode": "03839" }
+                    ]
+                },
+                {
+                    "name": "New Jersey",
+                    "value": "NJ",
+                    "cities": [
+                        { "name": "Newark", "zipcode": "07101" },
+                        { "name": "Jersey City", "zipcode": "07302" },
+                        { "name": "Paterson", "zipcode": "07501" },
+                        { "name": "Elizabeth", "zipcode": "07201" },
+                        { "name": "Edison", "zipcode": "08817" }
+                    ]
+                },
+                {
+                    "name": "New Mexico",
+                    "value": "NM",
+                    "cities": [
+                        { "name": "Albuquerque", "zipcode": "87101" },
+                        { "name": "Las Cruces", "zipcode": "88001" },
+                        { "name": "Rio Rancho", "zipcode": "87124" },
+                        { "name": "Santa Fe", "zipcode": "87501" },
+                        { "name": "Roswell", "zipcode": "88201" }
+                    ]
+                },
+                {
+                    "name": "New York",
+                    "value": "NY",
+                    "cities": [
+                        { "name": "New York", "zipcode": "10001" },
+                        { "name": "Buffalo", "zipcode": "14201" },
+                        { "name": "Rochester", "zipcode": "14602" },
+                        { "name": "Yonkers", "zipcode": "10701" },
+                        { "name": "Syracuse", "zipcode": "13201" }
+                    ]
+                },
+                {
+                    "name": "North Carolina",
+                    "value": "NC",
+                    "cities": [
+                        { "name": "Charlotte", "zipcode": "28201" },
+                        { "name": "Raleigh", "zipcode": "27601" },
+                        { "name": "Greensboro", "zipcode": "27401" },
+                        { "name": "Durham", "zipcode": "27701" },
+                        { "name": "Winston-Salem", "zipcode": "27101" }
+                    ]
+                },
+                {
+                    "name": "North Dakota",
+                    "value": "ND",
+                    "cities": [
+                        { "name": "Fargo", "zipcode": "58102" },
+                        { "name": "Bismarck", "zipcode": "58501" },
+                        { "name": "Grand Forks", "zipcode": "58201" },
+                        { "name": "Minot", "zipcode": "58701" },
+                        { "name": "Williston", "zipcode": "58801" }
+                    ]
+                },
+                {
+                    "name": "Ohio",
+                    "value": "OH",
+                    "cities": [
+                        { "name": "Columbus", "zipcode": "43201" },
+                        { "name": "Cleveland", "zipcode": "44101" },
+                        { "name": "Cincinnati", "zipcode": "45201" },
+                        { "name": "Toledo", "zipcode": "43601" },
+                        { "name": "Akron", "zipcode": "44301" }
+                    ]
+                },
+                {
+                    "name": "Oklahoma",
+                    "value": "OK",
+                    "cities": [
+                        { "name": "Oklahoma City", "zipcode": "73101" },
+                        { "name": "Tulsa", "zipcode": "74101" },
+                        { "name": "Norman", "zipcode": "73019" },
+                        { "name": "Broken Arrow", "zipcode": "74011" },
+                        { "name": "Edmond", "zipcode": "73003" }
+                    ]
+                },
+                {
+                    "name": "Oregon",
+                    "value": "OR",
+                    "cities": [
+                        { "name": "Portland", "zipcode": "97201" },
+                        { "name": "Salem", "zipcode": "97301" },
+                        { "name": "Eugene", "zipcode": "97401" },
+                        { "name": "Gresham", "zipcode": "97030" },
+                        { "name": "Hillsboro", "zipcode": "97123" }
+                    ]
+                },
+                {
+                    "name": "Pennsylvania",
+                    "value": "PA",
+                    "cities": [
+                        { "name": "Philadelphia", "zipcode": "19101" },
+                        { "name": "Pittsburgh", "zipcode": "15201" },
+                        { "name": "Allentown", "zipcode": "18101" },
+                        { "name": "Erie", "zipcode": "16501" },
+                        { "name": "Reading", "zipcode": "19601" }
+                    ]
+                },
+                {
+                    "name": "Rhode Island",
+                    "value": "RI",
+                    "cities": [
+                        { "name": "Providence", "zipcode": "02901" },
+                        { "name": "Warwick", "zipcode": "02886" },
+                        { "name": "Cranston", "zipcode": "02910" },
+                        { "name": "Pawtucket", "zipcode": "02860" },
+                        { "name": "East Providence", "zipcode": "02914" }
+                    ]
+                },
+                {
+                    "name": "South Carolina",
+                    "value": "SC",
+                    "cities": [
+                        { "name": "Charleston", "zipcode": "29401" },
+                        { "name": "Columbia", "zipcode": "29201" },
+                        { "name": "Greenville", "zipcode": "29601" },
+                        { "name": "Summerville", "zipcode": "29483" },
+                        { "name": "Spartanburg", "zipcode": "29301" }
+                    ]
+                },
+                {
+                    "name": "South Dakota",
+                    "value": "SD",
+                    "cities": [
+                        { "name": "Sioux Falls", "zipcode": "57101" },
+                        { "name": "Rapid City", "zipcode": "57701" },
+                        { "name": "Aberdeen", "zipcode": "57401" },
+                        { "name": "Brookings", "zipcode": "57006" },
+                        { "name": "Mitchell", "zipcode": "57301" }
+                    ]
+                },
+                {
+                    "name": "Tennessee",
+                    "value": "TN",
+                    "cities": [
+                        { "name": "Nashville", "zipcode": "37201" },
+                        { "name": "Memphis", "zipcode": "38101" },
+                        { "name": "Knoxville", "zipcode": "37901" },
+                        { "name": "Chattanooga", "zipcode": "37401" },
+                        { "name": "Clarksville", "zipcode": "37040" }
+                    ]
+                },
+                {
+                    "name": "Texas",
+                    "value": "TX",
+                    "cities": [
+                        { "name": "Houston", "zipcode": "77001" },
+                        { "name": "Dallas", "zipcode": "75201" },
+                        { "name": "Austin", "zipcode": "73301" },
+                        { "name": "San Antonio", "zipcode": "78201" },
+                        { "name": "Fort Worth", "zipcode": "76101" }
+                    ]
+                },
+                {
+                    "name": "Utah",
+                    "value": "UT",
+                    "cities": [
+                        { "name": "Salt Lake City", "zipcode": "84101" },
+                        { "name": "West Valley City", "zipcode": "84119" },
+                        { "name": "Provo", "zipcode": "84601" },
+                        { "name": "Sandy", "zipcode": "84070" },
+                        { "name": "Orem", "zipcode": "84057" }
+                    ]
+                },
+                {
+                    "name": "Vermont",
+                    "value": "VT",
+                    "cities": [
+                        { "name": "Burlington", "zipcode": "05401" },
+                        { "name": "South Burlington", "zipcode": "05403" },
+                        { "name": "Rutland", "zipcode": "05701" },
+                        { "name": "Barre", "zipcode": "05641" },
+                        { "name": "Montpelier", "zipcode": "05602" }
+                    ]
+                },
+                {
+                    "name": "Virginia",
+                    "value": "VA",
+                    "cities": [
+                        { "name": "Virginia Beach", "zipcode": "23450" },
+                        { "name": "Norfolk", "zipcode": "23501" },
+                        { "name": "Chesapeake", "zipcode": "23320" },
+                        { "name": "Richmond", "zipcode": "23218" },
+                        { "name": "Newport News", "zipcode": "23601" }
+                    ]
+                },
+                {
+                    "name": "Washington",
+                    "value": "WA",
+                    "cities": [
+                        { "name": "Seattle", "zipcode": "98101" },
+                        { "name": "Spokane", "zipcode": "99201" },
+                        { "name": "Tacoma", "zipcode": "98401" },
+                        { "name": "Vancouver", "zipcode": "98660" },
+                        { "name": "Bellevue", "zipcode": "98004" }
+                    ]
+                },
+                {
+                    "name": "West Virginia",
+                    "value": "WV",
+                    "cities": [
+                        { "name": "Charleston", "zipcode": "25301" },
+                        { "name": "Huntington", "zipcode": "25701" },
+                        { "name": "Morgantown", "zipcode": "26505" },
+                        { "name": "Parkersburg", "zipcode": "26101" },
+                        { "name": "Weirton", "zipcode": "26062" }
+                    ]
+                },
+                {
+                    "name": "Wisconsin",
+                    "value": "WI",
+                    "cities": [
+                        { "name": "Milwaukee", "zipcode": "53201" },
+                        { "name": "Madison", "zipcode": "53701" },
+                        { "name": "Green Bay", "zipcode": "54301" },
+                        { "name": "Kenosha", "zipcode": "53140" },
+                        { "name": "Racine", "zipcode": "53401" }
+                    ]
+                },
+                {
+                    "name": "Wyoming",
+                    "value": "WY",
+                    "cities": [
+                        { "name": "Cheyenne", "zipcode": "82001" },
+                        { "name": "Casper", "zipcode": "82601" },
+                        { "name": "Laramie", "zipcode": "82070" },
+                        { "name": "Gillette", "zipcode": "82716" },
+                        { "name": "Rock Springs", "zipcode": "82901" }
+                    ]
+                },
+                {
+                    "name": "Puerto Rico",
+                    "value": "PR",
+                    "cities": [
+                        { "name": "San Juan", "zipcode": "00901" },
+                        { "name": "Bayamón", "zipcode": "00959" },
+                        { "name": "Ponce", "zipcode": "00730" },
+                        { "name": "Caguas", "zipcode": "00725" },
+                        { "name": "Arecibo", "zipcode": "00612" }
+                    ]
+                }
+            ]
+        }
+    ]
+}
