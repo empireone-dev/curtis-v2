@@ -1,1 +1,0 @@
-import"./rolldown-runtime-DWdDZTNf.js";import{n as e,t}from"./jsx-runtime-YWENcNzD.js";import{i as n}from"./app-CEvenNqb.js";e();var r=t();function i(){return(0,r.jsx)(`div`,{children:(0,r.jsx)(n,{method:`post`,href:route(`logout`),as:`button`,children:`Logout`})})}export{i as default};

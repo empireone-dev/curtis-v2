@@ -1,0 +1,1 @@
+import"./rolldown-runtime-BM3Ffeng.js";import{n as e,t}from"./jsx-runtime-DBA9_yck.js";e();var n=t();function r(){return(0,n.jsx)(`div`,{children:`Page`})}export{r as default};
