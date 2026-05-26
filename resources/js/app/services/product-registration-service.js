@@ -25,6 +25,6 @@ export async function get_product_registration_by_id_service(id) {
         });
         return (await response.json());
     } catch (error) {
-        return error;
+        return {};
     }
 }

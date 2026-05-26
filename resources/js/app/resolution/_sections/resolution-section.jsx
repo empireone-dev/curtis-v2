@@ -5,6 +5,13 @@ export default function ResolutionSection() {
     // 1. Added description strings to the section definitions
     const sections = [
         {
+            id: 'registration',
+            label: 'Product Registration',
+            description: 'Register your new product to activate your warranty and receive important updates.',
+            icon: '📝',
+            link: "/resolution/registration"
+        },
+        {
             id: 'warranty',
             label: 'Warranty Claim',
             description: 'File a claim for defective or broken items under active warranty coverage.',
@@ -24,7 +31,7 @@ export default function ResolutionSection() {
             description: 'Report immediate hazards, malfunctions, or critical product design vulnerabilities.',
             icon: '⚠️',
             link: "/resolution/safety_issue"
-        },
+        }
     ];
 
     return (

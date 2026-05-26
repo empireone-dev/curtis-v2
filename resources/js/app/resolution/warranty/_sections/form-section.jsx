@@ -8,6 +8,8 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import Checkbox from '@/app/_components/checkbox';
+import Textarea from '@/app/_components/textarea';
+import UploadFileSection from './upload-file-section';
 
 export default function FormSection() {
     const [processing, setProcessing] = useState(false);
@@ -40,7 +42,15 @@ export default function FormSection() {
             address: "",
             issue: null,
             is_returned: null,
+            reason_to_returned: null,
+            is_have_you_try: null,
+            have_you_try_reason: null,
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
+            files: {
+                modelSerial: [],
+                receipt: [],
+                issueEvidence: []
+            }
         }
     });
 
@@ -54,10 +64,12 @@ export default function FormSection() {
                 typeof value === 'string' && value.toLowerCase().includes(searchTerm)
             )
         );
+        if (searchTerm) {
+            setValue('unit', searchProductsList[2] ?? '');
+            setValue('brand', searchProductsList[0] ?? '');
+            setValue('class', searchProductsList[3] ?? '');
+        }
 
-        setValue('unit', searchProductsList[2] ?? '');
-        setValue('brand', searchProductsList[0] ?? '');
-        setValue('class', searchProductsList[3] ?? '');
     }, [watchValues.item_number])
 
     useEffect(() => {
@@ -91,19 +103,26 @@ export default function FormSection() {
 
     }, [product_registration, setValue]);
 
-    const onSubmit = (formData) => {
-        alert()
-        // setProcessing(true);
+    const onSubmit = (data) => {
+        // Construct FormData to handle both text fields and file uploads
+        const formData = new FormData();
 
-        // router.post('/api/ticket', formData, {
-        //     onFinish: () => setProcessing(false),
-        //     onError: (backendErrors) => {
-        //         // Connect Laravel server validation errors back into React Hook Form
-        //         Object.keys(backendErrors).forEach((key) => {
-        //             setError(key, { type: 'server', message: backendErrors[key] });
-        //         });
-        //     }
-        // });
+        Object.keys(data).forEach(key => {
+            if (key === 'files') {
+                // Append files separately
+                Object.keys(data.files).forEach(category => {
+                    data.files[category].forEach(file => {
+                        formData.append(`${category}_files[]`, file);
+                    });
+                });
+            } else {
+                // Append standard fields
+                formData.append(key, data[key] === null ? '' : data[key]);
+            }
+        });
+
+        console.log("Submitting FormData...", Object.fromEntries(formData));
+
     };
 
 
@@ -115,7 +134,7 @@ export default function FormSection() {
         const hasSafety = res.name.includes('Safety Issue');
         return call_type === "safety_issue" ? hasSafety : !hasSafety;
     });
-    console.log('countries', selected_issue)
+
     return (
         <>
             <form
@@ -209,13 +228,7 @@ export default function FormSection() {
 
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    {/* <Input
-                        id="item_number"
-                        label="Model Number"
-                        error={errors.item_number?.message}
-                        required={true}
-                        {...register("item_number", { required: "Item number is required" })}
-                    /> */}
+
                     <Select
                         label="Model Number"
                         name="item_number"
@@ -347,26 +360,56 @@ export default function FormSection() {
                     />
                 </div>
 
-                <Checkbox
-                    name="is_returned"
-                    label="Yes, I've already tried to return it"
-                    checked={watchValues.is_returned}
-                    {...register("is_returned")}
-                // onChange={(e) => setData("is_returned", e.target.checked)}
+                <UploadFileSection
+                    files={watchValues.files}
+                    setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
                 />
-                {/* Remarks Textarea Template */}
-                {/* <div className="flex flex-col w-full">
-                    <label htmlFor="remarks" className="text-sm font-medium text-gray-700 mb-1">Remarks</label>
-                    <textarea
-                        id="remarks"
-                        rows={6}
-                        className="w-full border border-gray-300 rounded p-3 font-mono text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-y"
-                        {...register("remarks")}
-                    />
-                    {errors.remarks && <span className="text-red-500 text-xs mt-1">{errors.remarks.message}</span>}
-                </div> */}
 
-                {/* Form Action Buttons */}
+                {
+                    call_type == 'warranty' && <>
+                        <Checkbox
+                            name="is_returned"
+                            label="Yes, I've already tried to return it"
+                            checked={watchValues.is_returned}
+                            onChange={(val) =>
+                                setValue("is_returned", val.target.checked)
+                            }
+                        />
+
+                        {
+                            watchValues.is_returned && <Textarea
+                                name="reason_to_returned"
+                                label="State the reason why the store did not take the unit back"
+                                {...register("reason_to_returned", { required: "Reason is required" })}
+                                error={errors.reason_to_returned?.message}
+                            />
+                        }
+                        <Checkbox
+                            name="is_have_you_try"
+                            label="Have you tried contacting the store for the return policy"
+                            checked={watchValues.is_have_you_try}
+                            onChange={(val) =>
+                                setValue("is_have_you_try", val.target.checked)
+                            }
+                        />
+
+                        {
+                            watchValues.is_have_you_try && <Textarea
+                                name="have_you_try_reason"
+                                label="State the reason"
+                                {...register("have_you_try_reason", { required: "Reason is required" })}
+                                error={errors.have_you_try_reason?.message}
+                            />
+                        }
+
+
+
+                    </>
+                }
+
+
+
+
                 <div className="flex justify-center pt-2 md:pt-4">
                     <Button
                         loading={processing}

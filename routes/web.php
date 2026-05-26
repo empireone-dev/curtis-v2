@@ -21,6 +21,7 @@ Route::get('/auth/login', function () {
 
 Route::prefix('resolution')->group(function () {
     Route::inertia('/', 'resolution/page');
+    Route::inertia('/registration', 'resolution/registration/page');
     Route::inertia('/confirmation', 'resolution/confirmation/page');
     Route::inertia('/verification', 'resolution/verification/page');
     Route::inertia('/warranty/{id}', 'resolution/warranty/page');
