@@ -43,8 +43,6 @@ export default function FormSection() {
             issue: null,
             is_returned: null,
             reason_to_returned: null,
-            is_have_you_try: null,
-            have_you_try_reason: null,
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
             files: {
                 modelSerial: [],
@@ -140,7 +138,7 @@ export default function FormSection() {
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 noValidate
-                className="bg-white w-full flex flex-col gap-3"
+                className="bg-white w-full flex flex-col gap-3 min-h-[70vh]"
             >
                 {
                     watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days')) && (
@@ -177,249 +175,234 @@ export default function FormSection() {
                         })}
                     />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <Input
-                        id="fname"
-                        label="First Name"
-                        error={errors.fname?.message}
-                        required={true}
-                        {...register("fname", { required: "First name is required" })}
-                    />
-                    <Input
-                        id="lname"
-                        label="Last Name"
-                        error={errors.lname?.message}
-                        required={true}
-                        {...register("lname", { required: "Last name is required" })}
-                    />
-                </div>
-                <Input
-                    id="email"
-                    type="email"
-                    label="Email"
-                    error={errors.email?.message}
-                    required={true}
-                    {...register("email", {
-                        required: "Email is required",
-                        pattern: {
-                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message: "Invalid email address"
-                        }
-                    })}
-                />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
-                    <Input
-                        id="phone"
-                        type="tel"
-                        label="Phone Number"
-                        error={errors.phone?.message}
-                        required={true}
-                        {...register("phone", { required: "Phone number is required" })}
-                    />
-                    <Input
-                        id="phone2"
-                        type="tel"
-                        label="Secondary Phone Number"
-                        error={errors.phone2?.message}
-                        {...register("phone2")}
-                    />
+                <div className=' flex flex-col gap-3 my-5'>
+                    {
+                        watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days')) && call_type == 'warranty' && <>
+                            <Checkbox
+                                name="is_returned"
+                                label="Have you tried contacting the store for the return policy"
+                                checked={watchValues.is_returned}
+                                onChange={(val) =>
+                                    setValue("is_returned", val.target.checked)
+                                }
+                            />
+
+                            {
+                                watchValues.is_returned && <Textarea
+                                    name="reason_to_returned"
+                                    label="State the reason why the store did not take the unit back"
+                                    {...register("reason_to_returned", { required: "Reason is required" })}
+                                    error={errors.reason_to_returned?.message}
+                                />
+                            }
+
+                        </>
+                    }
                 </div>
 
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
-                    <Select
-                        label="Model Number"
-                        name="item_number"
-                        options={
-                            productFilter?.map((res) => ({
-                                ...res,
-                                label: res[1],
-                                value: res[1],
-                            })) || []
-                        }
-                        value={watchValues.item_number}
-                        onChange={(val) =>
-                            setValue("item_number", val)
-                        }
-                        required={true}
-                        // {...register("item_number", { required: "Item number is required" })}
-                        error={errors.item_number?.message}
-                    />
-                    <Input
-                        id="unit"
-                        label="Item Unit"
-                        error={errors.unit?.message}
-                        required={true}
-                        {...register("unit", { required: "Item unit is required" })}
-                    />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <Input
-                        id="brand"
-                        label="Brand"
-                        error={errors.brand?.message}
-                        required={true}
-                        {...register("brand", { required: "Brand identification is required" })}
-                    />
-                    <Input
-                        id="class"
-                        label="Item Class"
-                        error={errors.class?.message}
-                        required={true}
-                        {...register("class", { required: "Item class is required" })}
-                    />
-                </div>
-
-
-                {/* Address Section */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                    <Input
-                        id="zip_code"
-                        label="Zip Code / Postal Code"
-                        error={errors.zip_code?.message}
-                        required={true}
-                        {...register("zip_code", { required: "Zip code is required" })}
-                    />
-                    <Select
-                        label="Country"
-                        required
-                        name="country"
-                        options={
-                            countries?.map((res) => ({
-                                ...res,
-                                label: res.name,
-                                value: res.value,
-                            })) || []
-                        }
-                        value={watchValues.country}
-                        onChange={(val) =>
-                            setValue("country", val)
-                        }
-                        error={errors.country?.message}
-                    />
-
-
-                    <Select
-                        label="State"
-                        required
-                        name="state"
-                        options={
-                            states?.regions?.map((res) => ({
-                                ...res,
-                                label: res.name,
-                                value: res.value,
-                            })) || []
-                        }
-                        value={watchValues.state}
-                        onChange={(val) =>
-                            setValue("state", val)
-                        }
-                        error={errors.state?.message}
-                    />
-
-                    <Input
-                        id="city"
-                        label="City"
-                        error={errors.city?.message}
-                        required={true}
-                        {...register("city", { required: "City is required" })}
-                    />
-                </div>
-
-                <div className="w-full">
-                    <Input
-                        id="address"
-                        label="Address"
-                        error={errors.address?.message}
-                        required={true}
-                        {...register("address", { required: "Street address is required" })}
-                    />
-                </div>
-
-                <div className="w-full">
-                    <Select
-                        label="Issue"
-                        required={true}
-                        name="issue"
-                        options={
-                            selected_issue?.map((res) => ({
-                                ...res,
-                                label: res.name,
-                                value: res.name,
-                            })) || []
-                        }
-                        value={watchValues.issue}
-                        // onChange={(val) =>
-                        //     setValue("issue", val)
-                        // }
-                        {...register("issue", { required: "Issue is required" })}
-                        error={errors.issue?.message}
-                    />
-                </div>
-
-                <UploadFileSection
-                    files={watchValues.files}
-                    setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
-                />
 
                 {
-                    call_type == 'warranty' && <>
-                        <Checkbox
-                            name="is_returned"
-                            label="Yes, I've already tried to return it"
-                            checked={watchValues.is_returned}
-                            onChange={(val) =>
-                                setValue("is_returned", val.target.checked)
-                            }
-                        />
-
-                        {
-                            watchValues.is_returned && <Textarea
-                                name="reason_to_returned"
-                                label="State the reason why the store did not take the unit back"
-                                {...register("reason_to_returned", { required: "Reason is required" })}
-                                error={errors.reason_to_returned?.message}
+                    watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days')) && <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                            <Input
+                                id="fname"
+                                label="First Name"
+                                error={errors.fname?.message}
+                                required={true}
+                                {...register("fname", { required: "First name is required" })}
                             />
-                        }
-                        <Checkbox
-                            name="is_have_you_try"
-                            label="Have you tried contacting the store for the return policy"
-                            checked={watchValues.is_have_you_try}
-                            onChange={(val) =>
-                                setValue("is_have_you_try", val.target.checked)
-                            }
-                        />
-
-                        {
-                            watchValues.is_have_you_try && <Textarea
-                                name="have_you_try_reason"
-                                label="State the reason"
-                                {...register("have_you_try_reason", { required: "Reason is required" })}
-                                error={errors.have_you_try_reason?.message}
+                            <Input
+                                id="lname"
+                                label="Last Name"
+                                error={errors.lname?.message}
+                                required={true}
+                                {...register("lname", { required: "Last name is required" })}
                             />
-                        }
+                        </div>
+                        <Input
+                            id="email"
+                            type="email"
+                            label="Email"
+                            error={errors.email?.message}
+                            required={true}
+                            {...register("email", {
+                                required: "Email is required",
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: "Invalid email address"
+                                }
+                            })}
+                        />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+                            <Input
+                                id="phone"
+                                type="tel"
+                                label="Phone Number"
+                                error={errors.phone?.message}
+                                required={true}
+                                {...register("phone", { required: "Phone number is required" })}
+                            />
+                            <Input
+                                id="phone2"
+                                type="tel"
+                                label="Secondary Phone Number"
+                                error={errors.phone2?.message}
+                                {...register("phone2")}
+                            />
+                        </div>
 
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
+                            <Select
+                                label="Model Number"
+                                name="item_number"
+                                options={
+                                    productFilter?.map((res) => ({
+                                        ...res,
+                                        label: res[1],
+                                        value: res[1],
+                                    })) || []
+                                }
+                                value={watchValues.item_number}
+                                onChange={(val) =>
+                                    setValue("item_number", val)
+                                }
+                                required={true}
+                                // {...register("item_number", { required: "Item number is required" })}
+                                error={errors.item_number?.message}
+                            />
+                            <Input
+                                id="unit"
+                                label="Item Unit"
+                                error={errors.unit?.message}
+                                required={true}
+                                {...register("unit", { required: "Item unit is required" })}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                            <Input
+                                id="brand"
+                                label="Brand"
+                                error={errors.brand?.message}
+                                required={true}
+                                {...register("brand", { required: "Brand identification is required" })}
+                            />
+                            <Input
+                                id="class"
+                                label="Item Class"
+                                error={errors.class?.message}
+                                required={true}
+                                {...register("class", { required: "Item class is required" })}
+                            />
+                        </div>
+
+
+                        {/* Address Section */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                            <Input
+                                id="zip_code"
+                                label="Zip Code / Postal Code"
+                                error={errors.zip_code?.message}
+                                required={true}
+                                {...register("zip_code", { required: "Zip code is required" })}
+                            />
+                            <Select
+                                label="Country"
+                                required
+                                name="country"
+                                options={
+                                    countries?.map((res) => ({
+                                        ...res,
+                                        label: res.name,
+                                        value: res.value,
+                                    })) || []
+                                }
+                                value={watchValues.country}
+                                onChange={(val) =>
+                                    setValue("country", val)
+                                }
+                                error={errors.country?.message}
+                            />
+
+
+                            <Select
+                                label="State"
+                                required
+                                name="state"
+                                options={
+                                    states?.regions?.map((res) => ({
+                                        ...res,
+                                        label: res.name,
+                                        value: res.value,
+                                    })) || []
+                                }
+                                value={watchValues.state}
+                                onChange={(val) =>
+                                    setValue("state", val)
+                                }
+                                error={errors.state?.message}
+                            />
+
+                            <Input
+                                id="city"
+                                label="City"
+                                error={errors.city?.message}
+                                required={true}
+                                {...register("city", { required: "City is required" })}
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <Input
+                                id="address"
+                                label="Address"
+                                error={errors.address?.message}
+                                required={true}
+                                {...register("address", { required: "Street address is required" })}
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <Select
+                                label="Issue"
+                                required={true}
+                                name="issue"
+                                options={
+                                    selected_issue?.map((res) => ({
+                                        ...res,
+                                        label: res.name,
+                                        value: res.name,
+                                    })) || []
+                                }
+                                value={watchValues.issue}
+                                // onChange={(val) =>
+                                //     setValue("issue", val)
+                                // }
+                                {...register("issue", { required: "Issue is required" })}
+                                error={errors.issue?.message}
+                            />
+                        </div>
+
+                        <UploadFileSection
+                            files={watchValues.files}
+                            setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
+                        />
+                        <div className="flex justify-center pt-2 md:pt-4">
+                            <Button
+                                loading={processing}
+                                className="w-full sm:w-auto px-12"
+                                variant="primary"
+                                type="submit"
+                            >
+                                SUBMIT
+                            </Button>
+                        </div>
                     </>
                 }
-
-
-
-
-                <div className="flex justify-center pt-2 md:pt-4">
-                    <Button
-                        loading={processing}
-                        className="w-full sm:w-auto px-12"
-                        variant="primary"
-                        type="submit"
-                    >
-                        SUBMIT
-                    </Button>
-                </div>
             </form>
         </>
     );
