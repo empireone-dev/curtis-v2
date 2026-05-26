@@ -16,7 +16,7 @@ export default function ResolutionSection() {
             label: 'Warranty Claim',
             description: 'File a claim for defective or broken items under active warranty coverage.',
             icon: '📋',
-            link: "/resolution/confirmation",
+            link: "/resolution/warranty/confirmation",
             is_disabled: false
         },
         {
@@ -24,16 +24,16 @@ export default function ResolutionSection() {
             label: 'Parts Request',
             description: 'Request or replace missing components, hardware, or structural elements.',
             icon: '⚙️',
-            link: "/resolution/parts",
-            is_disabled: true
+            link: "/resolution/parts/confirmation",
+            is_disabled: false
         },
         {
             id: 'safety_issue',
             label: 'Safety Issue',
             description: 'Report immediate hazards, malfunctions, or critical product design vulnerabilities.',
             icon: '⚠️',
-            link: "/resolution/safety_issue",
-            is_disabled: true
+            link: "/resolution/safety_issue/confirmation",
+            is_disabled: false
         }
     ];
 

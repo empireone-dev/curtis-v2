@@ -8,6 +8,7 @@ import { encodeBase64Id } from '@/app/lib/decode';
 
 export default function VerifyFormSection() {
     const [isError, setIsError] = useState(false)
+    const call_type = window.location.pathname.split('/')[2]
     const {
         register,
         handleSubmit,
@@ -26,7 +27,7 @@ export default function VerifyFormSection() {
         try {
             const res = await verify_serial_number_service(formData.serial_number);
             if (Object.keys(res).length != 0) {
-                return router.visit(`/resolution/warranty/${encodeBase64Id(res.id)}`)
+                return router.visit(`/resolution/${call_type}/${encodeBase64Id(res.id)}`)
             }
             setIsError(true)
         } catch (error) {
@@ -71,7 +72,7 @@ export default function VerifyFormSection() {
                         className="w-full"
                         variant="danger"
                         type="submit"
-                        onClick={() => router.visit('/resolution/confirmation')}
+                        onClick={() => router.visit(`/resolution/${call_type}/confirmation`)}
                     >
                         GO BACK
                     </Button>

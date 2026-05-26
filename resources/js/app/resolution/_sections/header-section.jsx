@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function HeaderSection({ title = '' }) {
+    const call_type = window.location.pathname?.split('/')[2]?.replace('_',' ')
     return (
         <>
             <div className="relative w-full bg-gradient-to-b from-blue-700 to-blue-500 text-white p-10 flex flex-col items-center justify-between text-center max-h-[300px] overflow-hidden">
@@ -12,8 +13,8 @@ export default function HeaderSection({ title = '' }) {
                         {title}
                     </h1>
                 </div>
-                <div className="text-[10px] tracking-widest text-blue-200 uppercase flex space-x-3 z-10 mb-4">
-                    <span>Customer</span>
+                <div className="text-[16px] tracking-widest text-blue-200 uppercase flex space-x-3 z-10 mb-4">
+                    <span>Customer {call_type??''}</span>
                 </div>
                 <div className="absolute bottom-0 left-0 w-full h-16 translate-y-1 z-0">
                     <svg

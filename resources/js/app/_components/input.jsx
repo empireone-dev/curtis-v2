@@ -1,6 +1,6 @@
 import React, { useState, forwardRef } from "react";
 
-const Input = forwardRef(({ label, id, type = "text", error, icon, required, ...props }, ref) => {
+const Input = forwardRef(({ label, id, type = "text", error, icon, required, disabled, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     // Determine if we should show the actual characters or dots for passwords
@@ -11,24 +11,28 @@ const Input = forwardRef(({ label, id, type = "text", error, icon, required, ...
             <div className="relative">
                 {/* Optional Left Icon */}
                 {icon && (
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                    <div className={`absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none transition-opacity duration-200 ${disabled ? "text-gray-400 opacity-50" : "text-gray-400"}`}>
                         {icon}
                     </div>
                 )}
 
                 <input
-                    ref={ref} // CRUCIAL FIX: Attach the forwarded ref here
+                    ref={ref}
                     id={id}
                     type={inputType}
+                    disabled={disabled}
                     placeholder=" " // Crucial: must be a blank space for peer-placeholder-shown to work
                     className={`
-                        border-blue-500
-                        peer w-full h-12 rounded-lg border-2 bg-transparent px-4 text-gray-900 outline-none transition-all duration-200
+                        peer w-full h-12 rounded-lg border-2 px-4 outline-none transition-all duration-200
                         ${icon ? "pl-11" : ""} 
                         ${type === "password" ? "pr-11" : ""}
-                        ${error
-                            ? "border-red-500 focus:border-red-500"
-                            : "border-blue-400 focus:border-blue-600 hover:border-blue-500"
+                        
+                        /* State Styling */
+                        ${disabled 
+                            ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed" 
+                            : "bg-transparent text-gray-900 " + (error 
+                                ? "border-red-500 focus:border-red-500" 
+                                : "border-blue-400 focus:border-blue-600 hover:border-blue-500")
                         }
                     `}
                     {...props}
@@ -38,23 +42,29 @@ const Input = forwardRef(({ label, id, type = "text", error, icon, required, ...
                 <label
                     htmlFor={id}
                     className={`
-                        absolute bg-white px-1 pointer-events-none transition-all duration-200
+                        absolute px-1 pointer-events-none transition-all duration-200
                         ${icon ? "left-10" : "left-3"}
                         
                         /* 1. Base/Filled State (Sitting on the top border, masking the line) */
                         -top-2.5 translate-y-0 text-xs font-medium
-                        ${error ? "text-red-500" : "text-blue-500"}
+                        
+                        /* Color logic based on states */
+                        ${disabled 
+                            ? "text-gray-400 bg-gray-100" 
+                            : `bg-white ${error ? "text-red-500" : "text-blue-500"}`
+                        }
                         
                         /* 2. Inactive/Empty State (Centered inside the input) */
                         peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-placeholder-shown:font-normal peer-placeholder-shown:text-gray-400
                         
+                        /* 3. Focus State */
                         peer-focus:-top-2.5 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:font-medium
-                        ${error ? "peer-focus:text-red-500" : "peer-focus:text-blue-600"}
+                        ${disabled ? "" : (error ? "peer-focus:text-red-500" : "peer-focus:text-blue-600")}
                     `}
                 >
                     <div className="flex gap-0.5">
                         {label}
-                        {required && <span className="text-red-500 font-medium">*</span>}
+                        {required && <span className={`${disabled ? "text-gray-400" : "text-red-500"} font-medium`}>*</span>}
                     </div>
                 </label>
 
@@ -62,8 +72,13 @@ const Input = forwardRef(({ label, id, type = "text", error, icon, required, ...
                 {type === "password" && (
                     <button
                         type="button"
+                        disabled={disabled}
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                        className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors focus:outline-none ${
+                            disabled 
+                                ? "text-gray-400 opacity-50 cursor-not-allowed" 
+                                : "text-gray-400 hover:text-gray-600"
+                        }`}
                     >
                         {showPassword ? (
                             <svg
@@ -99,7 +114,7 @@ const Input = forwardRef(({ label, id, type = "text", error, icon, required, ...
             </div>
 
             {/* Error Message */}
-            {error && (
+            {error && !disabled && (
                 <p className="mt-1.5 text-xs text-red-500 font-medium flex items-center gap-1">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +135,6 @@ const Input = forwardRef(({ label, id, type = "text", error, icon, required, ...
     );
 });
 
-// Setting displayName is highly recommended when using forwardRef to ensure debugging in React DevTools remains easy.
 Input.displayName = "Input";
 
 export default Input;

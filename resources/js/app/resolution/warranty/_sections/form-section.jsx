@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import moment from 'moment';
 import Checkbox from '@/app/_components/checkbox';
 import Textarea from '@/app/_components/textarea';
-import UploadFileSection from './upload-file-section';
+import UploadFileSection from '../../_sections/upload-file-section';
 
 export default function FormSection() {
     const [processing, setProcessing] = useState(false);
@@ -41,8 +41,8 @@ export default function FormSection() {
             city: "",
             address: "",
             issue: null,
-            is_returned: null,
-            reason_to_returned: null,
+            has_contacted_store: null,
+            store_refusal_reason: null,
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
             files: {
                 modelSerial: [],
@@ -133,6 +133,7 @@ export default function FormSection() {
         return call_type === "safety_issue" ? hasSafety : !hasSafety;
     });
 
+    const is_warranty = watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days'))
     return (
         <>
             <form
@@ -141,7 +142,7 @@ export default function FormSection() {
                 className="bg-white w-full flex flex-col gap-3 min-h-[70vh]"
             >
                 {
-                    watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days')) && (
+                    is_warranty && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
                             The purchase was within the last 45 days. For faster resolution, please return it to the retailer for refund or replacement.
                         </div>
@@ -178,32 +179,31 @@ export default function FormSection() {
 
                 <div className=' flex flex-col gap-3 my-5'>
                     {
-                        watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days')) && call_type == 'warranty' && <>
+                        is_warranty && call_type == 'warranty' && <>
                             <Checkbox
-                                name="is_returned"
-                                label="Have you tried contacting the store for the return policy"
-                                checked={watchValues.is_returned}
+                                name="has_contacted_store"
+                                label="Have you tried contacting the store for the return policy?"
+                                checked={watchValues.has_contacted_store}
                                 onChange={(val) =>
-                                    setValue("is_returned", val.target.checked)
+                                    setValue("has_contacted_store", val.target.checked)
                                 }
                             />
 
-                            {
-                                watchValues.is_returned && <Textarea
-                                    name="reason_to_returned"
+                            {watchValues.has_contacted_store && (
+                                <Textarea
+                                    name="store_refusal_reason"
                                     label="State the reason why the store did not take the unit back"
-                                    {...register("reason_to_returned", { required: "Reason is required" })}
-                                    error={errors.reason_to_returned?.message}
+                                    {...register("store_refusal_reason", { required: "Reason is required" })}
+                                    error={errors.store_refusal_reason?.message}
                                 />
-                            }
+                            )}
 
                         </>
                     }
                 </div>
 
-
                 {
-                    watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days')) && <>
+                    is_warranty && <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <Input
                                 id="fname"
@@ -279,6 +279,7 @@ export default function FormSection() {
                                 label="Item Unit"
                                 error={errors.unit?.message}
                                 required={true}
+                                disabled
                                 {...register("unit", { required: "Item unit is required" })}
                             />
                         </div>
@@ -287,12 +288,14 @@ export default function FormSection() {
                             <Input
                                 id="brand"
                                 label="Brand"
+                                disabled
                                 error={errors.brand?.message}
                                 required={true}
                                 {...register("brand", { required: "Brand identification is required" })}
                             />
                             <Input
                                 id="class"
+                                disabled
                                 label="Item Class"
                                 error={errors.class?.message}
                                 required={true}

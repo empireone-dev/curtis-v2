@@ -17,11 +17,15 @@ Route::get('/auth/login', function () {
 Route::prefix('resolution')->group(function () {
     Route::inertia('/', 'resolution/page');
     Route::inertia('/registration', 'resolution/registration/page');
-    Route::inertia('/confirmation', 'resolution/confirmation/page');
-    Route::inertia('/verification', 'resolution/verification/page');
-    Route::inertia('/warranty/{id}', 'resolution/warranty/page');
-    Route::inertia('/parts', 'resolution/parts/page');
-    Route::inertia('/safety_issue', 'resolution/safety_issue/page');
+    $categories = ['warranty', 'parts', 'safety_issue'];
+
+    foreach ($categories as $category) {
+        Route::prefix($category)->group(function () use ($category) {
+            Route::inertia('/confirmation', 'resolution/confirmation/page');
+            Route::inertia('/verification', 'resolution/verification/page');
+            Route::inertia('/{id}', "resolution/{$category}/page");
+        });
+    }
 });
 
 Route::get('/accounts/administrator/dashboard', function () {

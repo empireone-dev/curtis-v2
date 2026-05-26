@@ -2,6 +2,8 @@ import { router } from '@inertiajs/react';
 import React, { useState } from 'react';
 
 export default function ConfirmationSection() {
+    
+    const call_type = window.location.pathname.split('/')[2]
     return (
         <div>
             <div className="text-center mb-8">
@@ -16,7 +18,7 @@ export default function ConfirmationSection() {
             <div className="flex flex-col sm:flex-row gap-4 w-full">
                 <button
                     type="button"
-                    onClick={() => router.visit('/resolution/verification')}
+                    onClick={() => router.visit(`/resolution/${call_type}/verification`)}
                     className={`
             flex-1 py-4 px-6 rounded-xl border-2 text-lg font-semibold tracking-wide 
             transition-all duration-300 ease-in-out outline-none shadow-md scale-[1.02]
@@ -28,7 +30,7 @@ export default function ConfirmationSection() {
                 </button>
 
                 <button
-                    onClick={() => router.visit('/resolution/warranty/blank')}
+                    onClick={() => router.visit(`/resolution/${call_type}/blank`)}
                     type="button"
                     className={`
             flex-1 py-4 px-6 rounded-xl border-2 text-lg font-semibold tracking-wide 
