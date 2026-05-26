@@ -1,0 +1,1 @@
+async function e(e){try{return await(await fetch(`/api/verify_serial_number/${e}`,{method:`GET`,headers:{"Content-Type":`application/json`}})).json()}catch(e){return e}}async function t(e){try{return await(await fetch(`/api/product_registration/${e}`,{method:`GET`,headers:{"Content-Type":`application/json`}})).json()}catch{return{}}}export{e as n,t};
