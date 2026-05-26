@@ -5,9 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const navigation = [
     { name: "Home", id: "home" },
-    { name: "Careers", id: "careers" },
     { name: "About", id: "about-us" },
-    { name: "Testimonials", id: "testimonial" },
     { name: "Contact", id: "contact" },
 ];
 
@@ -58,25 +56,23 @@ export default function HeaderSection() {
         <header className="fixed top-0 inset-x-0 z-50 transition-all duration-500 mt-1 sm:mt-2">
             <nav
                 className={`mx-auto transition-all duration-500 px-3 sm:px-5 py-2.5 sm:py-3
-                ${
-                    scrolled
+                ${scrolled
                         ? "mt-2 sm:mt-4 max-w-[95vw] sm:max-w-2xl md:max-w-3xl lg:max-w-5xl rounded-full border shadow-2xl backdrop-blur-md"
                         : "max-w-[95vw] sm:max-w-7xl border-b border-transparent"
-                }
-                ${
-                    isDark
+                    }
+                ${isDark
                         ? "bg-black/20 border-white/10 text-white"
                         : "bg-white/40 border-black/5 text-slate-900"
-                }`}
+                    }`}
             >
                 <div className="flex items-center justify-between">
                     {/* LOGO */}
                     <div className="flex-shrink-0">
                         <a href="/" className="group flex items-center gap-2">
                             <img
-                                src="/images/eologo.png"
+                                src="/images/logo.png"
                                 alt="Logo"
-                                className="h-7 sm:h-8 transition-transform group-hover:scale-105"
+                                className="h-12 sm:h-8 transition-transform group-hover:scale-105"
                             />
                         </a>
                     </div>
@@ -109,18 +105,18 @@ export default function HeaderSection() {
 
                     {/* RIGHT ACTIONS */}
                     <div className="flex items-center gap-2 sm:gap-3">
-                        <Link
+                        {/* <Link
                             href="/auth/login"
                             className="hidden sm:block px-3 sm:px-4 py-2 text-sm font-semibold hover:opacity-70 transition"
                         >
                             Log in
-                        </Link>
+                        </Link> */}
                         {/* Changed Apply Now button to Blue */}
                         <Link
-                            href="/talent/application"
+                            href="/resolution"
                             className="hidden xs:inline-flex lg:inline-flex bg-blue-600 hover:bg-blue-500 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
                         >
-                            Apply Now
+                            Warranty Resolution
                         </Link>
 
                         {/* MOBILE TOGGLE */}
@@ -183,20 +179,20 @@ export default function HeaderSection() {
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col gap-3 px-5 mt-6">
-                            <Link
+                            {/* <Link
                                 href="/auth/login"
                                 className="w-full py-3.5 text-center font-bold border border-white/20 text-white rounded-2xl hover:bg-white/5 transition text-sm"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Log In
-                            </Link>
+                            </Link> */}
                             {/* Changed mobile Apply Now button to Blue gradient */}
                             <Link
-                                href="/talent/application"
+                                href="/resolution"
                                 className="w-full py-3.5 text-center font-bold bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-2xl hover:from-blue-500 hover:to-cyan-400 transition text-sm shadow-lg shadow-blue-500/20"
                                 onClick={() => setMobileMenuOpen(false)}
                             >
-                                Apply Now
+                                Warranty Resolution
                             </Link>
                         </div>
 

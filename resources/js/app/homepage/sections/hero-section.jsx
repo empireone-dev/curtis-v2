@@ -59,7 +59,7 @@ export default function HeroSection() {
 
     return (
         <section
-            className="relative sm:min-h-screen w-full overflow-hidden bg-[#0a0a14] text-white flex flex-col"
+            className="relative sm:min-h-screen w-full overflow-hidden bg-blue-500 text-white flex flex-col"
             id="home"
         >
             <style>{`
@@ -146,158 +146,26 @@ export default function HeroSection() {
             <div className="absolute w-[400px] h-[400px] bg-sky-500/20 blur-3xl rounded-full bottom-10 left-1/3 anim-orb delay-600" />
 
             {/* ---------------- HERO ---------------- */}
-            <div className="relative z-10 sm:flex-1 max-w-[1600px] px-4 sm:px-6 lg:px-20 flex flex-col lg:flex-row items-center gap-6 lg:gap-10 pt-20 sm:pt-24 lg:pt-10 pb-8 sm:pb-0">
-                {/* LEFT */}
+            <div className="flex items-center justify-center w-full h-screen"> {/* LEFT */}
                 <div className="w-full lg:w-[55%] font-dm space-y-4 sm:space-y-5 lg:space-y-6 mt-0 sm:mt-4 lg:mt-14 text-center lg:text-left">
                     {/* BADGES */}
-                    <div className="flex gap-2 sm:gap-3 flex-wrap justify-center lg:justify-start anim-fade-up">
-                        <div className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-400/30 text-blue-400 text-[10px] sm:text-xs font-semibold">
-                            <span className="w-2 h-2 bg-blue-400 rounded-full animate-ping" />
-                            {activeJobs.toLocaleString()} Employees
-                        </div>
+                    <h1 className="font-syne text-[clamp(32px,8vw,88px)]  flex items-center justify-center anim-fade-up delay-200 sm:text-[clamp(40px,7vw,88px)] lg:text-[clamp(48px,6vw,88px)] leading-[1.1] sm:leading-[1.05] lg:leading-[1.02]">
 
-                        <div className="px-2.5 sm:px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 text-[10px] sm:text-xs font-semibold">
-                            🔥 500+ new this week
-                        </div>
-                    </div>
-
-                    {/* TITLE */}
-                    <h1 className="font-syne text-[clamp(32px,8vw,88px)] anim-fade-up delay-200 sm:text-[clamp(40px,7vw,88px)] lg:text-[clamp(48px,6vw,88px)] leading-[1.1] sm:leading-[1.05] lg:leading-[1.02]">
-                        Your Next <br />
                         <span className="bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent bg-clip-text">
-                            Dream Career
+                            Product Support
                         </span>
-                        <br /> Starts Here.
                     </h1>
 
-                    <p className="text-white/60 max-w-md mx-auto lg:mx-0 text-base sm:text-lg px-4 sm:px-0 anim-fade-up delay-300">
-                        Join the leading BPO platform of independent
-                        professionals. Get hired faster, work smarter, earn
-                        more.
+                    <p className="text-white/60 lg:mx-0 text-base sm:text-lg px-4 sm:px-0 anim-fade-up delay-300">
+                        When used under normal operating conditions, as outlined by the manufacturer in your user manual, your CURTIS, SYLVANIA, RCA, PROSCAN, FRIGIDAIRE, HAMILTON BEACH product is warranted to be free from manufacturer’s defects in material and workmanship
                     </p>
 
-                    {/* SEARCH */}
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white/10 anim-fade-up delay-400 border border-white/10 rounded-xl p-3 sm:px-4 sm:py-3 max-w-md mx-auto lg:mx-0 gap-3 sm:gap-0">
-                        <input
-                            placeholder='Try "Virtual Assistant"...'
-                            className="bg-transparent outline-none flex-1 text-sm text-white/80 placeholder:text-white/30 min-w-0"
-                        />
-                        <Button className="sm:ml-3 px-4 py-2 sm:py-1.5 rounded-md bg-gradient-to-r from-blue-600 to-cyan-500 text-sm font-semibold hover:from-blue-500 hover:to-cyan-400 whitespace-nowrap">
-                            Search
-                        </Button>
-                    </div>
-
-                    {/* CTA */}
-                    <div className="flex flex-wrap gap-2 px-4 sm:px-0 max-w-md mx-auto lg:mx-0 anim-fade-up delay-500">
-                        <Button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/20 text-xs font-medium whitespace-nowrap">
-                            Mobile App <Android className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/20 text-xs font-medium whitespace-nowrap">
-                            Windows <Windows className="w-3.5 h-3.5" />
-                        </Button>
-                        <Button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/20 text-xs font-medium whitespace-nowrap">
-                            Mac <Apple className="w-3.5 h-3.5" />
-                        </Button>
-                    </div>
                 </div>
 
-                {/* RIGHT SIDE */}
-                <div className="hidden sm:flex w-full lg:w-[45%] relative items-end justify-center z-10 lg:self-end anim-slide-right delay-300">
-                    {/* IMAGE */}
-                    <img
-                        src="/images/mmm.png"
-                        className="max-w-[480px] sm:max-w-[700px] md:max-w-[960px] lg:max-w-none lg:w-[130%] object-contain w-full"
-                        alt=""
-                        draggable="false"
-                        onDragStart={(e) => e.preventDefault()}
-                        style={{ userSelect: "none", WebkitUserDrag: "none" }}
-                    />
-
-                    {/* ===================== FLOATING CARD 1 ===================== */}
-                    <div className="hidden sm:block absolute top-[8%] right-[-2%] lg:right-[-2%] md:right-[2%] z-20 bg-black/70 backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-5 py-3 sm:py-4 shadow-xl float max-w-[180px] sm:max-w-none animate-bounce">
-                        <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-500 to-sky-600 flex items-center justify-center flex-shrink-0">
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    className="sm:w-5 sm:h-5"
-                                    fill="white"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                                </svg>
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-[10px] sm:text-xs text-white/40">
-                                    New Offer!
-                                </p>
-                                <p className="font-bold text-xs sm:text-sm truncate">
-                                    🎉 Congratulations!
-                                </p>
-                                <p className="text-xs sm:text-sm text-cyan-400 truncate">
-                                    You've been hired
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* ===================== FLOATING CARD 2 ===================== */}
-                    <div className=" hidden md:block absolute top-[2%] left-[-2%] lg:left-[-8%] md:left-[-4%] z-20 bg-black/70 backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-5 py-3 sm:py-4 shadow-xl float max-w-[180px] sm:max-w-none animate-bounce">
-                        <div className="flex items-center gap-2 sm:gap-3 ">
-                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0">
-                                <svg
-                                    width="14"
-                                    height="14"
-                                    className="sm:w-[18px] sm:h-[18px]"
-                                    fill="white"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path d="M12 2L2 12h7v8l10-10h-7z" />
-                                </svg>
-                            </div>
-                            <div className="min-w-0">
-                                <p className="text-[10px] sm:text-xs text-white/40">
-                                    Quick Apply
-                                </p>
-                                <p className="font-bold text-xs sm:text-sm truncate">
-                                    Apply Now!
-                                </p>
-                                <p className="text-[10px] sm:text-xs text-cyan-400 truncate">
-                                    Fast hiring process
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* ===================== FLOATING CARD 3 ===================== */}
-                    <div className="hidden sm:block absolute bottom-[2%] right-[-22%] lg:right-[-22%] md:right-[-10%] sm:right-[-15%] z-20 bg-black/70 backdrop-blur-xl border border-white/10 rounded-xl sm:rounded-2xl px-3 sm:px-5 py-3 sm:py-4 shadow-xl float max-w-[160px] sm:max-w-none animate-bounce">
-                        <p className="text-[10px] sm:text-xs text-white/40 mb-2">
-                            Recent applicants
-                        </p>
-
-                        <div className="flex -space-x-2 mb-2">
-                            {["JL", "SK", "MR", "AK"].map((a) => (
-                                <div
-                                    key={a}
-                                    className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-[8px] sm:text-[10px] font-bold border-2 border-[#0a0a14]"
-                                >
-                                    {a}
-                                </div>
-                            ))}
-                            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white/10 flex items-center justify-center text-[8px] sm:text-[10px] text-white/60 border-2 border-[#0a0a14]">
-                                +48
-                            </div>
-                        </div>
-
-                        <p className="text-[10px] sm:text-xs text-white/60">
-                            Applied in the last hour
-                        </p>
-                    </div>
-                </div>
             </div>
             <div className="relative z-20 py-3 sm:py-4 border-y border-white/10 anim-fade-in delay-700">
                 {/* ROW 1 */}
-                <div className="overflow-hidden mb-1.5 sm:mb-2">    
+                <div className="overflow-hidden mb-1.5 sm:mb-2">
                     <div className="flex w-max ticker-left gap-2 sm:gap-3 lg:gap-4">
                         {[...jobCards, ...jobCards].map((job, i) => (
                             <div
@@ -308,7 +176,7 @@ export default function HeroSection() {
                                     className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded flex-shrink-0"
                                     style={{ background: job.color }}
                                 />
-                                <span className="text-xs sm:text-sm font-semibold text-white/85">   
+                                <span className="text-xs sm:text-sm font-semibold text-white/85">
                                     {job.role}
                                 </span>
                                 <span className="text-[10px] sm:text-xs text-white/40 hidden sm:inline">
