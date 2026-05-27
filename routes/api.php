@@ -11,6 +11,6 @@ Route::get('/user', function (Request $request) {
 
 
 
-Route::resource('ticket', TicketControlller::class);
+Route::resource('tickets', TicketControlller::class);
 Route::resource('product_registration', ProductRegistrationControlller::class);
 Route::get('/verify_serial_number/{id}', [ProductRegistrationControlller::class, 'verify_serial_number']);

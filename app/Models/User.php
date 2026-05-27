@@ -17,6 +17,16 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $fillable = [
+        'emp_id',
+        'google_id',
+        'name',
+        'email',
+        'password',
+        'role_id',
+        'agent_type'
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -28,5 +38,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class, 'user_id', 'id');
     }
 }

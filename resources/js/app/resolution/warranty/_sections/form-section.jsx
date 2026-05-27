@@ -10,9 +10,10 @@ import moment from 'moment';
 import Checkbox from '@/app/_components/checkbox';
 import Textarea from '@/app/_components/textarea';
 import UploadFileSection from '../../_sections/upload-file-section';
+import { create_ticket_service } from '@/app/services/tickets-service';
+import Radio from '@/app/_components/radio';
 
 export default function FormSection() {
-    const [processing, setProcessing] = useState(false);
     const { product_registration, products } = useSelector((store) => store.app);
 
     const {
@@ -21,7 +22,7 @@ export default function FormSection() {
         watch,
         setError,
         setValue, // We will use this to loop through our redux state
-        formState: { errors }
+        formState: { errors, isSubmitting }
     } = useForm({
         defaultValues: {
             fname: "",
@@ -101,37 +102,62 @@ export default function FormSection() {
 
     }, [product_registration, setValue]);
 
-    const onSubmit = (data) => {
-        // Construct FormData to handle both text fields and file uploads
+    const onSubmit = async (data) => {
+
         const formData = new FormData();
 
         Object.keys(data).forEach(key => {
             if (key === 'files') {
-                // Append files separately
+                // Append files using the exact category ID expected by the backend
                 Object.keys(data.files).forEach(category => {
                     data.files[category].forEach(file => {
-                        formData.append(`${category}_files[]`, file);
+                        // Use category[] so PHP receives an array of files per category
+                        formData.append(`${category}[]`, file);
                     });
                 });
             } else {
-                // Append standard fields
-                formData.append(key, data[key] === null ? '' : data[key]);
+                // Handle standard text fields
+                if (key != 'common_issues') {
+                    formData.append(key, data[key] === null ? '' : data[key]);
+                }
+
             }
         });
 
-        console.log("Submitting FormData...", Object.fromEntries(formData));
 
+        try {
+            formData.append('call_type', 'CF-Warranty Claim');
+            await create_ticket_service(formData);
+            alert("Ticket created successfully!");
+
+        } catch (error) {
+            console.error("Submission failed:", error);
+            alert("Failed to submit the form. Please try again.");
+        } finally {
+        }
     };
 
+    useEffect(() => {
+        register("files", {
+            validate: (value) => {
+                const requiredCategories = ['modelSerial', 'receipt', 'issueEvidence'];
+
+                // Check if any required category is empty or missing
+                const missingCategories = requiredCategories.filter(
+                    (id) => !value?.[id] || value[id].length === 0
+                );
+
+                if (missingCategories.length > 0) {
+                    return "All attachment sections are mandatory. Please upload the missing files.";
+                }
+                return true;
+            }
+        });
+    }, [register]);
 
     const states = countries?.find(res => res.value == watchValues.country)
     const call_type = window.location.pathname.split('/')[2]
 
-    const selected_issue = product_registration?.common_issues?.filter(res => {
-        if (!res.name) return false;
-        const hasSafety = res.name.includes('Safety Issue');
-        return call_type === "safety_issue" ? hasSafety : !hasSafety;
-    });
 
     const is_warranty = watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days'))
     return (
@@ -177,19 +203,29 @@ export default function FormSection() {
                     />
                 </div>
 
-                <div className=' flex flex-col gap-3 my-5'>
+                <div className=' flex flex-col gap-3'>
                     {
                         is_warranty && call_type == 'warranty' && <>
-                            <Checkbox
-                                name="has_contacted_store"
-                                label="Have you tried contacting the store for the return policy?"
-                                checked={watchValues.has_contacted_store}
-                                onChange={(val) =>
-                                    setValue("has_contacted_store", val.target.checked)
-                                }
-                            />
+                            Have you tried contacting the store for the return policy?
+                            <div className='flex gap-8 my-3'>
+                                <Radio
+                                    name="has_contacted_store"
+                                    label="Yes"
+                                    // Evaluates to true ONLY if the current value is strictly 'Yes'
+                                    checked={watchValues.has_contacted_store === 'Yes'}
+                                    onChange={() => setValue("has_contacted_store", 'Yes')}
+                                />
 
-                            {watchValues.has_contacted_store && (
+                                <Radio
+                                    name="has_contacted_store"
+                                    label="No"
+                                    // Evaluates to true ONLY if the current value is strictly 'No'
+                                    checked={watchValues.has_contacted_store === 'No'}
+                                    onChange={() => setValue("has_contacted_store", 'No')}
+                                />
+                            </div>
+
+                            {watchValues.has_contacted_store == 'Yes' && (
                                 <Textarea
                                     name="store_refusal_reason"
                                     label="State the reason why the store did not take the unit back"
@@ -203,7 +239,12 @@ export default function FormSection() {
                 </div>
 
                 {
-                    is_warranty && <>
+                    watchValues.has_contacted_store == 'No' && <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
+                        We highly suggest returning it to the retailer for refund or replacement.
+                    </div>
+                }
+                {
+                    watchValues.has_contacted_store == 'Yes' && is_warranty && <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <Input
                                 id="fname"
@@ -370,33 +411,22 @@ export default function FormSection() {
                         </div>
 
                         <div className="w-full">
-                            <Select
-                                label="Issue"
-                                required={true}
+                            <Textarea
                                 name="issue"
-                                options={
-                                    selected_issue?.map((res) => ({
-                                        ...res,
-                                        label: res.name,
-                                        value: res.name,
-                                    })) || []
-                                }
-                                value={watchValues.issue}
-                                // onChange={(val) =>
-                                //     setValue("issue", val)
-                                // }
+                                label="Detailed explanation of the issue."
                                 {...register("issue", { required: "Issue is required" })}
                                 error={errors.issue?.message}
                             />
                         </div>
 
                         <UploadFileSection
-                            files={watchValues.files}
+                            files={watchValues.files || {}}
                             setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
+                            error={errors.files} // <-- Pass the error object down
                         />
                         <div className="flex justify-center pt-2 md:pt-4">
                             <Button
-                                loading={processing}
+                                loading={isSubmitting}
                                 className="w-full sm:w-auto px-12"
                                 variant="primary"
                                 type="submit"
