@@ -167,13 +167,13 @@ export default function FormSection() {
                 noValidate
                 className="bg-white w-full flex flex-col gap-3 min-h-[70vh]"
             >
-                {
+                {/* {
                     is_safety_issue && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
                             The purchase was within the last 45 days. For faster resolution, please return it to the retailer for refund or replacement.
                         </div>
                     )
-                }
+                } */}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
