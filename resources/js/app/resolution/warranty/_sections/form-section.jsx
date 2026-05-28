@@ -158,8 +158,11 @@ export default function FormSection() {
     const states = countries?.find(res => res.value == watchValues.country)
     const call_type = window.location.pathname.split('/')[2]
 
+    // TRUE if the item was bought recently (0 to 45 days ago)
+    const is_under_45_days = watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days'));
 
-    const is_warranty = watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days'))
+    // TRUE if the item is older (46+ days ago)
+    const is_over_45_days = watchValues.purchase_date && moment(watchValues.purchase_date).isBefore(moment().subtract(45, 'days'));
     return (
         <>
             <form
@@ -168,7 +171,7 @@ export default function FormSection() {
                 className="bg-white w-full flex flex-col gap-3 min-h-[70vh]"
             >
                 {
-                    is_warranty && (
+                    is_under_45_days && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
                             The purchase was within the last 45 days. For faster resolution, please return it to the retailer for refund or replacement.
                         </div>
@@ -205,7 +208,7 @@ export default function FormSection() {
 
                 <div className=' flex flex-col gap-3'>
                     {
-                        (watchValues.purchase_date && call_type == 'warranty') && <>
+                        (watchValues.purchase_date && call_type == 'warranty' && is_under_45_days) && <>
                             Have you tried contacting the store for the return policy?
                             <div className='flex gap-8 my-3'>
                                 <Radio
@@ -237,14 +240,14 @@ export default function FormSection() {
                         </>
                     }
                 </div>
-
                 {
-                    watchValues.has_contacted_store == 'No' && <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
+                    (watchValues.has_contacted_store == 'No' && is_under_45_days) && <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
                         We highly suggest returning it to the retailer for refund or replacement.
                     </div>
                 }
+
                 {
-                    watchValues.has_contacted_store == 'Yes' && <>
+                    (watchValues.has_contacted_store == 'Yes' || is_over_45_days) && <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <Input
                                 id="fname"
