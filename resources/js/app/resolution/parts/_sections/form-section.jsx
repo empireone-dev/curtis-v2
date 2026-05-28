@@ -2,7 +2,7 @@ import Button from '@/app/_components/button';
 import Input from '@/app/_components/input';
 import Select from '@/app/_components/select';
 import { router } from '@inertiajs/react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { countries } from "@/app/_json/country.json";
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -21,6 +21,7 @@ export default function FormSection() {
         handleSubmit,
         watch,
         setError,
+        control,
         setValue, // We will use this to loop through our redux state
         formState: { errors, isSubmitting }
     } = useForm({
@@ -124,7 +125,6 @@ export default function FormSection() {
             }
         });
 
-
         try {
             formData.append('call_type', 'Parts');
             await create_ticket_service(formData);
@@ -140,7 +140,7 @@ export default function FormSection() {
     useEffect(() => {
         register("files", {
             validate: (value) => {
-                const requiredCategories = ['modelSerial', 'receipt', 'issueEvidence'];
+                const requiredCategories = ['model_serial', 'receipt', 'photo_of_parts'];
 
                 // Check if any required category is empty or missing
                 const missingCategories = requiredCategories.filter(
@@ -357,41 +357,53 @@ export default function FormSection() {
                                 required={true}
                                 {...register("zip_code", { required: "Zip code is required" })}
                             />
-                            <Select
-                                label="Country"
-                                required
+                           
+                            <Controller
                                 name="country"
-                                options={
-                                    countries?.map((res) => ({
-                                        ...res,
-                                        label: res.name,
-                                        value: res.value,
-                                    })) || []
-                                }
-                                value={watchValues.country}
-                                onChange={(val) =>
-                                    setValue("country", val)
-                                }
-                                error={errors.country?.message}
+                                control={control}
+                                rules={{ required: "Country is required" }}
+                                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                    <Select
+                                        label="Country"
+                                        required
+                                        name="country"
+                                        ref={ref}
+                                        value={value}
+                                        onChange={onChange} // Pass the Controller's onChange directly to your component
+                                        error={error?.message}
+                                        options={
+                                            countries?.map((res) => ({
+                                                ...res,
+                                                label: res.name,
+                                                value: res.value,
+                                            })) || []
+                                        }
+                                    />
+                                )}
                             />
 
-
-                            <Select
-                                label="State"
-                                required
+                            <Controller
                                 name="state"
-                                options={
-                                    states?.regions?.map((res) => ({
-                                        ...res,
-                                        label: res.name,
-                                        value: res.value,
-                                    })) || []
-                                }
-                                value={watchValues.state}
-                                onChange={(val) =>
-                                    setValue("state", val)
-                                }
-                                error={errors.state?.message}
+                                control={control}
+                                rules={{ required: "State is required" }}
+                                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                    <Select
+                                        label="State"
+                                        required
+                                        name="state"
+                                        ref={ref}
+                                        value={value}
+                                        onChange={onChange} // Pass the Controller's onChange directly to your component
+                                        error={error?.message}
+                                        options={
+                                            states?.regions?.map((res) => ({
+                                                ...res,
+                                                label: res.name,
+                                                value: res.value,
+                                            })) || []
+                                        }
+                                    />
+                                )}
                             />
 
                             <Input

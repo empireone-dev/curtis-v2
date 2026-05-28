@@ -6,9 +6,45 @@ use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class TicketControlller extends Controller
 {
+    public function send_initial_email($subject, $ticket, $type = 'CF-Warranty Claim')
+    {
+        $scriptUrl = env('WARRANTY_SEND_APPSCRIPT');
+        $recipient = $ticket->email;
+
+        // 1. Determine ONLY the view based on the form type
+        // Since $subject is passed as an argument, we don't need it in the match block
+        $view = match ($type) {
+            'Parts'        => 'emails.parts-initial-email',
+            'Safety Issue' => 'emails.safety-issue-initial-email',
+            default        => 'emails.warranty-initial-email',
+        };
+
+        // 2. Render the correct blade view to a string
+        $body = view($view, compact('ticket'))->render();
+
+        // 3. Setup the parameters for the API call
+        $params = [
+            'recipient' => $recipient,
+            'subject'   => $subject,
+            'body'      => $body
+        ];
+
+        // 4. Send the email via Guzzle
+        $client = new Client();
+        $response = $client->post($scriptUrl, [
+            'headers' => [
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ],
+            'form_params' => $params
+        ]);
+
+        return $response->getBody()->getContents();
+    }
+
     public function queueing(?string $call_type): ?int
     {
         $map = [
@@ -98,6 +134,7 @@ class TicketControlller extends Controller
         $callType = $request->input('call_type');
         $validation = $this->getValidation($callType);
 
+
         $ticket = Ticket::create(array_merge($validated, [
             'user_id'      => $this->queueing($callType),
             'call_type'    => $callType ?? 'CF-Warranty Claim',
@@ -108,6 +145,8 @@ class TicketControlller extends Controller
         // 3. Generate subject and update the model directly in memory
         $subject = $this->generateSubject($callType, $ticket->id);
         $ticket->update(['ticket_id' => $subject]);
+        $ticket->url = url("/resolution/search/{$subject}");
+        $this->send_initial_email($subject, $ticket, $callType);
 
         return response()->json(['message' => 'success'], 200);
     }

@@ -45,7 +45,7 @@ const Radio = forwardRef(({
                     className={`
                         absolute w-2.5 h-2.5 rounded-full pointer-events-none opacity-0 scale-50
                         peer-checked:opacity-100 peer-checked:scale-100 transition-all duration-200 ease-out
-                        ${disabled ? "bg-gray-400" : "bg-blue-600"}
+                        ${disabled ? "bg-gray-400" : ""}
                     `}
                 />
             </div>

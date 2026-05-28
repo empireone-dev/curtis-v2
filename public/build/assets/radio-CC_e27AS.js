@@ -7,7 +7,7 @@ import{o as e,r as t}from"./rolldown-runtime-BM3Ffeng.js";import{n,t as r}from".
                     `,...l}),(0,o.jsx)(`div`,{className:`
                         absolute w-2.5 h-2.5 rounded-full pointer-events-none opacity-0 scale-50
                         peer-checked:opacity-100 peer-checked:scale-100 transition-all duration-200 ease-out
-                        ${i?`bg-gray-400`:`bg-blue-600`}
+                        ${i?`bg-gray-400`:``}
                     `})]}),(t||n||r)&&(0,o.jsxs)(`div`,{className:`ml-3 flex flex-col`,children:[t&&(0,o.jsx)(`label`,{htmlFor:e,className:`
                                 text-sm font-medium transition-colors select-none
                                 ${i?`text-gray-400 cursor-not-allowed`:`text-gray-700 cursor-pointer hover:text-gray-900`}

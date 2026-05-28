@@ -9,6 +9,12 @@ Route::get('/', function () {
     return Inertia::render('homepage/page');
 });
 
+Route::prefix('email')->group(function () {
+    Route::view('/warranty-initial-email', 'emails.warranty-initial-email');
+    Route::view('/parts-initial-email', 'emails.parts-initial-email');
+    Route::view('/safety-issue-initial-email', 'emails.safety-issue-initial-email');
+});
+
 Route::get('/auth/login', function () {
     return Inertia::render('auth/login/page');
 });
@@ -17,7 +23,7 @@ Route::get('/auth/login', function () {
 Route::prefix('resolution')->group(function () {
     Route::inertia('/', 'resolution/page');
     Route::inertia('/registration', 'resolution/registration/page');
-    $categories = ['warranty', 'parts', 'safety_issue'];
+    $categories = ['warranty', 'parts', 'safety_issue', 'search'];
 
     foreach ($categories as $category) {
         Route::prefix($category)->group(function () use ($category) {
