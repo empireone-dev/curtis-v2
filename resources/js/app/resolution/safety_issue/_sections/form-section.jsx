@@ -13,6 +13,7 @@ import UploadFileSection from '../../_sections/upload-file-section';
 import { create_ticket_service } from '@/app/services/tickets-service';
 import Radio from '@/app/_components/radio';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function FormSection() {
     const { product_registration, products } = useSelector((store) => store.app);
