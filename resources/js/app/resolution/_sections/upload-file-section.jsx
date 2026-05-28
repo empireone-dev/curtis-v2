@@ -6,7 +6,7 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
     const call_type = window.location.pathname.split('/')[2]
     const uploadRequirements = [
         {
-            id: 'model_serial',
+            id: 'readable_serial_section',
             label: 'Model & Serial Number',
             description: 'Clear and readable picture of the model & serial number sticker/plate.',
             accept: 'image/*',
@@ -14,7 +14,7 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
             icon: <FaFileImage className="w-6 h-6 text-blue-500" />
         },
         {
-            id: 'receipt',
+            id: 'bill_of_sale',
             label: 'Bill of Sale',
             description: 'Clear picture showing store name, purchase date, price, and unit description.',
             accept: 'image/*',
@@ -24,7 +24,7 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
         // Use the ternary operator to conditionally insert the third object
         call_type === 'parts'
             ? {
-                id: 'photo_of_parts',
+                id: 'parts_model',
                 label: 'Photo of the parts',
                 description: <>
                     * Clear picture of the part/s you need.<br />
@@ -35,7 +35,7 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                 icon: <FaFileVideo className="w-6 h-6 text-purple-500" />
             }
             : {
-                id: 'issue_evidence',
+                id: 'receipt_model',
                 label: 'Issue Evidence',
                 description: 'Clear picture or video demonstrating the issue or defect.',
                 accept: 'image/*,video/*',

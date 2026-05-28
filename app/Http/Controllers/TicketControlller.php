@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\File;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Storage;
 
 class TicketControlller extends Controller
 {
@@ -139,7 +141,8 @@ class TicketControlller extends Controller
             'user_id'      => $this->queueing($callType),
             'call_type'    => $callType ?? 'CF-Warranty Claim',
             'status'       => $validation,
-            'cases_status' => 'handled'
+            'cases_status' => 'handled',
+            'created_from' => 'WEB FORM'
         ]));
 
         // 3. Generate subject and update the model directly in memory
@@ -148,6 +151,31 @@ class TicketControlller extends Controller
         $ticket->url = url("/resolution/search/{$subject}");
         $this->send_initial_email($subject, $ticket, $callType);
 
+        $fileCategories = [
+            'readable_serial_section',
+            'bill_of_sale',
+            'parts_model',
+            'receipt_model'
+        ];
+        $folder = date("Y");
+        $filesData = [];
+        foreach ($fileCategories as $category) {
+            if ($request->hasFile($category)) {
+                foreach ($request->file($category) as $uploadedFile) {
+                    $path = $uploadedFile->store($folder, 's3');
+                    $filesData[] = [
+                        'ticket_id'  => $ticket->id,
+                        'url'        => Storage::disk('s3')->url($path),
+                        'type'       => $category, // Dynamically assigns 'bill_of_sale', etc.
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+        }
+        if (!empty($filesData)) {
+            File::insert($filesData);
+        }
         return response()->json(['message' => 'success'], 200);
     }
 }

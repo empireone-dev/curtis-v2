@@ -1,7 +1,11 @@
 import React from 'react'
+import Layout from '../layout'
+import StepperSection from './_sections/stepper-section'
 
 export default function Page() {
-  return (
-    <div>Comming Soon new Feature!</div>
-  )
+    return (
+        <Layout>
+            <StepperSection />
+        </Layout>
+    )
 }

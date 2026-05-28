@@ -12,6 +12,7 @@ import Textarea from '@/app/_components/textarea';
 import UploadFileSection from '../../_sections/upload-file-section';
 import { create_ticket_service } from '@/app/services/tickets-service';
 import Radio from '@/app/_components/radio';
+import { toast } from 'react-toastify';
 
 export default function FormSection() {
     const { product_registration, products } = useSelector((store) => store.app);
@@ -23,6 +24,7 @@ export default function FormSection() {
         setError,
         control,
         setValue, // We will use this to loop through our redux state
+        reset,
         formState: { errors, isSubmitting }
     } = useForm({
         defaultValues: {
@@ -48,7 +50,7 @@ export default function FormSection() {
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
             files: {
                 modelSerial: [],
-                receipt: [],
+                bill_of_sale: [],
                 issueEvidence: []
             }
         }
@@ -128,9 +130,16 @@ export default function FormSection() {
 
         try {
             formData.append('call_type', 'Safety Issue');
-            await create_ticket_service(formData);
-            alert("Ticket created successfully!");
+            await toast.promise(
+                create_ticket_service(formData),
+                {
+                    pending: 'Submitting your ticket...',
+                    success: 'Ticket created successfully! 🛠️',
+                    error: 'Failed to submit the form. Please try again. ❌'
+                }
+            );
 
+            reset();
         } catch (error) {
             console.error("Submission failed:", error);
             alert("Failed to submit the form. Please try again.");
@@ -141,7 +150,7 @@ export default function FormSection() {
     useEffect(() => {
         register("files", {
             validate: (value) => {
-                const requiredCategories = ['model_serial', 'receipt', 'issue_evidence'];
+                const requiredCategories = ['readable_serial_section', 'bill_of_sale', 'receipt_model'];
 
                 // Check if any required category is empty or missing
                 const missingCategories = requiredCategories.filter(
@@ -355,52 +364,52 @@ export default function FormSection() {
                             {...register("zip_code", { required: "Zip code is required" })}
                         />
                         <Controller
-                                name="country"
-                                control={control}
-                                rules={{ required: "Country is required" }}
-                                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                    <Select
-                                        label="Country"
-                                        required
-                                        name="country"
-                                        ref={ref}
-                                        value={value}
-                                        onChange={onChange} // Pass the Controller's onChange directly to your component
-                                        error={error?.message}
-                                        options={
-                                            countries?.map((res) => ({
-                                                ...res,
-                                                label: res.name,
-                                                value: res.value,
-                                            })) || []
-                                        }
-                                    />
-                                )}
-                            />
+                            name="country"
+                            control={control}
+                            rules={{ required: "Country is required" }}
+                            render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                <Select
+                                    label="Country"
+                                    required
+                                    name="country"
+                                    ref={ref}
+                                    value={value}
+                                    onChange={onChange} // Pass the Controller's onChange directly to your component
+                                    error={error?.message}
+                                    options={
+                                        countries?.map((res) => ({
+                                            ...res,
+                                            label: res.name,
+                                            value: res.value,
+                                        })) || []
+                                    }
+                                />
+                            )}
+                        />
 
-                            <Controller
-                                name="state"
-                                control={control}
-                                rules={{ required: "State is required" }}
-                                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                    <Select
-                                        label="State"
-                                        required
-                                        name="state"
-                                        ref={ref}
-                                        value={value}
-                                        onChange={onChange} // Pass the Controller's onChange directly to your component
-                                        error={error?.message}
-                                        options={
-                                            states?.regions?.map((res) => ({
-                                                ...res,
-                                                label: res.name,
-                                                value: res.value,
-                                            })) || []
-                                        }
-                                    />
-                                )}
-                            />
+                        <Controller
+                            name="state"
+                            control={control}
+                            rules={{ required: "State is required" }}
+                            render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                <Select
+                                    label="State"
+                                    required
+                                    name="state"
+                                    ref={ref}
+                                    value={value}
+                                    onChange={onChange} // Pass the Controller's onChange directly to your component
+                                    error={error?.message}
+                                    options={
+                                        states?.regions?.map((res) => ({
+                                            ...res,
+                                            label: res.name,
+                                            value: res.value,
+                                        })) || []
+                                    }
+                                />
+                            )}
+                        />
 
                         <Input
                             id="city"
