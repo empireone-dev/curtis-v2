@@ -14,7 +14,7 @@ export default function ResolutionSection() {
         {
             id: 'warranty',
             label: 'Warranty Claim',
-            description: 'File a claim for defective or broken items under active warranty coverage.',
+            description: 'File a claim for defective items under active warranty coverage.',
             icon: '📋',
             link: "/resolution/warranty/confirmation",
             is_disabled: false
@@ -29,7 +29,7 @@ export default function ResolutionSection() {
         },
         {
             id: 'safety_issue',
-            label: 'Safety Issue',
+            label: 'Safety Concerns',
             description: 'Report immediate hazards, malfunctions, or critical product design vulnerabilities.',
             icon: '⚠️',
             link: "/resolution/safety_issue/blank",
