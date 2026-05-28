@@ -205,7 +205,7 @@ export default function FormSection() {
 
                 <div className=' flex flex-col gap-3'>
                     {
-                        call_type == 'warranty' && <>
+                        (watchValues.purchase_date && call_type == 'warranty') && <>
                             Have you tried contacting the store for the return policy?
                             <div className='flex gap-8 my-3'>
                                 <Radio
