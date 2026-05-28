@@ -205,7 +205,7 @@ export default function FormSection() {
 
                 <div className=' flex flex-col gap-3'>
                     {
-                        is_warranty && call_type == 'warranty' && <>
+                        call_type == 'warranty' && <>
                             Have you tried contacting the store for the return policy?
                             <div className='flex gap-8 my-3'>
                                 <Radio
@@ -244,7 +244,7 @@ export default function FormSection() {
                     </div>
                 }
                 {
-                    watchValues.has_contacted_store == 'Yes' && is_warranty && <>
+                    watchValues.has_contacted_store == 'Yes' && <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <Input
                                 id="fname"

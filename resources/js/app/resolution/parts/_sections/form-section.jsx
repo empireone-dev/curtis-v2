@@ -167,13 +167,13 @@ export default function FormSection() {
                 noValidate
                 className="bg-white w-full flex flex-col gap-3 min-h-[70vh]"
             >
-                {/* {
+                {
                     is_parts && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
                             The purchase was within the last 45 days. For faster resolution, please return it to the retailer for refund or replacement.
                         </div>
                     )
-                } */}
+                }
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
@@ -203,9 +203,9 @@ export default function FormSection() {
                     />
                 </div>
 
-                {/* <div className=' flex flex-col gap-3'>
+                <div className=' flex flex-col gap-3'>
                     {
-                        is_parts && call_type == 'parts' && <>
+                        call_type == 'parts' && <>
                             Have you tried contacting the store for the return policy?
                             <div className='flex gap-8 my-3'>
                                 <Radio
@@ -242,9 +242,9 @@ export default function FormSection() {
                     watchValues.has_contacted_store == 'No' && <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
                         We highly suggest returning it to the retailer for refund or replacement.
                     </div>
-                } */}
+                }
                 {
-                    is_parts && <>
+                    watchValues.has_contacted_store == 'Yes' && <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <Input
                                 id="fname"

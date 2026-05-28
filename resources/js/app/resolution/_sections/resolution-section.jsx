@@ -32,7 +32,7 @@ export default function ResolutionSection() {
             label: 'Safety Issue',
             description: 'Report immediate hazards, malfunctions, or critical product design vulnerabilities.',
             icon: '⚠️',
-            link: "/resolution/safety_issue/confirmation",
+            link: "/resolution/safety_issue/blank",
             is_disabled: false
         }
     ];

@@ -192,9 +192,9 @@ export default function FormSection() {
                         label="Serial Number (e.g. A1234567890123456)"
                         error={errors.serial_number?.message}
                         maxLength={17}
-                        required={true}
+                        // required={true}
                         {...register("serial_number", {
-                            required: "Serial number is required",
+                            // required: "Serial number is required",
                             pattern: {
                                 value: /^A\d{16}$/,
                                 message: "Invalid format. Serial number must start with 'A' followed by 15 digits."
@@ -243,199 +243,197 @@ export default function FormSection() {
                         We highly suggest returning it to the retailer for refund or replacement.
                     </div>
                 } */}
-                {
-                    is_safety_issue && <>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                            <Input
-                                id="fname"
-                                label="First Name"
-                                error={errors.fname?.message}
-                                required={true}
-                                {...register("fname", { required: "First name is required" })}
-                            />
-                            <Input
-                                id="lname"
-                                label="Last Name"
-                                error={errors.lname?.message}
-                                required={true}
-                                {...register("lname", { required: "Last name is required" })}
-                            />
-                        </div>
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <Input
-                            id="email"
-                            type="email"
-                            label="Email"
-                            error={errors.email?.message}
+                            id="fname"
+                            label="First Name"
+                            error={errors.fname?.message}
                             required={true}
-                            {...register("email", {
-                                required: "Email is required",
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: "Invalid email address"
-                                }
-                            })}
+                            {...register("fname", { required: "First name is required" })}
                         />
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
-                            <Input
-                                id="phone"
-                                type="tel"
-                                label="Phone Number"
-                                error={errors.phone?.message}
-                                required={true}
-                                {...register("phone", { required: "Phone number is required" })}
-                            />
-                            <Input
-                                id="phone2"
-                                type="tel"
-                                label="Secondary Phone Number"
-                                error={errors.phone2?.message}
-                                {...register("phone2")}
-                            />
-                        </div>
-
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
-                            <Select
-                                label="Model Number"
-                                name="item_number"
-                                options={
-                                    productFilter?.map((res) => ({
-                                        ...res,
-                                        label: res[1],
-                                        value: res[1],
-                                    })) || []
-                                }
-                                value={watchValues.item_number}
-                                onChange={(val) =>
-                                    setValue("item_number", val)
-                                }
-                                required={true}
-                                // {...register("item_number", { required: "Item number is required" })}
-                                error={errors.item_number?.message}
-                            />
-                            <Input
-                                id="unit"
-                                label="Item Unit"
-                                error={errors.unit?.message}
-                                required={true}
-                                disabled
-                                {...register("unit", { required: "Item unit is required" })}
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                            <Input
-                                id="brand"
-                                label="Brand"
-                                disabled
-                                error={errors.brand?.message}
-                                required={true}
-                                {...register("brand", { required: "Brand identification is required" })}
-                            />
-                            <Input
-                                id="class"
-                                disabled
-                                label="Item Class"
-                                error={errors.class?.message}
-                                required={true}
-                                {...register("class", { required: "Item class is required" })}
-                            />
-                        </div>
-
-
-                        {/* Address Section */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                            <Input
-                                id="zip_code"
-                                label="Zip Code / Postal Code"
-                                error={errors.zip_code?.message}
-                                required={true}
-                                {...register("zip_code", { required: "Zip code is required" })}
-                            />
-                            <Select
-                                label="Country"
-                                required
-                                name="country"
-                                options={
-                                    countries?.map((res) => ({
-                                        ...res,
-                                        label: res.name,
-                                        value: res.value,
-                                    })) || []
-                                }
-                                value={watchValues.country}
-                                onChange={(val) =>
-                                    setValue("country", val)
-                                }
-                                error={errors.country?.message}
-                            />
-
-
-                            <Select
-                                label="State"
-                                required
-                                name="state"
-                                options={
-                                    states?.regions?.map((res) => ({
-                                        ...res,
-                                        label: res.name,
-                                        value: res.value,
-                                    })) || []
-                                }
-                                value={watchValues.state}
-                                onChange={(val) =>
-                                    setValue("state", val)
-                                }
-                                error={errors.state?.message}
-                            />
-
-                            <Input
-                                id="city"
-                                label="City"
-                                error={errors.city?.message}
-                                required={true}
-                                {...register("city", { required: "City is required" })}
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <Input
-                                id="address"
-                                label="Address"
-                                error={errors.address?.message}
-                                required={true}
-                                {...register("address", { required: "Street address is required" })}
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <Textarea
-                                name="issue"
-                                label="Detailed explanation of the issue."
-                                {...register("issue", { required: "Issue is required" })}
-                                error={errors.issue?.message}
-                            />
-                        </div>
-
-                        <UploadFileSection
-                            files={watchValues.files || {}}
-                            setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
-                            error={errors.files} // <-- Pass the error object down
+                        <Input
+                            id="lname"
+                            label="Last Name"
+                            error={errors.lname?.message}
+                            required={true}
+                            {...register("lname", { required: "Last name is required" })}
                         />
-                        <div className="flex justify-center pt-2 md:pt-4">
-                            <Button
-                                loading={isSubmitting}
-                                className="w-full sm:w-auto px-12"
-                                variant="primary"
-                                type="submit"
-                            >
-                                SUBMIT
-                            </Button>
-                        </div>
-                    </>
-                }
+                    </div>
+                    <Input
+                        id="email"
+                        type="email"
+                        label="Email"
+                        error={errors.email?.message}
+                        required={true}
+                        {...register("email", {
+                            required: "Email is required",
+                            pattern: {
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: "Invalid email address"
+                            }
+                        })}
+                    />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+                        <Input
+                            id="phone"
+                            type="tel"
+                            label="Phone Number"
+                            error={errors.phone?.message}
+                            required={true}
+                            {...register("phone", { required: "Phone number is required" })}
+                        />
+                        <Input
+                            id="phone2"
+                            type="tel"
+                            label="Secondary Phone Number"
+                            error={errors.phone2?.message}
+                            {...register("phone2")}
+                        />
+                    </div>
+
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+                        <Select
+                            label="Model Number"
+                            name="item_number"
+                            options={
+                                productFilter?.map((res) => ({
+                                    ...res,
+                                    label: res[1],
+                                    value: res[1],
+                                })) || []
+                            }
+                            value={watchValues.item_number}
+                            onChange={(val) =>
+                                setValue("item_number", val)
+                            }
+                            // required={true}
+                            // {...register("item_number", { required: "Item number is required" })}
+                            error={errors.item_number?.message}
+                        />
+                        <Input
+                            id="unit"
+                            label="Item Unit"
+                            error={errors.unit?.message}
+                            required={true}
+                            disabled
+                            {...register("unit", { required: "Item unit is required" })}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <Input
+                            id="brand"
+                            label="Brand"
+                            disabled
+                            error={errors.brand?.message}
+                            required={true}
+                            {...register("brand", { required: "Brand identification is required" })}
+                        />
+                        <Input
+                            id="class"
+                            disabled
+                            label="Item Class"
+                            error={errors.class?.message}
+                            required={true}
+                            {...register("class", { required: "Item class is required" })}
+                        />
+                    </div>
+
+
+                    {/* Address Section */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                        <Input
+                            id="zip_code"
+                            label="Zip Code / Postal Code"
+                            error={errors.zip_code?.message}
+                            required={true}
+                            {...register("zip_code", { required: "Zip code is required" })}
+                        />
+                        <Select
+                            label="Country"
+                            required
+                            name="country"
+                            options={
+                                countries?.map((res) => ({
+                                    ...res,
+                                    label: res.name,
+                                    value: res.value,
+                                })) || []
+                            }
+                            value={watchValues.country}
+                            onChange={(val) =>
+                                setValue("country", val)
+                            }
+                            error={errors.country?.message}
+                        />
+
+
+                        <Select
+                            label="State"
+                            required
+                            name="state"
+                            options={
+                                states?.regions?.map((res) => ({
+                                    ...res,
+                                    label: res.name,
+                                    value: res.value,
+                                })) || []
+                            }
+                            value={watchValues.state}
+                            onChange={(val) =>
+                                setValue("state", val)
+                            }
+                            error={errors.state?.message}
+                        />
+
+                        <Input
+                            id="city"
+                            label="City"
+                            error={errors.city?.message}
+                            required={true}
+                            {...register("city", { required: "City is required" })}
+                        />
+                    </div>
+
+                    <div className="w-full">
+                        <Input
+                            id="address"
+                            label="Address"
+                            error={errors.address?.message}
+                            required={true}
+                            {...register("address", { required: "Street address is required" })}
+                        />
+                    </div>
+
+                    <div className="w-full">
+                        <Textarea
+                            name="issue"
+                            label="Detailed explanation of the issue."
+                            {...register("issue", { required: "Issue is required" })}
+                            error={errors.issue?.message}
+                        />
+                    </div>
+
+                    <UploadFileSection
+                        files={watchValues.files || {}}
+                        setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
+                        error={errors.files} // <-- Pass the error object down
+                    />
+                    <div className="flex justify-center pt-2 md:pt-4">
+                        <Button
+                            loading={isSubmitting}
+                            className="w-full sm:w-auto px-12"
+                            variant="primary"
+                            type="submit"
+                        >
+                            SUBMIT
+                        </Button>
+                    </div>
+                </>
             </form>
         </>
     );
