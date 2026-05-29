@@ -325,16 +325,14 @@ export default function FormSection() {
                                     setValue("item_number", val)
                                 }
                                 required={true}
-                                // {...register("item_number", { required: "Item number is required" })}
                                 error={errors.item_number?.message}
                             />
                             <Input
                                 id="unit"
                                 label="Item Unit"
                                 error={errors.unit?.message}
-                                required={true}
                                 disabled
-                                {...register("unit", { required: "Item unit is required" })}
+                                {...register("unit")}
                             />
                         </div>
 
@@ -344,16 +342,14 @@ export default function FormSection() {
                                 label="Brand"
                                 disabled
                                 error={errors.brand?.message}
-                                required={true}
-                                {...register("brand", { required: "Brand identification is required" })}
+                                {...register("brand")}
                             />
                             <Input
                                 id="class"
                                 disabled
                                 label="Item Class"
                                 error={errors.class?.message}
-                                required={true}
-                                {...register("class", { required: "Item class is required" })}
+                                {...register("class")}
                             />
                         </div>
 

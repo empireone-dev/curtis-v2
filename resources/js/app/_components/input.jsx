@@ -1,6 +1,6 @@
 import React, { useState, forwardRef } from "react";
 
-const Input = forwardRef(({ label, id, type = "text", error, icon, required, disabled, ...props }, ref) => {
+const Input = forwardRef(({ label, id, type = "text", error, icon, required = false, disabled, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false);
 
     // Determine if we should show the actual characters or dots for passwords

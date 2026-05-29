@@ -11,9 +11,7 @@ import Checkbox from '@/app/_components/checkbox';
 import Textarea from '@/app/_components/textarea';
 import UploadFileSection from '../../_sections/upload-file-section';
 import { create_ticket_service } from '@/app/services/tickets-service';
-import Radio from '@/app/_components/radio';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export default function FormSection() {
     const { product_registration, products } = useSelector((store) => store.app);
@@ -146,6 +144,7 @@ export default function FormSection() {
             alert("Failed to submit the form. Please try again.");
         } finally {
         }
+
     };
 
     useEffect(() => {
@@ -167,10 +166,7 @@ export default function FormSection() {
     }, [register]);
 
     const states = countries?.find(res => res.value == watchValues.country)
-    const call_type = window.location.pathname.split('/')[2]
 
-
-    const is_safety_issue = watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days'))
     return (
         <>
             <form
@@ -178,13 +174,6 @@ export default function FormSection() {
                 noValidate
                 className="bg-white w-full flex flex-col gap-3 min-h-[70vh]"
             >
-                {/* {
-                    is_safety_issue && (
-                        <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
-                            The purchase was within the last 45 days. For faster resolution, please return it to the retailer for refund or replacement.
-                        </div>
-                    )
-                } */}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
@@ -205,7 +194,6 @@ export default function FormSection() {
                         maxLength={17}
                         // required={true}
                         {...register("serial_number", {
-                            // required: "Serial number is required",
                             pattern: {
                                 value: /^A\d{16}$/,
                                 message: "Invalid format. Serial number must start with 'A' followed by 15 digits."
@@ -214,46 +202,6 @@ export default function FormSection() {
                     />
                 </div>
 
-                {/* <div className=' flex flex-col gap-3'>
-                    {
-                        is_safety_issue && call_type == 'safety_issue' && <>
-                            Have you tried contacting the store for the return policy?
-                            <div className='flex gap-8 my-3'>
-                                <Radio
-                                    name="has_contacted_store"
-                                    label="Yes"
-                                    // Evaluates to true ONLY if the current value is strictly 'Yes'
-                                    checked={watchValues.has_contacted_store === 'Yes'}
-                                    onChange={() => setValue("has_contacted_store", 'Yes')}
-                                />
-
-                                <Radio
-                                    name="has_contacted_store"
-                                    label="No"
-                                    // Evaluates to true ONLY if the current value is strictly 'No'
-                                    checked={watchValues.has_contacted_store === 'No'}
-                                    onChange={() => setValue("has_contacted_store", 'No')}
-                                />
-                            </div>
-
-                            {watchValues.has_contacted_store == 'Yes' && (
-                                <Textarea
-                                    name="store_refusal_reason"
-                                    label="State the reason why the store did not take the unit back"
-                                    {...register("store_refusal_reason", { required: "Reason is required" })}
-                                    error={errors.store_refusal_reason?.message}
-                                />
-                            )}
-
-                        </>
-                    }
-                </div>
-
-                {
-                    watchValues.has_contacted_store == 'No' && <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
-                        We highly suggest returning it to the retailer for refund or replacement.
-                    </div>
-                } */}
                 <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <Input
@@ -321,17 +269,14 @@ export default function FormSection() {
                             onChange={(val) =>
                                 setValue("item_number", val)
                             }
-                            // required={true}
-                            // {...register("item_number", { required: "Item number is required" })}
                             error={errors.item_number?.message}
                         />
                         <Input
                             id="unit"
                             label="Item Unit"
                             error={errors.unit?.message}
-                            required={true}
                             disabled
-                            {...register("unit", { required: "Item unit is required" })}
+                            {...register("unit")}
                         />
                     </div>
 
@@ -341,16 +286,14 @@ export default function FormSection() {
                             label="Brand"
                             disabled
                             error={errors.brand?.message}
-                            required={true}
-                            {...register("brand", { required: "Brand identification is required" })}
+                            {...register("brand")}
                         />
                         <Input
                             id="class"
                             disabled
                             label="Item Class"
                             error={errors.class?.message}
-                            required={true}
-                            {...register("class", { required: "Item class is required" })}
+                            {...register("class")}
                         />
                     </div>
 
