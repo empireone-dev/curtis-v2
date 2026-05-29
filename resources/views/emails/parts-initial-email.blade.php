@@ -93,7 +93,7 @@
                 <p>Hi <strong>{{ $ticket->fname??'' }}</strong>,</p>
                 <p>Thank you for reaching out to <strong>Curtis International Ltd.</strong> We have successfully received your Parts Request.</p>
 
-                <p>Our support team is currently reviewing your submitted details and the documents you provided (Bill of Sale, Model/Serial Number, and Part Photos). We typically validate and respond to requests within<strong>24–48 business hours</strong>.</p>
+                <p>Our support team is currently reviewing your submitted details and the documents you provided (Bill of Sale, Model/Serial Number, and Part Photos). We typically validate and respond to requests within<strong> 24–48 business hours</strong>.</p>
 
                 <div class="claim-details">
                     <p style="margin-top: 0;"><strong>Your Request Summary:</strong></p>

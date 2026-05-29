@@ -20,7 +20,8 @@ export default function Page() {
         <div className="min-h-screen bg-gray-200 flex items-start justify-center sm:p-8 font-sans">
             {/* Main Card Container (Forced Vertical) */}
             {
-                loading ? <LoadingSection /> : <div className="flex flex-col w-full bg-white overflow-hidden rounded-none shadow-none sm:max-w-4xl sm:h-full sm:rounded-[2rem] sm:shadow-2xl">
+                loading ? <LoadingSection /> : 
+                <div className="flex flex-col w-full bg-white overflow-hidden rounded-none shadow-none sm:max-w-4xl sm:h-full sm:rounded-[2rem] sm:shadow-2xl">
                     <HeaderSection />
                     {/* Bottom Panel (White Form) */}
                     <div className="w-full p-8 sm:p-10 flex flex-col justify-center bg-white z-10">
