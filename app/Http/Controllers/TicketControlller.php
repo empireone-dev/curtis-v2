@@ -14,7 +14,12 @@ class TicketControlller extends Controller
 {
     public function send_initial_email($subject, $ticket, $type = 'CF-Warranty Claim')
     {
-        $scriptUrl = env('WARRANTY_SEND_APPSCRIPT');
+        if ($type == 'Parts') {
+            $scriptUrl = env('PARTS_SEND_APPSCRIPT');
+        } else {
+            $scriptUrl = env('WARRANTY_SEND_APPSCRIPT');
+        }
+
         $recipient = $ticket->email;
 
         // 1. Determine ONLY the view based on the form type
