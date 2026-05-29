@@ -43,6 +43,7 @@ class Ticket extends Model
         'isUploading',
         'remarks',
         'reason_to_close',
+        'store_refusal_reason',
         'status',
         'cases_status',
         'move_status',

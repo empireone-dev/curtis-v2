@@ -9,6 +9,7 @@ export const appSlice = createSlice({
         product_registration: {},
         products: [],
         common_issues: [],
+        ticket: {},
     },
     reducers: {
         setLoading: (state, action) => {
@@ -23,6 +24,9 @@ export const appSlice = createSlice({
         setCommonIssues: (state, action) => {
             state.common_issues = action.payload;
         },
+        setTicket: (state, action) => {
+            state.ticket = action.payload;
+        },
     },
 });
 export const {
@@ -30,6 +34,7 @@ export const {
     setProductRegistration,
     setProducts,
     setCommonIssues,
+    setTicket,
 } = appSlice.actions;
 
 export default appSlice.reducer;

@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\Storage;
 
 class TicketControlller extends Controller
 {
+
+    public function get_ticket_by_ticket_id($serial_number)
+    {
+        $ticket = Ticket::where('serial_number', $serial_number)->first();
+        if ($ticket) {
+            return response()->json([
+                'data' => $ticket,
+                'message' => 'success'
+            ], 200);
+        }
+    }
     public function send_initial_email($subject, $ticket, $type = 'CF-Warranty Claim')
     {
         if ($type == 'Parts') {
@@ -135,6 +146,7 @@ class TicketControlller extends Controller
             'address'       => 'required|string',
             'issue'         => 'required|string|max:255',
             'remarks'       => 'nullable|string',
+            'store_refusal_reason' => 'nullable|string',
             'call_type'     => 'nullable|string', // Added since it's used below
         ]);
 

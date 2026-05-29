@@ -2,7 +2,7 @@ export async function create_ticket_service(data) {
     try {
         const response = await fetch(`/api/tickets`, {
             method: "POST",
-            body: data, 
+            body: data,
         });
 
         if (!response.ok) {
@@ -13,5 +13,19 @@ export async function create_ticket_service(data) {
     } catch (error) {
         console.error("Failed to create ticket:", error);
         throw error; // It's usually better to throw the error so the UI can catch it and show a message
+    }
+}
+
+export async function get_ticket_by_ticket_id_service(id) {
+    try {
+        const response = await fetch(`/api/get_ticket_by_ticket_id/${id}`, {
+            method: "GET", 
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return await response.json();
+    } catch (error) {
+        return {};
     }
 }

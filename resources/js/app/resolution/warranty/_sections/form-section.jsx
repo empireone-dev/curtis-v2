@@ -14,9 +14,11 @@ import { create_ticket_service } from '@/app/services/tickets-service';
 import Radio from '@/app/_components/radio';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { get_ticket_by_ticket_id_thunk } from '@/app/_redux/app-thunk';
+import store from '@/app/store/store';
 
 export default function FormSection() {
-    const { product_registration, products } = useSelector((store) => store.app);
+    const { product_registration, products, ticket } = useSelector((store) => store.app);
 
     const {
         register,
@@ -59,6 +61,10 @@ export default function FormSection() {
 
     const watchValues = watch()
     const productFilter = products.slice(2);
+
+
+    const is_under_45_days = watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days'));
+    const is_over_45_days = watchValues.purchase_date && moment(watchValues.purchase_date).isBefore(moment().subtract(45, 'days'));
 
     useEffect(() => {
         const searchTerm = watchValues.item_number?.toLowerCase() || "";
@@ -110,6 +116,7 @@ export default function FormSection() {
 
         const formData = new FormData();
 
+
         Object.keys(data).forEach(key => {
             if (key === 'files') {
                 // Append files using the exact category ID expected by the backend
@@ -124,10 +131,12 @@ export default function FormSection() {
                 if (key != 'common_issues') {
                     formData.append(key, data[key] === null ? '' : data[key]);
                 }
+                if (key == 'store_refusal_reason') {
+                    formData.append('store_refusal_reason', is_over_45_days ? '' : data[key]);
+                }
 
             }
         });
-
 
         try {
             formData.append('call_type', 'CF-Warranty Claim');
@@ -170,10 +179,24 @@ export default function FormSection() {
     const call_type = window.location.pathname.split('/')[2]
 
     // TRUE if the item was bought recently (0 to 45 days ago)
-    const is_under_45_days = watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days'));
+    const serialRegex = /^A\d{16}$/;
 
-    // TRUE if the item is older (46+ days ago)
-    const is_over_45_days = watchValues.purchase_date && moment(watchValues.purchase_date).isBefore(moment().subtract(45, 'days'));
+    // 2. Test the watched value against it
+    const is_correct_pattern = serialRegex.test(watchValues.serial_number);
+
+    async function search_serial_number(e) {
+        if (serialRegex.test(e.target.value)) {
+            await toast.promise(
+                store.dispatch(get_ticket_by_ticket_id_thunk(e.target.value)),
+                {
+                    pending: 'Searching...',
+                    error: 'Failed to submit the form. Please try again. ❌'
+                }
+            );
+        }
+    }
+
+    console.log('ticketticket', ticket?.id)
     return (
         <>
             <form
@@ -183,8 +206,27 @@ export default function FormSection() {
             >
                 {
                     is_under_45_days && (
-                        <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
+                        <div className='border border-green-500 rounded-md p-2 text-green-500 shadow-sm mb-4 bg-green-100'>
                             The purchase was within the last 45 days. For faster resolution, please return it to the retailer for refund or replacement.
+                        </div>
+                    )
+                }
+
+                {
+                    ticket?.id && (
+                        <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
+                            <div>
+                                A previous claim has been identified for this serial number. If you believe this information is incorrect or would like us to review it further, please check here to dispute this finding
+
+                            </div>
+                            <div className='flex items-center justify-end'>
+                                <Button
+                                    onClick={() => window.open(`/resolution/search/${ticket.ticket_id}`, '_blank')}
+                                    variant='primary'
+                                >
+                                    CHECK THE TICKET STATUS
+                                </Button>
+                            </div>
                         </div>
                     )
                 }
@@ -214,18 +256,18 @@ export default function FormSection() {
                                 message: "Invalid format. Serial number must start with 'A' followed by 15 digits."
                             },
                         })}
+                        onChange={search_serial_number}
                     />
                 </div>
 
                 <div className=' flex flex-col gap-3'>
                     {
-                        (watchValues.purchase_date && call_type == 'warranty' && is_under_45_days) && <>
+                        (!ticket?.id && watchValues.purchase_date && call_type == 'warranty' && is_under_45_days && is_correct_pattern) && <>
                             Have you tried contacting the store for the return policy?
                             <div className='flex gap-8 my-3'>
                                 <Radio
                                     name="has_contacted_store"
                                     label="Yes"
-                                    // Evaluates to true ONLY if the current value is strictly 'Yes'
                                     checked={watchValues.has_contacted_store === 'Yes'}
                                     onChange={() => setValue("has_contacted_store", 'Yes')}
                                 />
@@ -233,7 +275,6 @@ export default function FormSection() {
                                 <Radio
                                     name="has_contacted_store"
                                     label="No"
-                                    // Evaluates to true ONLY if the current value is strictly 'No'
                                     checked={watchValues.has_contacted_store === 'No'}
                                     onChange={() => setValue("has_contacted_store", 'No')}
                                 />
@@ -258,7 +299,7 @@ export default function FormSection() {
                 }
 
                 {
-                    (watchValues.has_contacted_store == 'Yes' || is_over_45_days) && <>
+                    !ticket?.id && (watchValues.has_contacted_store == 'Yes' || is_over_45_days) && <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <Input
                                 id="fname"
