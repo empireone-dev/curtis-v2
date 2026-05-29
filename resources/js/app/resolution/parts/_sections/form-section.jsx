@@ -283,16 +283,16 @@ export default function FormSection() {
                                     error={errors.store_refusal_reason?.message}
                                 />
                             )}
-
+                            {
+                                (watchValues.has_contacted_store == 'No' && is_under_45_days) && <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
+                                    We highly suggest returning it to the retailer for refund or replacement.
+                                </div>
+                            }
                         </>
                     }
                 </div>
 
-                {
-                    (watchValues.has_contacted_store == 'No' && is_under_45_days) && <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
-                        We highly suggest returning it to the retailer for refund or replacement.
-                    </div>
-                }
+
                 {!ticket?.id && (watchValues.has_contacted_store == 'Yes' || is_over_45_days) && <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <Input
