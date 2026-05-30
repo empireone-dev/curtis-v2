@@ -200,13 +200,6 @@ export default function FormSection() {
                 className="bg-white w-full flex flex-col gap-3 min-h-[70vh]"
             >
                 {
-                    is_under_45_days && (
-                        <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
-                            The purchase was within the last 45 days. For faster resolution, please return it to the retailer for refund or replacement.
-                        </div>
-                    )
-                }
-                {
                     ticket?.id && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
                             <div>
@@ -254,46 +247,7 @@ export default function FormSection() {
                     />
                 </div>
 
-                <div className=' flex flex-col gap-3'>
-                    {
-                        (!ticket?.id && watchValues.purchase_date && call_type == 'parts' && is_under_45_days) && <>
-                            Have you tried contacting the store for the return policy?
-                            <div className='flex gap-8 my-3'>
-                                <Radio
-                                    name="has_contacted_store"
-                                    label="Yes"
-                                    // Evaluates to true ONLY if the current value is strictly 'Yes'
-                                    checked={watchValues.has_contacted_store === 'Yes'}
-                                    onChange={() => setValue("has_contacted_store", 'Yes')}
-                                />
-                                <Radio
-                                    name="has_contacted_store"
-                                    label="No"
-                                    // Evaluates to true ONLY if the current value is strictly 'No'
-                                    checked={watchValues.has_contacted_store === 'No'}
-                                    onChange={() => setValue("has_contacted_store", 'No')}
-                                />
-                            </div>
-
-                            {watchValues.has_contacted_store == 'Yes' && (
-                                <Textarea
-                                    name="store_refusal_reason"
-                                    label="State the reason why the store did not take the unit back"
-                                    {...register("store_refusal_reason", { required: "Reason is required" })}
-                                    error={errors.store_refusal_reason?.message}
-                                />
-                            )}
-                            {
-                                (watchValues.has_contacted_store == 'No' && is_under_45_days) && <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
-                                    We highly suggest returning it to the retailer for refund or replacement.
-                                </div>
-                            }
-                        </>
-                    }
-                </div>
-
-
-                {!ticket?.id && (watchValues.has_contacted_store == 'Yes' || is_over_45_days) && <>
+                {!ticket?.id && <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <Input
                             id="fname"
