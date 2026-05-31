@@ -152,7 +152,8 @@ export default function FormSection() {
     useEffect(() => {
         register("files", {
             validate: (value) => {
-                const requiredCategories = ['readable_serial_section', 'bill_of_sale', 'receipt_model'];
+                // 'bill_of_sale' has been removed from the required list
+                const requiredCategories = ['readable_serial_section', 'receipt_model'];
 
                 // Check if any required category is empty or missing
                 const missingCategories = requiredCategories.filter(
@@ -160,7 +161,7 @@ export default function FormSection() {
                 );
 
                 if (missingCategories.length > 0) {
-                    return "All attachment sections are mandatory. Please upload the missing files.";
+                    return "All required attachment sections are mandatory. Please upload the missing files.";
                 }
                 return true;
             }

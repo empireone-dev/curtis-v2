@@ -3,7 +3,7 @@ import { FiUploadCloud, FiX, FiCheckCircle, FiAlertCircle } from 'react-icons/fi
 import { FaFileImage, FaFileVideo } from 'react-icons/fa';
 
 const UploadFileSection = ({ files = {}, setFiles, error }) => {
-    const call_type = window.location.pathname.split('/')[2]
+    const call_type = window.location.pathname.split('/')[2];
     const uploadRequirements = [
         {
             id: 'readable_serial_section',
@@ -11,7 +11,8 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
             description: 'Clear and readable picture of the model & serial number sticker/plate.',
             accept: 'image/*',
             notes: 'Max size: 10MB. Formats: JPG, PNG.',
-            icon: <FaFileImage className="w-6 h-6 text-blue-500" />
+            icon: <FaFileImage className="w-6 h-6 text-blue-500" />,
+            required: true // <-- Mandatory
         },
         {
             id: 'bill_of_sale',
@@ -19,7 +20,8 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
             description: 'Clear picture showing store name, purchase date, price, and unit description.',
             accept: 'image/*',
             notes: 'Max size: 10MB. Formats: JPG, PNG.',
-            icon: <FaFileImage className="w-6 h-6 text-green-500" />
+            icon: <FaFileImage className="w-6 h-6 text-green-500" />,
+            required: call_type == "safety_issue" ? false : true
         },
         // Use the ternary operator to conditionally insert the third object
         call_type === 'parts'
@@ -32,7 +34,8 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                 </>,
                 accept: 'image/*,video/*',
                 notes: 'Max size: 50MB. Videos compressed under 30 seconds preferred.',
-                icon: <FaFileVideo className="w-6 h-6 text-purple-500" />
+                icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
+                required: true // <-- Mandatory
             }
             : {
                 id: 'receipt_model',
@@ -40,7 +43,8 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                 description: 'Clear picture or video demonstrating the issue or defect.',
                 accept: 'image/*,video/*',
                 notes: 'Max size: 50MB. Videos compressed under 30 seconds preferred.',
-                icon: <FaFileVideo className="w-6 h-6 text-purple-500" />
+                icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
+                required: true // <-- Mandatory
             }
     ];
 
@@ -67,12 +71,12 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
         <div className="mt-6 mb-4">
             {/* Section Header */}
             <div className="mb-4">
-                <h2 className="text-xl font-bold text-gray-800 flex items-center gap-1">
-                    Warranty File Upload
+                <h2 className="text-xl font-bold text-gray-800 flex items-center gap-1 capitalize">
+                    {call_type ? call_type.replace('_', ' ') : 'Claim'} File Upload
                     <span className="text-red-500" title="Required fields">*</span>
                 </h2>
                 <p className="text-gray-600 mt-1 text-sm">
-                    To process your warranty claim quickly, please upload the required documentation below.
+                    To process your {call_type ? call_type.replace('_', ' ') : 'claim'} claim quickly, please upload the required documentation below.
                     All categories marked with an asterisk (<span className="text-red-500">*</span>) are mandatory.
                 </p>
             </div>
@@ -88,8 +92,8 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
             <div className="space-y-6">
                 {uploadRequirements.map((req) => {
                     const categoryFiles = files[req.id] || [];
-                    // Smart Check: This specific section is invalid if a global error exists AND it has 0 files
-                    const isSectionMissing = error && categoryFiles.length === 0;
+                    // Smart Check: This specific section is invalid if a global error exists AND it has 0 files AND it is required
+                    const isSectionMissing = error && categoryFiles.length === 0 && req.required;
 
                     return (
                         <div
@@ -103,8 +107,9 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                                 <div className="flex items-center gap-3">
                                     {req.icon}
                                     <div>
+                                        {/* Conditionally render the red asterisk */}
                                         <h3 className="font-semibold text-gray-800 flex items-center gap-1">
-                                            {req.label} <span className="text-red-500">*</span>
+                                            {req.label} {req.required && <span className="text-red-500">*</span>}
                                         </h3>
                                         <p className="text-sm text-gray-500">{req.description}</p>
                                     </div>
@@ -125,6 +130,7 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                                     type="file"
                                     multiple
                                     accept={req.accept}
+                                    required={req.required && categoryFiles.length === 0}
                                     onChange={(e) => handleFileChange(e, req.id)}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                 />
