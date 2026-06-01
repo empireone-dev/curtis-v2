@@ -165,7 +165,7 @@ class TicketControlller extends Controller
         // 3. Generate subject and update the model directly in memory
         $subject = $this->generateSubject($callType, $ticket->id);
         $ticket->update(['ticket_id' => $subject]);
-        $ticket->url = url("/resolution/search/{$subject}");
+        $ticket->url = url("/resolution/search/{$ticket->serial_number}");
         $this->send_initial_email($subject, $ticket, $callType);
 
         $fileCategories = [
