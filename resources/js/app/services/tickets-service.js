@@ -16,9 +16,9 @@ export async function create_ticket_service(data) {
     }
 }
 
-export async function get_ticket_by_ticket_id_service(id) {
+export async function get_ticket_by_serial_number_service(id) {
     try {
-        const response = await fetch(`/api/get_ticket_by_ticket_id/${id}`, {
+        const response = await fetch(`/api/get_ticket_by_serial_number/${id}`, {
             method: "GET", 
             headers: {
                 "Content-Type": "application/json",
@@ -29,3 +29,19 @@ export async function get_ticket_by_ticket_id_service(id) {
         return {};
     }
 }
+
+export async function get_product_registration_by_serial_number_service(id) {
+    try {
+        const response = await fetch(`/api/get_product_registration_by_serial_number/${id}`, {
+            method: "GET", 
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        return await response.json();
+    } catch (error) {
+        return {};
+    }
+}
+
+

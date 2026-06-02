@@ -13,7 +13,7 @@ import UploadFileSection from '../../_sections/upload-file-section';
 import { create_ticket_service } from '@/app/services/tickets-service';
 import { toast } from 'react-toastify';
 import store from '@/app/store/store';
-import { get_ticket_by_ticket_id_thunk } from '@/app/_redux/app-thunk';
+import { get_product_registration_by_serial_number_thunk } from '@/app/_redux/app-thunk';
 
 export default function FormSection() {
     const { product_registration, products, ticket } = useSelector((store) => store.app);
@@ -76,8 +76,8 @@ export default function FormSection() {
     }, [watchValues.item_number])
 
     useEffect(() => {
-        if (product_registration?.id) {
-            const searching = product_registration?.model === '' ? null : product_registration?.model?.toLowerCase();
+        if (ticket?.id) {
+            const searching = ticket?.model === '' ? null : ticket?.model?.toLowerCase();
 
             const searchProductsList = productFilter.find((product) =>
                 product.some((value) => typeof value === 'string' && value?.toLowerCase().includes(searching))
@@ -85,26 +85,28 @@ export default function FormSection() {
             setValue('unit', searchProductsList[2] ?? '');
             setValue('brand', searchProductsList[0] ?? '');
             setValue('class', searchProductsList[3] ?? '');
-            if (product_registration && typeof product_registration === 'object') {
-                Object.keys(product_registration).forEach((key) => {
+            if (ticket && typeof ticket === 'object') {
+                Object.keys(ticket).forEach((key) => {
                     // Map the 'model' key from Redux to the 'item_number' form input
                     if (key === 'model') {
-                        setValue('item_number', product_registration[key]);
+                        setValue('item_number', ticket[key]);
                     } if (key === 'serial') {
-                        setValue('serial_number', product_registration[key]);
+                        setValue('serial_number', ticket[key]);
                     } if (key === 'address1') {
-                        setValue('address', product_registration[key]);
+                        setValue('address', ticket[key]);
                     } if (key === 'zipcode') {
-                        setValue('zip_code', product_registration[key]);
+                        setValue('zip_code', ticket[key]);
                     } else {
                         // Set all other fields normally
-                        setValue(key, product_registration[key]);
+                        setValue(key, ticket[key]);
                     }
                 });
+            } else {
+                reset()
             }
         }
 
-    }, [product_registration, setValue]);
+    }, [ticket, setValue]);
 
     const onSubmit = async (data) => {
 
@@ -174,7 +176,7 @@ export default function FormSection() {
     async function search_serial_number(e) {
         if (serialRegex.test(e.target.value)) {
             await toast.promise(
-                store.dispatch(get_ticket_by_ticket_id_thunk(e.target.value)),
+                store.dispatch(get_product_registration_by_serial_number_thunk(e.target.value)),
                 {
                     pending: 'Searching...',
                     error: 'Failed to submit the form. Please try again. ❌'
@@ -182,6 +184,8 @@ export default function FormSection() {
             );
         }
     }
+
+    console.log('ticket', ticket)
     return (
         <>
             <form
@@ -191,15 +195,14 @@ export default function FormSection() {
             >
 
                 {
-                    ticket?.id && (
+                    ticket?.ticket?.id && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
                             <div>
                                 A previous claim has been identified for this serial number. If you believe this information is incorrect or would like us to review it further, please check here to dispute this finding
-
                             </div>
                             <div className='flex items-center justify-end'>
                                 <Button
-                                    onClick={() => window.open(`/resolution/search/${ticket.ticket_id}`, '_blank')}
+                                    onClick={() => window.open(`/resolution/search/${ticket?.ticket?.serial_number}`, '_blank')}
                                     variant='primary'
                                 >
                                     CHECK THE TICKET STATUS
@@ -213,6 +216,7 @@ export default function FormSection() {
                     <Input
                         id="purchase_date"
                         type="date"
+                        disabled={ticket?.ticket?.id}
                         label="Purchase Date"
                         max={new Date().toISOString().split("T")[0]} // Restricts selection to today or earlier
                         error={errors.purchase_date?.message}
@@ -224,6 +228,7 @@ export default function FormSection() {
                         id="serial_number"
                         label="Serial Number (e.g. A1234567890123456)"
                         error={errors.serial_number?.message}
+                        disabled={window.location.pathname.split('/')[3] != 'blank'}
                         maxLength={17}
                         // required={true}
                         {...register("serial_number", {
@@ -236,7 +241,7 @@ export default function FormSection() {
                     />
                 </div>
                 {
-                    !ticket?.id && <>
+                    !ticket?.ticket?.id && <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <Input
                                 id="fname"

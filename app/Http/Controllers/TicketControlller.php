@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use App\Models\File;
+use App\Models\ProductRegistration;
 use App\Models\Ticket;
 use App\Models\User;
 use Carbon\Carbon;
@@ -13,9 +15,9 @@ use Illuminate\Support\Facades\Storage;
 class TicketControlller extends Controller
 {
 
-    public function get_ticket_by_ticket_id($serial_number)
+    public function get_ticket_by_serial_number($serial_number)
     {
-        $ticket = Ticket::where('serial_number', $serial_number)->first();
+        $ticket = Ticket::where('serial_number', $serial_number)->with(['activities', 'product_registration'])->first();
         if ($ticket) {
             return response()->json([
                 'data' => $ticket,
@@ -23,6 +25,20 @@ class TicketControlller extends Controller
             ], 200);
         }
     }
+
+    public function get_product_registration_by_serial_number($serial_number)
+    {
+        $ticket = ProductRegistration::where('serial', $serial_number)->with(['ticket'])->first();
+        if ($ticket) {
+            return response()->json([
+                'data' => $ticket,
+                'message' => 'success'
+            ], 200);
+        }
+    }
+
+
+
     public function send_initial_email($subject, $ticket, $type = 'CF-Warranty Claim')
     {
         if ($type == 'Parts') {
@@ -168,6 +184,12 @@ class TicketControlller extends Controller
         $ticket->url = url("/resolution/search/{$ticket->serial_number}");
         $this->send_initial_email($subject, $ticket, $callType);
 
+        Activity::create([
+            'user_id' => 0,
+            'ticket_id' => $ticket->id,
+            'type' => 'TICKET CREATED',
+            'message' => json_encode($ticket)
+        ]);
         $fileCategories = [
             'readable_serial_section',
             'bill_of_sale',

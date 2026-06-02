@@ -13,7 +13,7 @@ class ProductRegistrationControlller extends Controller
         $raw_id = rawurldecode(base64_decode($id));
 
         // Use firstOrFail() so it automatically returns a 404 if the record doesn't exist
-        $registration = ProductRegistration::where('id', $raw_id)->firstOrFail();
+        $registration = ProductRegistration::where('id', $raw_id)->with(['ticket'])->firstOrFail();
 
         $common_issues = CommonIssue::get();
 

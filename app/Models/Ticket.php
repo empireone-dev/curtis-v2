@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Ticket extends Model
 {
@@ -57,4 +59,14 @@ class Ticket extends Model
         'received_at',
         'asc_status'
     ];
+
+
+    public function activities(): HasMany
+    {
+        return $this->hasMany(Activity::class, 'ticket_id', 'id')->where('type', '<>', 'upload');
+    }
+    public function product_registration(): HasOne
+    {
+        return $this->hasOne(ProductRegistration::class, 'serial', 'serial_number');
+    }
 }

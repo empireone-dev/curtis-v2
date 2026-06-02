@@ -12,6 +12,8 @@ Route::get('/user', function (Request $request) {
 
 
 Route::resource('tickets', TicketControlller::class);
-Route::get('/get_ticket_by_ticket_id/{id}', [TicketControlller::class, 'get_ticket_by_ticket_id']);
+Route::get('/search_serial_number/{id}', [TicketControlller::class, 'search_serial_number']);
+Route::get('/get_ticket_by_serial_number/{id}', [TicketControlller::class, 'get_ticket_by_serial_number']);
+Route::get('/get_product_registration_by_serial_number/{id}', [TicketControlller::class, 'get_product_registration_by_serial_number']);
 Route::resource('product_registration', ProductRegistrationControlller::class);
 Route::get('/verify_serial_number/{id}', [ProductRegistrationControlller::class, 'verify_serial_number']);

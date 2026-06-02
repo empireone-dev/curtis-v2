@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react'
 import HeaderSection from './../_sections/header-section'
 import FormSection from './_sections/form-section'
 import store from '@/app/store/store'
-import { get_product_registration_by_id_thunk, get_products_thunk } from '@/app/_redux/app-thunk'
+import { get_product_registration_by_serial_number_thunk, get_products_thunk } from '@/app/_redux/app-thunk'
 import LoadingSection from '../_sections/loading-section'
+import { decodeBase64Id } from '@/app/lib/decode'
 
 export default function Page() {
 
     const [loading, setLoading] = useState(true)
     useEffect(() => {
         async function get_data(params) {
-            await store.dispatch(get_product_registration_by_id_thunk(window.location.pathname.split('/')[3]))
+            if (window.location.pathname.split('/')[3] != 'blank') {
+                await store.dispatch(get_product_registration_by_serial_number_thunk(decodeBase64Id(window.location.pathname.split('/')[3])))
+            }
             await store.dispatch(get_products_thunk())
             setLoading(false)
         }

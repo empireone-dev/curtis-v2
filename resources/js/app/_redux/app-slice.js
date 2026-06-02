@@ -9,7 +9,9 @@ export const appSlice = createSlice({
         product_registration: {},
         products: [],
         common_issues: [],
-        ticket: {},
+        ticket: {
+            id: "",
+        },
     },
     reducers: {
         setLoading: (state, action) => {

@@ -7,14 +7,16 @@ import { router } from '@inertiajs/react';
 import { encodeBase64Id } from '@/app/lib/decode';
 import { toast } from 'react-toastify';
 import store from '@/app/store/store';
-import { get_ticket_by_ticket_id_thunk } from '@/app/_redux/app-thunk';
-import { useSelector } from 'react-redux';
+import { get_product_registration_by_serial_number_thunk } from '@/app/_redux/app-thunk';
+import { useDispatch, useSelector } from 'react-redux';
+import { setTicket } from '@/app/_redux/app-slice';
 
 export default function VerifyFormSection() {
     const { ticket } = useSelector((store) => store.app);
     const [isError, setIsError] = useState(false)
     const [isloading, setLoading] = useState(false)
     const call_type = window.location.pathname.split('/')[2]
+    const dispatch = useDispatch()
     const {
         register,
         handleSubmit,
@@ -33,8 +35,11 @@ export default function VerifyFormSection() {
         try {
             const res = await verify_serial_number_service(formData.serial_number);
             if (Object.keys(res).length != 0) {
-                return router.visit(`/resolution/${call_type}/${encodeBase64Id(res.id)}`)
+                return router.visit(`/resolution/${call_type}/${encodeBase64Id(formData.serial_number)}`)
             }
+            await dispatch(setTicket({
+                id: "",
+            }))
             setIsError(true)
         } catch (error) {
             console.error("Verification failed:", error);
@@ -47,7 +52,7 @@ export default function VerifyFormSection() {
         if (serialRegex.test(e.target.value)) {
             setLoading(true)
             await toast.promise(
-                store.dispatch(get_ticket_by_ticket_id_thunk(e.target.value)),
+                store.dispatch(get_product_registration_by_serial_number_thunk(e.target.value)),
                 {
                     pending: 'Searching...',
                     error: 'Failed to submit the form. Please try again. ❌'
@@ -56,6 +61,7 @@ export default function VerifyFormSection() {
             setLoading(false)
         }
     }
+    console.log('ticketticketsss', ticket)
     return (
         <>
             {
@@ -63,7 +69,16 @@ export default function VerifyFormSection() {
             }
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 animate-fadeIn mt-5">
                 {
-                    ticket?.id && (
+                    ticket?.id == undefined && (
+                        <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
+                            <div className='py-3'>
+                                No ticket or product registration found!
+                            </div>
+                        </div>
+                    )
+                }
+                {
+                    ticket?.ticket?.id && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
                             <div className='py-3'>
                                 A previous claim has been identified for this serial number. If you believe this information is incorrect or would like us to review it further, please check here to dispute this finding
@@ -71,7 +86,7 @@ export default function VerifyFormSection() {
                             </div>
                             <div className='flex items-center justify-end'>
                                 <Button
-                                    onClick={() => window.open(`/resolution/search/${ticket.ticket_id}`, '_blank')}
+                                    onClick={() => window.open(`/resolution/search/${ticket?.ticket?.serial_number}`, '_blank')}
                                     variant='primary'
                                 >
                                     CHECK THE TICKET STATUS
@@ -100,13 +115,13 @@ export default function VerifyFormSection() {
                     className="w-full"
                     variant="primary"
                     type="submit"
-                    disabled={((watchValues.serial_number.length != 17) || ticket?.id) || isloading}
+                    disabled={watchValues.serial_number.length != 17 || ticket?.ticket != null || isloading || ticket?.id == '' || ticket == undefined}
                     loading={isSubmitting}
                 >
                     {isSubmitting ? 'VERIFYING...' : 'SUBMIT'}
                 </Button>
                 {
-                    isError && <Button
+                    ticket?.id == undefined && <Button
                         className="w-full"
                         variant="danger"
                         type="submit"
