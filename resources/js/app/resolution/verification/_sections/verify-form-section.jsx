@@ -62,6 +62,16 @@ export default function VerifyFormSection() {
         }
     }
 
+    function is_disabled(e) {
+        if (ticket?.ticket != null) {
+            return true
+        } else if (isloading) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     return (
         <>
             {
@@ -69,7 +79,7 @@ export default function VerifyFormSection() {
             }
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 animate-fadeIn mt-5">
                 {
-                    ticket?.id == undefined && (
+                    ticket?.id === null && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
                             <div className='py-3'>
                                 No product registration found!
@@ -82,7 +92,6 @@ export default function VerifyFormSection() {
                         <div className='border border-orange-500 rounded-md p-2 text-orange-500 shadow-sm mb-4 bg-orange-100'>
                             <div className='py-3'>
                                 A previous claim has been identified for this serial number. If you believe this information is incorrect or would like us to review it further, please check here to dispute this finding
-
                             </div>
                             <div className='flex items-center justify-end'>
                                 <Button
@@ -115,13 +124,13 @@ export default function VerifyFormSection() {
                     className="w-full"
                     variant="primary"
                     type="submit"
-                    disabled={watchValues.serial_number.length != 17 || ticket?.ticket != null || isloading || ticket?.id == '' || ticket == undefined}
+                    disabled={is_disabled()}
                     loading={isSubmitting}
                 >
                     {isSubmitting ? 'VERIFYING...' : 'SUBMIT'}
                 </Button>
                 {
-                    ticket?.id == undefined && <Button
+                    ticket?.id === undefined && <Button
                         className="w-full"
                         variant="danger"
                         type="submit"

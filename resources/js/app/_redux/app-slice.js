@@ -10,7 +10,8 @@ export const appSlice = createSlice({
         products: [],
         common_issues: [],
         ticket: {
-            id: "",
+            id:'',
+            email: "",
         },
     },
     reducers: {
