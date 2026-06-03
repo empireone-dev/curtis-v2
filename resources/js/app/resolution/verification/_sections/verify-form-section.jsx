@@ -61,7 +61,7 @@ export default function VerifyFormSection() {
             setLoading(false)
         }
     }
-    console.log('ticketticketsss', ticket)
+
     return (
         <>
             {
@@ -72,14 +72,14 @@ export default function VerifyFormSection() {
                     ticket?.id == undefined && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
                             <div className='py-3'>
-                                No ticket or product registration found!
+                                No product registration found!
                             </div>
                         </div>
                     )
                 }
                 {
                     ticket?.ticket?.id && (
-                        <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
+                        <div className='border border-orange-500 rounded-md p-2 text-orange-500 shadow-sm mb-4 bg-orange-100'>
                             <div className='py-3'>
                                 A previous claim has been identified for this serial number. If you believe this information is incorrect or would like us to review it further, please check here to dispute this finding
 
