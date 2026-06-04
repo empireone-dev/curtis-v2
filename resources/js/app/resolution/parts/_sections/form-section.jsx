@@ -457,7 +457,7 @@ export default function FormSection() {
                         id="has_address_2"
                         className='my-3'
                         checked={watchValues.has_address_2}
-                        label="Is your physical address the same as your mailing address?"
+                        label="Is your physical address the same as your mailing address."
                         onChange={(val) =>
                             setValue("has_address_2", val.target.checked)
                         }
