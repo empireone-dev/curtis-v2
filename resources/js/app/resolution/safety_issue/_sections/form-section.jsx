@@ -48,7 +48,7 @@ export default function FormSection() {
             detailed_explanation_issue: null,
             has_contacted_store: null,
             store_refusal_reason: null,
-            has_address_2: true,
+            has_address_2: false,
             address2: null,
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
             files: {
@@ -188,6 +188,16 @@ export default function FormSection() {
         }
     }
 
+    const formatUSPhone = (value) => {
+        if (!value) return value;
+        const phoneNumber = value.replace(/[^\d]/g, "");
+        const phoneNumberLength = phoneNumber.length;
+        if (phoneNumberLength < 4) return phoneNumber;
+        if (phoneNumberLength < 7) {
+            return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+        }
+        return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+    };
     console.log('ticket', ticket)
     return (
         <>
@@ -276,21 +286,40 @@ export default function FormSection() {
                             })}
                         />
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
                             <Input
                                 id="phone"
                                 type="tel"
                                 label="Phone Number"
                                 error={errors.phone?.message}
                                 required={true}
-                                {...register("phone", { required: "Phone number is required" })}
+                                maxLength={14} // Restricts input to the exact length of (XXX) XXX-XXXX
+                                {...register("phone", {
+                                    required: "Phone number is required",
+                                    pattern: {
+                                        value: /^\(\d{3}\) \d{3}-\d{4}$/,
+                                        message: "Must be a valid US phone number: (XXX) XXX-XXXX",
+                                    },
+                                    onChange: (e) => {
+                                        e.target.value = formatUSPhone(e.target.value);
+                                    },
+                                })}
                             />
+
                             <Input
                                 id="phone2"
                                 type="tel"
                                 label="Secondary Phone Number"
                                 error={errors.phone2?.message}
-                                {...register("phone2")}
+                                maxLength={14}
+                                {...register("phone2", {
+                                    pattern: {
+                                        value: /^\(\d{3}\) \d{3}-\d{4}$/,
+                                        message: "Must be a valid US phone number: (XXX) XXX-XXXX",
+                                    },
+                                    onChange: (e) => {
+                                        e.target.value = formatUSPhone(e.target.value);
+                                    },
+                                })}
                             />
                         </div>
 
