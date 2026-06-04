@@ -211,7 +211,8 @@ class TicketControlller extends Controller
             'readable_serial_section',
             'bill_of_sale',
             'parts_model',
-            'receipt_model'
+            'receipt_model',
+            'defect_issue'
         ];
         $folder = date("Y");
         $filesData = [];
