@@ -1,66 +1,101 @@
-import React from 'react';
+import React, { useState } from 'react'; // Gidugang ang useState diri
 import { FiUploadCloud, FiX, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
 import { FaFileImage, FaFileVideo } from 'react-icons/fa';
+import moment from 'moment';
 
 const UploadFileSection = ({ files = {}, setFiles, error }) => {
+    const [formatError, setFormatError] = useState(''); // State para sa format validation error
     const call_type = window.location.pathname.split('/')[2];
+
     const uploadRequirements = [
         {
             id: 'readable_serial_section',
             label: 'Model & Serial Number',
             description: 'Clear and readable picture of the model & serial number sticker/plate.',
-            accept: 'image/*',
+            accept: '.jpg,.jpeg,.png', // Mas filtered ang file picker window
             notes: 'Max size: 10MB. Formats: JPG, PNG.',
             icon: <FaFileImage className="w-6 h-6 text-blue-500" />,
-            required: true // <-- Mandatory
+            required: true
         },
         {
             id: 'bill_of_sale',
             label: 'Bill of Sale',
             description: 'Clear picture showing store name, purchase date, price, and unit description.',
-            accept: 'image/*',
+            accept: '.jpg,.jpeg,.png',
             notes: 'Max size: 10MB. Formats: JPG, PNG.',
             icon: <FaFileImage className="w-6 h-6 text-green-500" />,
             required: call_type == "safety_issue" ? false : true
         },
-        // Use the ternary operator to conditionally insert the third object
         call_type === 'parts'
             ? {
                 id: 'parts_model',
                 label: 'Photo of the parts',
-                description: <>
-                    * Clear picture of the part/s you need.<br />
-                    * Clear photo of the unit in which the missing/damaged part is located.
-                </>,
-                accept: 'image/*,video/*',
-                notes: 'Max size: 50MB. Videos compressed under 30 seconds preferred.',
+                description: (
+                    <>
+                        * Clear picture of the part/s you need.<br />
+                        * Clear photo of the unit in which the missing/damaged part is located.
+                    </>
+                ),
+                accept: '.jpg,.jpeg,.png,.mp4,.mov', // Giapil ang .mp4 ug .mov
+                notes: 'Max size: 50MB. Formats: JPG, PNG, MP4, MOV. Videos compressed under 30 seconds preferred.',
                 icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
-                required: true // <-- Mandatory
+                required: true
             }
             : {
-                id: 'receipt_model',
+                id: 'defect_issue',
                 label: 'Issue Evidence',
                 description: 'Clear picture or video demonstrating the issue or defect.',
-                accept: 'image/*,video/*',
-                notes: 'Max size: 50MB. Videos compressed under 30 seconds preferred.',
+                accept: '.jpg,.jpeg,.png,.mp4,.mov', // Giapil ang .mp4 ug .mov
+                notes: 'Max size: 50MB. Formats: JPG, PNG, MP4, MOV. Videos compressed under 30 seconds preferred.',
                 icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
-                required: true // <-- Mandatory
+                required: true
             }
     ];
 
-    const handleFileChange = (e, categoryId) => {
+    const handleFileChange = (e, req) => {
         const selectedFiles = Array.from(e.target.files);
-        const currentCategoryFiles = files[categoryId] || [];
+        const currentCategoryFiles = files[req.id] || [];
 
-        setFiles({
-            ...files,
-            [categoryId]: [...currentCategoryFiles, ...selectedFiles]
+        // Definition sa mga valid formats
+        const allowedImageExtensions = ['.jpg', '.jpeg', '.png'];
+        const allowedVideoExtensions = ['.mp4', '.mov'];
+
+        let hasInvalidFile = false;
+
+        const validFiles = selectedFiles.filter(file => {
+            const extension = '.' + file.name.split('.').pop().toLowerCase();
+
+            // Atong tan-awon kung unsa ra dapat ang dawaton base sa "accept" property sa requirement
+            if (req.accept === '.jpg,.jpeg,.png') {
+                const isValidImg = allowedImageExtensions.includes(extension);
+                if (!isValidImg) hasInvalidFile = true;
+                return isValidImg;
+            } else {
+                // Modawat og Image ug Video
+                const isValidImg = allowedImageExtensions.includes(extension);
+                const isValidVid = allowedVideoExtensions.includes(extension);
+                if (!isValidImg && !isValidVid) hasInvalidFile = true;
+                return isValidImg || isValidVid;
+            }
         });
+
+        if (hasInvalidFile) {
+            // Mao kini ang error message nga mugawas
+            setFormatError("Unsupported file format. Please upload a JPG, PNG, MP4, or MOV file.");
+        } else {
+            setFormatError(''); // Clear error kung sakto ang format
+        }
+
+        if (validFiles.length > 0) {
+            setFiles({
+                ...files,
+                [req.id]: [...currentCategoryFiles, ...validFiles]
+            });
+        }
     };
 
     const removeFile = (categoryId, indexToRemove) => {
         const currentCategoryFiles = files[categoryId] || [];
-
         setFiles({
             ...files,
             [categoryId]: currentCategoryFiles.filter((_, index) => index !== indexToRemove)
@@ -81,8 +116,16 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                 </p>
             </div>
 
-            {/* Global Error Message Banner */}
-            {error && (
+            {/* Local Format Error Alert Banner */}
+            {formatError && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm font-medium transition-all duration-200">
+                    <FiAlertCircle className="w-5 h-5 flex-shrink-0 text-red-500" />
+                    <span>{formatError}</span>
+                </div>
+            )}
+
+            {/* Global Missing Fields Error Message Banner */}
+            {error && !formatError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm font-medium animate-pulse">
                     <FiAlertCircle className="w-5 h-5 flex-shrink-0 text-red-500" />
                     <span>{error.message || "Please upload all required files to proceed."}</span>
@@ -92,7 +135,6 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
             <div className="space-y-6">
                 {uploadRequirements.map((req) => {
                     const categoryFiles = files[req.id] || [];
-                    // Smart Check: This specific section is invalid if a global error exists AND it has 0 files AND it is required
                     const isSectionMissing = error && categoryFiles.length === 0 && req.required;
 
                     return (
@@ -107,7 +149,6 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                                 <div className="flex items-center gap-3">
                                     {req.icon}
                                     <div>
-                                        {/* Conditionally render the red asterisk */}
                                         <h3 className="font-semibold text-gray-800 flex items-center gap-1">
                                             {req.label} {req.required && <span className="text-red-500">*</span>}
                                         </h3>
@@ -115,7 +156,6 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                                     </div>
                                 </div>
 
-                                {/* Category Specific Error text */}
                                 {isSectionMissing && (
                                     <span className="text-xs font-semibold text-red-600 bg-red-100 px-2 py-1 rounded">
                                         File missing
@@ -131,7 +171,7 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                                     multiple
                                     accept={req.accept}
                                     required={req.required && categoryFiles.length === 0}
-                                    onChange={(e) => handleFileChange(e, req.id)}
+                                    onChange={(e) => handleFileChange(e, req)} // Gi-pasa ang tibuok 'req' object para sa validation
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                 />
                                 <div className="flex flex-col items-center justify-center gap-2 pointer-events-none">

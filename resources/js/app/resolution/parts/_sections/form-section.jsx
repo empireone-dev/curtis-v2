@@ -47,9 +47,11 @@ export default function FormSection() {
             state: "",
             city: "",
             address: "",
-            issue: null,
+            detailed_explanation_issue: null,
             has_contacted_store: null,
             store_refusal_reason: null,
+            has_address_2: true,
+            address2: null,
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
             files: {
                 modelSerial: [],
@@ -79,6 +81,7 @@ export default function FormSection() {
             setValue('unit', searchProductsList[2] ?? '');
             setValue('brand', searchProductsList[0] ?? '');
             setValue('class', searchProductsList[3] ?? '');
+            setValue('address2', '');
         }
 
     }, [watchValues.item_number])
@@ -145,7 +148,7 @@ export default function FormSection() {
                 create_ticket_service(formData),
                 {
                     pending: 'Submitting your ticket...',
-                    success: 'Ticket created successfully! 🛠️',
+                    success: 'Your form has been successfully submitted. You will receive an email confirmation shortly. 🛠️',
                     error: 'Failed to submit the form. Please try again. ❌'
                 }
             );
@@ -248,7 +251,7 @@ export default function FormSection() {
                     />
                 </div>
 
-                {!ticket?.ticket?.id &&  <>
+                {!ticket?.ticket?.id && <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                         <Input
                             id="fname"
@@ -421,13 +424,34 @@ export default function FormSection() {
                             {...register("address", { required: "Street address is required" })}
                         />
                     </div>
+                    <Checkbox
+                        id="has_address_2"
+                        className='my-3'
+                        checked={watchValues.has_address_2}
+                        label="Is your physical address the same as your mailing address?"
+                        onChange={(val) =>
+                            setValue("has_address_2", val.target.checked)
+                        }
+                    />
+                    {
+                        !watchValues.has_address_2 && <div className="w-full">
+                            <Input
+                                id="address2"
+                                name="address2"
+                                label="Mailing Address 2"
+                                error={errors.address?.message}
+                                required={true}
+                                {...register("address2", { required: "Full address is required" })}
+                            />
+                        </div>
+                    }
 
                     <div className="w-full">
                         <Textarea
-                            name="issue"
+                            name="detailed_explanation_issue"
                             label="Detailed explanation of the issue."
-                            {...register("issue", { required: "Issue is required" })}
-                            error={errors.issue?.message}
+                            {...register("detailed_explanation_issue", { required: "Issue is required" })}
+                            error={errors.detailed_explanation_issue?.message}
                         />
                     </div>
 

@@ -53,6 +53,7 @@ class Ticket extends Model
         'email_date',
         'validator_id',
         'is_reply',
+        'detailed_explanation_issue',
         'isExported',
         'isEscalated',
         'where_status',

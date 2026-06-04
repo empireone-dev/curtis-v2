@@ -176,7 +176,8 @@ class TicketControlller extends Controller
             'state'         => 'required|string|max:100',
             'city'          => 'required|string|max:100',
             'address'       => 'required|string',
-            'issue'         => 'required|string|max:255',
+            'address2'       => 'nullable|string',
+            'detailed_explanation_issue'  => 'nullable|string',
             'remarks'       => 'nullable|string',
             'store_refusal_reason' => 'nullable|string',
             'call_type'     => 'nullable|string', // Added since it's used below
