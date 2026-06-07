@@ -17,14 +17,7 @@ const StepperSection = () => {
     const activitiesCount = activities?.length || 0;
     return (
         <div className="max-w-2xl">
-            <div className='flex flex-col items-start justify-start'>
-                <div className='text-center font-black text-lg'>
-                    TICKET ID: {ticket?.ticket_id}
-                </div>
-                <div className='text-center font-black text-lg'>
-                    SERIAL #: {ticket?.serial_number}
-                </div>
-            </div>
+            
             <div className="relative border-l-2 border-gray-200">
                 {activities?.map((step, index) => {
                     // Changed variable name to 'activityData' to prevent shadowing the outer 'ticket' state

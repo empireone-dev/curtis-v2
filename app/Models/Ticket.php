@@ -34,6 +34,7 @@ class Ticket extends Model
         'decision_status',
         'city',
         'address',
+        'address2',
         'issue',
         'explanation',
         'warranty_status',

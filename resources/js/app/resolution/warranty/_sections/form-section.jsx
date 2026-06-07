@@ -147,8 +147,14 @@ export default function FormSection() {
                 create_ticket_service(formData),
                 {
                     pending: 'Submitting your ticket...',
-                    success: 'Your form has been successfully submitted. You will receive an email confirmation shortly. 🛠️',
-                    error: 'Failed to submit the form. Please try again. ❌'
+                    success: {
+                        render: 'Your form has been successfully submitted. You will receive an email confirmation shortly. 🛠️',
+                        autoClose: false, // Prevents auto-closing on success
+                    },
+                    error: {
+                        render: 'Failed to submit the form. Please try again. ❌',
+                        autoClose: false, // Prevents auto-closing on error
+                    }
                 }
             );
             reset();
@@ -512,7 +518,7 @@ export default function FormSection() {
                             id="has_address_2"
                             className='my-3'
                             checked={watchValues.has_address_2}
-                            label="Is your physical address the same as your mailing address."
+                            label="My physical address is the same as my mailing address."
                             onChange={(val) =>
                                 setValue("has_address_2", val.target.checked)
                             }
