@@ -61,6 +61,7 @@ export default function FormSection() {
         }
     });
 
+
     const watchValues = watch()
     const productFilter = products.slice(2);
 
@@ -75,7 +76,7 @@ export default function FormSection() {
                 typeof value === 'string' && value.toLowerCase().includes(searchTerm)
             )
         );
-        if (searchTerm) {
+        if (searchTerm && searchProductsList) {
             setValue('unit', searchProductsList[2] ?? '');
             setValue('brand', searchProductsList[0] ?? '');
             setValue('class', searchProductsList[3] ?? '');
@@ -91,9 +92,12 @@ export default function FormSection() {
             const searchProductsList = productFilter.find((product) =>
                 product.some((value) => typeof value === 'string' && value?.toLowerCase().includes(searching))
             );
-            setValue('unit', searchProductsList[2] ?? '');
-            setValue('brand', searchProductsList[0] ?? '');
-            setValue('class', searchProductsList[3] ?? '');
+            if (searchProductsList) {
+                setValue('unit', searchProductsList[2] ?? '');
+                setValue('brand', searchProductsList[0] ?? '');
+                setValue('class', searchProductsList[3] ?? '');
+            }
+
             if (ticket && typeof ticket === 'object') {
                 Object.keys(ticket).forEach((key) => {
                     // Map the 'model' key from Redux to the 'item_number' form input

@@ -86,6 +86,7 @@ export default function FormSection() {
 
     }, [watchValues.item_number])
 
+
     useEffect(() => {
         if (ticket?.id) {
             const searching = ticket?.model === '' ? null : ticket?.model?.toLowerCase();
@@ -93,9 +94,12 @@ export default function FormSection() {
             const searchProductsList = productFilter.find((product) =>
                 product.some((value) => typeof value === 'string' && value?.toLowerCase().includes(searching))
             );
-            setValue('unit', searchProductsList[2] ?? '');
-            setValue('brand', searchProductsList[0] ?? '');
-            setValue('class', searchProductsList[3] ?? '');
+            if (searchProductsList) {
+                setValue('unit', searchProductsList[2] ?? '');
+                setValue('brand', searchProductsList[0] ?? '');
+                setValue('class', searchProductsList[3] ?? '');
+            }
+
             if (ticket && typeof ticket === 'object') {
                 Object.keys(ticket).forEach((key) => {
                     // Map the 'model' key from Redux to the 'item_number' form input

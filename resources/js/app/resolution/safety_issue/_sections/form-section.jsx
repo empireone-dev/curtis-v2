@@ -85,9 +85,12 @@ export default function FormSection() {
             const searchProductsList = productFilter.find((product) =>
                 product.some((value) => typeof value === 'string' && value?.toLowerCase().includes(searching))
             );
-            setValue('unit', searchProductsList[2] ?? '');
-            setValue('brand', searchProductsList[0] ?? '');
-            setValue('class', searchProductsList[3] ?? '');
+            if (searchProductsList) {
+                setValue('unit', searchProductsList[2] ?? '');
+                setValue('brand', searchProductsList[0] ?? '');
+                setValue('class', searchProductsList[3] ?? '');
+            }
+
             if (ticket && typeof ticket === 'object') {
                 Object.keys(ticket).forEach((key) => {
                     // Map the 'model' key from Redux to the 'item_number' form input
@@ -104,8 +107,6 @@ export default function FormSection() {
                         setValue(key, ticket[key]);
                     }
                 });
-            } else {
-                reset()
             }
         }
 
@@ -230,6 +231,7 @@ export default function FormSection() {
                         </div>
                     )
                 }
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
                     <Input
