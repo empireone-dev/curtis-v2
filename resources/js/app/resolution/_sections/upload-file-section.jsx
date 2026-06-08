@@ -8,15 +8,18 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
     const call_type = window.location.pathname.split('/')[2];
 
     const uploadRequirements = [
-        {
+        // 1. Model & Serial Number (Hidden if product_registration)
+        call_type !== 'product_registration' ? {
             id: 'readable_serial_section',
             label: 'Model & Serial Number',
             description: 'Clear and readable picture of the model & serial number sticker/plate.',
-            accept: '.jpg,.jpeg,.png', // Mas filtered ang file picker window
+            accept: '.jpg,.jpeg,.png',
             notes: 'Max size: 10MB. Formats: JPG, PNG.',
             icon: <FaFileImage className="w-6 h-6 text-blue-500" />,
             required: true
-        },
+        } : null,
+
+        // 2. Bill of Sale (Always shown)
         {
             id: 'bill_of_sale',
             label: 'Bill of Sale',
@@ -24,8 +27,10 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
             accept: '.jpg,.jpeg,.png',
             notes: 'Max size: 10MB. Formats: JPG, PNG.',
             icon: <FaFileImage className="w-6 h-6 text-green-500" />,
-            required: call_type == "safety_issue" ? false : true
+            required: call_type === "safety_issue" ? false : true
         },
+
+        // 3. Parts Photo OR Defect Issue (Hidden if product_registration)
         call_type === 'parts'
             ? {
                 id: 'parts_model',
@@ -36,21 +41,23 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                         * Clear photo of the unit in which the missing/damaged part is located.
                     </>
                 ),
-                accept: '.jpg,.jpeg,.png,.mp4,.mov', // Giapil ang .mp4 ug .mov
+                accept: '.jpg,.jpeg,.png,.mp4,.mov',
                 notes: 'Max size: 50MB. Formats: JPG, PNG, MP4, MOV. Videos compressed under 30 seconds preferred.',
                 icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
                 required: true
             }
-            : {
-                id: 'defect_issue',
-                label: 'Issue Evidence',
-                description: 'Clear picture or video demonstrating the issue or defect.',
-                accept: '.jpg,.jpeg,.png,.mp4,.mov', // Giapil ang .mp4 ug .mov
-                notes: 'Max size: 50MB. Formats: JPG, PNG, MP4, MOV. Videos compressed under 30 seconds preferred.',
-                icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
-                required: true
-            }
-    ];
+            : call_type !== 'product_registration'
+                ? {
+                    id: 'defect_issue',
+                    label: 'Issue Evidence',
+                    description: 'Clear picture or video demonstrating the issue or defect.',
+                    accept: '.jpg,.jpeg,.png,.mp4,.mov',
+                    notes: 'Max size: 50MB. Formats: JPG, PNG, MP4, MOV. Videos compressed under 30 seconds preferred.',
+                    icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
+                    required: true
+                }
+                : null
+    ].filter(Boolean);
 
     const handleFileChange = (e, req) => {
         const selectedFiles = Array.from(e.target.files);
@@ -168,7 +175,6 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                                 }`}>
                                 <input
                                     type="file"
-                                    multiple
                                     accept={req.accept}
                                     required={req.required && categoryFiles.length === 0}
                                     onChange={(e) => handleFileChange(e, req)} // Gi-pasa ang tibuok 'req' object para sa validation

@@ -13,6 +13,7 @@ class ProductRegistration extends Model
     protected $fillable = [
         'address1',
         'address2',
+        'purchase_date',
         'city',
         'country',
         'email',
@@ -23,6 +24,7 @@ class ProductRegistration extends Model
         'serial',
         'state',
         'zipcode',
+        'bill_of_sale'
     ];
 
     public function ticket():HasOne
