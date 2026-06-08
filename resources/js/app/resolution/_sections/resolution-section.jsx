@@ -8,8 +8,8 @@ export default function ResolutionSection() {
             label: 'Product Registration',
             description: 'Register your new product to activate your warranty and receive important updates.',
             icon: '📝',
-            link: "/resolution/registration",
-            is_disabled: true // Currently disabled
+            link: "/resolution/product_registration",
+            is_disabled: false 
         },
         {
             id: 'warranty',

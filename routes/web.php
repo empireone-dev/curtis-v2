@@ -23,8 +23,8 @@ Route::get('/auth/login', function () {
 Route::prefix('resolution')->group(function () {
     Route::inertia('/', 'resolution/page');
     Route::inertia('/registration', 'resolution/registration/page');
-    $categories = ['warranty', 'parts', 'safety_issue', 'search'];
-
+    Route::inertia('/product_registration', 'resolution/product_registration/page');
+    $categories = ['warranty', 'parts', 'safety_issue', 'search', 'product_registration'];
     foreach ($categories as $category) {
         Route::prefix($category)->group(function () use ($category) {
             Route::inertia('/confirmation', 'resolution/confirmation/page');
