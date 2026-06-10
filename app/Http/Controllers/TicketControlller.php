@@ -181,6 +181,7 @@ class TicketControlller extends Controller
             'remarks'       => 'nullable|string',
             'store_refusal_reason' => 'nullable|string',
             'call_type'     => 'nullable|string', // Added since it's used below
+            'parts_issue'     => 'nullable|string',
         ]);
 
         $callType = $request->input('call_type');
@@ -192,7 +193,8 @@ class TicketControlller extends Controller
             'call_type'    => $callType ?? 'CF-Warranty Claim',
             'status'       => $validation,
             'cases_status' => 'handled',
-            'created_from' => 'WEB FORM'
+            'created_from' => 'WEB FORM',
+            'issue' => $request->parts_issue
         ]));
 
         // 3. Generate subject and update the model directly in memory

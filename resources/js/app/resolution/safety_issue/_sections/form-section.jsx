@@ -45,12 +45,19 @@ export default function FormSection() {
             state: "",
             city: "",
             address: "",
+            zip_code_2: "",
+            country_2: "",
+            state_2: "",
+            city_2: "",
+            address_2: "",
             detailed_explanation_issue: null,
             has_contacted_store: null,
             store_refusal_reason: null,
             has_address_2: false,
             address2: null,
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
+            agree1: false,
+            agree2: false,
             files: {
                 modelSerial: [],
                 bill_of_sale: [],
@@ -233,32 +240,41 @@ export default function FormSection() {
                 }
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
-                    <Input
-                        id="purchase_date"
-                        type="date"
-                        disabled={ticket?.ticket?.id}
-                        label="Purchase Date"
-                        max={new Date().toISOString().split("T")[0]} // Restricts selection to today or earlier
-                        error={errors.purchase_date?.message}
-                        required={true}
-                        {...register("purchase_date", { required: "Purchase Date is required" })}
-                    />
-
                     <Input
                         id="serial_number"
                         label="Serial Number (e.g. A1234567890123456)"
                         error={errors.serial_number?.message}
                         disabled={window.location.pathname.split('/')[3] != 'blank'}
                         maxLength={17}
-                        // required={true}
+                        required={true}
                         {...register("serial_number", {
+                            required: "Serial number is required",
                             pattern: {
                                 value: /^A\d{16}$/,
                                 message: "Invalid format. Serial number must start with 'A' followed by 15 digits."
                             },
                         })}
                         onChange={search_serial_number}
+                    />
+                    <Input
+                        id="purchase_date"
+                        type="date"
+                        label="Purchase Date"
+                        disabled={ticket?.ticket?.id}
+                        max={new Date().toISOString().split("T")[0]} // Restricts selection to today or earlier
+                        error={errors.purchase_date?.message}
+                        required={true}
+                        {...register("purchase_date", { required: "Purchase Date is required" })}
+                        onKeyDown={(e) => {
+                            if (e.key !== "Tab") {
+                                e.preventDefault();
+                            }
+                        }}
+                        onClick={(e) => {
+                            if (e.currentTarget.showPicker) {
+                                e.currentTarget.showPicker();
+                            }
+                        }}
                     />
                 </div>
                 {
@@ -376,16 +392,16 @@ export default function FormSection() {
                             />
                         </div>
 
-
-                        {/* Address Section */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                        <div className="w-full">
                             <Input
-                                id="zip_code"
-                                label="Zip Code / Postal Code"
-                                error={errors.zip_code?.message}
+                                id="address"
+                                label="Address"
+                                error={errors.address?.message}
                                 required={true}
-                                {...register("zip_code", { required: "Zip code is required" })}
+                                {...register("address", { required: "Street address is required" })}
                             />
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                             <Controller
                                 name="country"
                                 control={control}
@@ -441,15 +457,12 @@ export default function FormSection() {
                                 required={true}
                                 {...register("city", { required: "City is required" })}
                             />
-                        </div>
-
-                        <div className="w-full">
                             <Input
-                                id="address"
-                                label="Address"
-                                error={errors.address?.message}
+                                id="zip_code"
+                                label="Zip Code / Postal Code"
+                                error={errors.zip_code?.message}
                                 required={true}
-                                {...register("address", { required: "Street address is required" })}
+                                {...register("zip_code", { required: "Zip code is required" })}
                             />
                         </div>
 
@@ -463,16 +476,82 @@ export default function FormSection() {
                             }
                         />
                         {
-                            !watchValues.has_address_2 && <div className="w-full">
-                                <Input
-                                    id="address2"
-                                    name="address2"
-                                    label="Mailing Address 2"
-                                    error={errors.address?.message}
-                                    required={true}
-                                    {...register("address2", { required: "Full address is required" })}
-                                />
-                            </div>
+                            !watchValues.has_address_2 && <>
+                                <div className="w-full">
+                                    <Input
+                                        id="address_2"
+                                        label="Address_2"
+                                        error={errors.address_2?.message}
+                                        required={true}
+                                        {...register("address_2", { required: "Street address is required" })}
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                    <Controller
+                                        name="country_2"
+                                        control={control}
+                                        rules={{ required: "Country is required" }}
+                                        render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                            <Select
+                                                label="Country"
+                                                required
+                                                name="country_2"
+                                                ref={ref}
+                                                value={value}
+                                                onChange={onChange} // Pass the Controller's onChange directly to your component
+                                                error={error?.message}
+                                                options={
+                                                    countries?.map((res) => ({
+                                                        ...res,
+                                                        label: res.name,
+                                                        value: res.value,
+                                                    })) || []
+                                                }
+                                            />
+                                        )}
+                                    />
+
+                                    <Controller
+                                        name="state_2"
+                                        control={control}
+                                        rules={{ required: "State is required" }}
+                                        render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                            <Select
+                                                label="State"
+                                                required
+                                                name="state_2"
+                                                ref={ref}
+                                                value={value}
+                                                onChange={onChange} // Pass the Controller's onChange directly to your component
+                                                error={error?.message}
+                                                options={
+                                                    states?.regions?.map((res) => ({
+                                                        ...res,
+                                                        label: res.name,
+                                                        value: res.value,
+                                                    })) || []
+                                                }
+                                            />
+                                        )}
+                                    />
+
+                                    <Input
+                                        id="city_2"
+                                        label="City"
+                                        error={errors.city?.message}
+                                        required={true}
+                                        {...register("city_2", { required: "City is required" })}
+                                    />
+                                    <Input
+                                        id="zip_code_2"
+                                        label="Zip Code / Postal Code"
+                                        error={errors.zip_code?.message}
+                                        required={true}
+                                        {...register("zip_code_2", { required: "Zip code is required" })}
+                                    />
+                                </div>
+                            </>
                         }
 
                         <div className="w-full">
@@ -489,9 +568,26 @@ export default function FormSection() {
                             setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
                             error={errors.files} // <-- Pass the error object down
                         />
-                        <div className="flex justify-center pt-2 md:pt-4">
+                        <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
+                            Check your Spam/Junk folder for confirmation emails and future claim-related communications.
+                        </div>
+
+                        <Checkbox
+                            name="agree1"
+                            label="Add a required checkbox for customers to acknowledge the accuracy of the information provided."
+                            checked={watchValues.agree1}
+                            onChange={(e) => setValue("agree1", e.target.checked)}
+                        />
+                        <Checkbox
+                            name="agree2"
+                            label="By submitting this warranty claim, I certify that all information and documentation provided, including photographs, model and serial number information, and my shipping/mailing address, are true, complete, and accurate to the best of my knowledge. I confirm that the product has not been intentionally damaged, modified, or misused. I understand that, if my claim is approved, Curtis may, at its sole discretion and in accordance with the applicable warranty terms, repair or replace the product or provide a refund of the purchase price. "
+                            checked={watchValues.agree2}
+                            onChange={(e) => setValue("agree2", e.target.checked)}
+                        />
+                        <div className="flex justify-center pt-2 md:pt-4 mt-12">
                             <Button
                                 loading={isSubmitting}
+                                disabled={!watchValues.agree1 || !watchValues.agree2}
                                 className="w-full sm:w-auto px-12"
                                 variant="primary"
                                 type="submit"

@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function HeaderSection({ title = '' }) {
-    const call_type = window.location.pathname?.split('/')[2]?.replace('_',' ')
+    const call_type = window.location.pathname?.split('/')[2]?.replace('_', ' ')
     return (
         <>
             <div className="relative w-full bg-gradient-to-b from-blue-700 to-blue-500 text-white p-10 flex flex-col items-center justify-between text-center max-h-[300px] overflow-hidden">
@@ -14,7 +14,7 @@ export default function HeaderSection({ title = '' }) {
                     </h1>
                 </div>
                 <div className="text-[16px] tracking-widest text-blue-200 uppercase flex space-x-3 z-10 mb-4 animate-fade-in-up [animation-delay:400ms]">
-                    <span>Customer {call_type??''}</span>
+                    <span>Customer {call_type == "safety issue" ? "Safety Concern" : call_type ?? ''}</span>
                 </div>
                 <div className="absolute bottom-0 left-0 w-full h-16 animate-wave-rise z-0">
                     <svg

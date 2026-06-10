@@ -3,7 +3,7 @@ import { FiUploadCloud, FiX, FiCheckCircle, FiAlertCircle } from 'react-icons/fi
 import { FaFileImage, FaFileVideo } from 'react-icons/fa';
 import moment from 'moment';
 
-const UploadFileSection = ({ files = {}, setFiles, error }) => {
+const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
     const [formatError, setFormatError] = useState(''); // State para sa format validation error
     const call_type = window.location.pathname.split('/')[2];
 
@@ -22,12 +22,12 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
         // 2. Bill of Sale (Always shown)
         {
             id: 'bill_of_sale',
-            label: 'Bill of Sale',
+            label: 'Bill of Sale / Receipt',
             description: 'Clear picture showing store name, purchase date, price, and unit description.',
             accept: '.jpg,.jpeg,.png',
             notes: 'Max size: 10MB. Formats: JPG, PNG.',
             icon: <FaFileImage className="w-6 h-6 text-green-500" />,
-            required: call_type === "safety_issue" ? false : true
+            required: call_type === "safety_issue" || parts_issue == '["Want to buy Parts"]' ? false : true
         },
 
         // 3. Parts Photo OR Defect Issue (Hidden if product_registration)
@@ -117,12 +117,12 @@ const UploadFileSection = ({ files = {}, setFiles, error }) => {
                     {call_type ? call_type.replace('_', ' ') : 'Claim'} File Upload
                     <span className="text-red-500" title="Required fields">*</span>
                 </h2>
+
                 <p className="text-gray-600 mt-1 text-sm">
                     To process your {call_type ? call_type.replace('_', ' ') : 'claim'} claim quickly, please upload the required documentation below.
                     All categories marked with an asterisk (<span className="text-red-500">*</span>) are mandatory.
                 </p>
             </div>
-
             {/* Local Format Error Alert Banner */}
             {formatError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm font-medium transition-all duration-200">

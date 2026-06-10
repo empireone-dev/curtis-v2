@@ -158,10 +158,21 @@ export default function ProductRegistrationFormSection() {
                         id="purchase_date"
                         type="date"
                         label="Purchase Date"
-                        max={new Date().toISOString().split("T")[0]} // Restricts selection to today or earlier
+                        disabled={ticket?.ticket?.id}
+                        max={new Date().toISOString().split("T")[0]}
                         error={errors.purchase_date?.message}
                         required={true}
                         {...register("purchase_date", { required: "Purchase Date is required" })}
+                        onKeyDown={(e) => {
+                            if (e.key !== "Tab") {
+                                e.preventDefault();
+                            }
+                        }}
+                        onClick={(e) => {
+                            if (e.currentTarget.showPicker) {
+                                e.currentTarget.showPicker();
+                            }
+                        }}
                     />
 
                     <Select
