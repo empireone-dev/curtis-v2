@@ -581,7 +581,7 @@ export default function FormSection() {
                         />
                     </div>
 
-                    <div className='flex flex-row gap-3 my-3'>
+                    {/* <div className='flex flex-row gap-3 my-3'>
                         <Radio
                             name="parts_issue"
                             label="Missing Part(s) (Bill of sale is required)"
@@ -601,8 +601,8 @@ export default function FormSection() {
                             checked={watchValues.parts_issue === '["Damage Parts"]'}
                             onChange={() => setValue("parts_issue", '["Damage Parts"]')}
                         />
-                    </div>
-                    {
+                    </div> */}
+                    {/* {
                         watchValues.parts_issue === '["Damage Parts"]' && <div className='border border-green-500 rounded-md p-2 text-green-500 shadow-sm mb-4 bg-green-100'>
                             Note: We provide a 48-hour warranty for shipping damaged parts.
                         </div>
@@ -611,7 +611,7 @@ export default function FormSection() {
                         watchValues.parts_issue === '["Missing Parts"]' && <div className='border border-green-500 rounded-md p-2 text-green-500 shadow-sm mb-4 bg-green-100'>
                             Note: Missing parts must be reported within 14 days after purchase.
                         </div>
-                    }
+                    } */}
                     <UploadFileSection
                         parts_issue={watchValues.parts_issue}
                         files={watchValues.files || {}}
