@@ -57,7 +57,7 @@ export default function FormSection() {
             address2: null,
             remarks: "Calling From:\nStore:\nPurchase Date:\nIssue:\nRemarks:",
             agree1: false,
-            agree2: false,
+            isAgree: false,
             files: {
                 modelSerial: [],
                 bill_of_sale: [],
@@ -118,6 +118,7 @@ export default function FormSection() {
         }
 
     }, [ticket, setValue]);
+
 
     const onSubmit = async (data) => {
 
@@ -395,10 +396,10 @@ export default function FormSection() {
                         <div className="w-full">
                             <Input
                                 id="address"
-                                label="Address"
+                                label="Physical Address"
                                 error={errors.address?.message}
                                 required={true}
-                                {...register("address", { required: "Street address is required" })}
+                                {...register("address", { required: "Physical address is required" })}
                             />
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
@@ -480,10 +481,10 @@ export default function FormSection() {
                                 <div className="w-full">
                                     <Input
                                         id="address_2"
-                                        label="Address_2"
+                                        label="Mailing Address"
                                         error={errors.address_2?.message}
                                         required={true}
-                                        {...register("address_2", { required: "Street address is required" })}
+                                        {...register("address_2", { required: "Mailing address is required" })}
                                     />
                                 </div>
 
@@ -572,22 +573,17 @@ export default function FormSection() {
                             Check your Spam/Junk folder for confirmation emails and future claim-related communications.
                         </div>
 
+                        
                         <Checkbox
-                            name="agree1"
-                            label="Add a required checkbox for customers to acknowledge the accuracy of the information provided."
-                            checked={watchValues.agree1}
-                            onChange={(e) => setValue("agree1", e.target.checked)}
-                        />
-                        <Checkbox
-                            name="agree2"
+                            name="isAgree"
                             label="By submitting this warranty claim, I certify that all information and documentation provided, including photographs, model and serial number information, and my shipping/mailing address, are true, complete, and accurate to the best of my knowledge. I confirm that the product has not been intentionally damaged, modified, or misused. I understand that, if my claim is approved, Curtis may, at its sole discretion and in accordance with the applicable warranty terms, repair or replace the product or provide a refund of the purchase price. "
-                            checked={watchValues.agree2}
-                            onChange={(e) => setValue("agree2", e.target.checked)}
+                            checked={watchValues.isAgree}
+                            onChange={(e) => setValue("isAgree", e.target.checked)}
                         />
                         <div className="flex justify-center pt-2 md:pt-4 mt-12">
                             <Button
                                 loading={isSubmitting}
-                                disabled={!watchValues.agree1 || !watchValues.agree2}
+                                disabled={!watchValues.agree1 || !watchValues.isAgree}
                                 className="w-full sm:w-auto px-12"
                                 variant="primary"
                                 type="submit"
