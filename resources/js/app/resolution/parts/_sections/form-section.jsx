@@ -634,7 +634,7 @@ export default function FormSection() {
                     <div className="flex justify-center pt-2 md:pt-4 mt-12">
                         <Button
                             loading={isSubmitting}
-                            disabled={!watchValues.agree1 || !watchValues.isAgree}
+                            disabled={!watchValues.isAgree}
                             className="w-full sm:w-auto px-12"
                             variant="primary"
                             type="submit"
