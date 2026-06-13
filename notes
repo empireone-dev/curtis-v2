@@ -1,2 +1,11 @@
 add php in plesk 
 /opt/plesk/php/8.4/bin/php $(which composer) update
+
+
+
+
+
+ticket status
+- PARTS VALIDATION
+- WARRANTY VALIDATION
+- SAFETY ISSUE VALIDATION

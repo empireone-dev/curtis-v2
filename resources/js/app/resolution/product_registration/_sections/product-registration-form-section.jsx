@@ -178,6 +178,10 @@ export default function ProductRegistrationFormSection() {
                     <Select
                         label="Model Number"
                         name="model"
+                        required
+                        {...register("model", {
+                            required: "Model Number is required",
+                        })}
                         options={
                             productFilter?.map((res) => ({
                                 ...res,

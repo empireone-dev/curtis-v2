@@ -493,7 +493,7 @@ export default function FormSection() {
                             setValue("has_address_2", val.target.checked)
                         }
                     />
-                    
+
                     {
                         !watchValues.has_address_2 && <>
                             <div className="w-full">
@@ -586,25 +586,25 @@ export default function FormSection() {
                     <div className='flex flex-row gap-3 my-3'>
                         <Radio
                             name="parts_issue"
-                            label="Missing Part(s) (Bill of sale is required)"
+                            label="Missing Part(s)"
                             checked={watchValues.parts_issue === '["Missing Parts"]'}
                             onChange={() => setValue("parts_issue", '["Missing Parts"]')}
                         />
 
                         <Radio
                             name="parts_issue"
-                            label="Want to Buy Part(s) (Bill of sale is not required)"
+                            label="Want to Buy Part(s)"
                             checked={watchValues.parts_issue === '["Want to buy Parts"]'}
                             onChange={() => setValue("parts_issue", '["Want to buy Parts"]')}
                         />
                         <Radio
                             name="parts_issue"
-                            label="Damaged Part(s) (Bill of sale is required)"
+                            label="Damaged Part(s)"
                             checked={watchValues.parts_issue === '["Damage Parts"]'}
                             onChange={() => setValue("parts_issue", '["Damage Parts"]')}
                         />
                     </div>
-                    
+
                     {
                         watchValues.parts_issue === '["Damage Parts"]' && <div className='border border-green-500 rounded-md p-2 text-green-500 shadow-sm mb-4 bg-green-100'>
                             Note: We provide a 48-hour warranty for shipping damaged parts.
