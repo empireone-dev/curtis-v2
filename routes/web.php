@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -34,9 +33,19 @@ Route::prefix('resolution')->group(function () {
     }
 });
 
-Route::get('/accounts/administrator/dashboard', function () {
-    return Inertia::render('accounts/administrator/dashboard/page');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::prefix('/accounts/administrator')->middleware(['auth', 'verified'])->group(function () {
+    
+    // Maps to /accounts/administrator/dashboard
+    Route::get('/dashboard', function () {
+        return Inertia::render('accounts/administrator/dashboard/page');
+    })->name('dashboard');
+
+    Route::get('/warranty', function () {
+        return Inertia::render('accounts/administrator/resolutions/warranty/page');
+    })->name('warranty');
+
+    // You can add more admin routes here later...
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

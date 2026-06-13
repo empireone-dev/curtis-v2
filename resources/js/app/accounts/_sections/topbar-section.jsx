@@ -3,17 +3,20 @@ import { Bars3Icon, LinkIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const navigation = [
-    { name: "Home", id: "home" },
-    { name: "About", id: "about-us" },
-    { name: "Contact", id: "contact" },
-];
 
 export default function TopbarSection() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isDark, setIsDark] = useState(true);
     const [scrolled, setScrolled] = useState(false);
-    const [hoveredPath, setHoveredPath] = useState(null);
+    const path = window.location.pathname.split('/')[3]
+
+    const navigation = [
+        { name: "Dashboard", link: "/accounts/administrator/dashboard", active: path == 'dashboard' },
+        { name: "Users", link: "/accounts/administrator/users", active: path == 'users' },
+        { name: "Productivity", link: "/accounts/administrator/productivity", active: path == 'productivity' },
+        { name: "Registered Products", link: "/accounts/administrator/registered_products", active: path == 'registered_products' },
+        { name: "ASC", id: "Asc", link: "/accounts/administrator/asc", active: path == 'asc' },
+    ];
 
     const scrollTo = (id) => {
         document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
@@ -79,39 +82,19 @@ export default function TopbarSection() {
 
                     {/* DESKTOP NAV */}
                     <div className="hidden lg:flex items-center gap-x-2">
-                        {navigation.map((item) => (
-                            <button
+                        {navigation.map((item, i) => (
+                            <Link
                                 key={item.name}
-                                onClick={() => scrollTo(item.id)}
-                                onMouseEnter={() => setHoveredPath(item.id)}
-                                onMouseLeave={() => setHoveredPath(null)}
-                                className="relative px-4 py-2 text-sm font-medium transition-opacity hover:opacity-100 opacity-80"
+                                href={item.link}
+                                className={`relative px-4 py-2 text-sm ${item.active ? "bg-white text-blue-600" : "hover:shadow hover:text-white"}  rounded-md font-black transition-opacity `}
                             >
                                 {item.name}
-                                {hoveredPath === item.id && (
-                                    <motion.div
-                                        layoutId="nav-hover"
-                                        className={`absolute inset-0 -z-10 rounded-full ${isDark ? "bg-white/10" : "bg-black/5"}`}
-                                        transition={{
-                                            type: "spring",
-                                            bounce: 0.25,
-                                            duration: 0.5,
-                                        }}
-                                    />
-                                )}
-                            </button>
+                            </Link>
                         ))}
                     </div>
 
                     {/* RIGHT ACTIONS */}
                     <div className="flex items-center gap-2 sm:gap-3">
-                        {/* <Link
-                            href="/auth/login"
-                            className="hidden sm:block px-3 sm:px-4 py-2 text-sm font-semibold hover:opacity-70 transition"
-                        >
-                            Log in
-                        </Link> */}
-                        {/* Changed Apply Now button to Blue */}
                         <Link
                             method="post" href={route("logout")} as="button"
                             className="hidden xs:inline-flex lg:inline-flex text-blue-600 bg-white hover:bg-gray-100 px-3 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold shadow-lg shadow-blue-500/20 transition-all hover:scale-105 active:scale-95 whitespace-nowrap"
@@ -179,14 +162,6 @@ export default function TopbarSection() {
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col gap-3 px-5 mt-6">
-                            {/* <Link
-                                href="/auth/login"
-                                className="w-full py-3.5 text-center font-bold border border-white/20 text-white rounded-2xl hover:bg-white/5 transition text-sm"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                Log In
-                            </Link> */}
-                            {/* Changed mobile Apply Now button to Blue gradient */}
                             <Link
                                 href="/resolution"
                                 className="w-full py-3.5 text-center font-bold bg-gradient-to-r from-blue-600 to-cyan-500 text-white rounded-2xl hover:from-blue-500 hover:to-cyan-400 transition text-sm shadow-lg shadow-blue-500/20"
