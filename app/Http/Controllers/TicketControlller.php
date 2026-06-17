@@ -194,6 +194,7 @@ class TicketControlller extends Controller
             'status'       => $validation,
             'cases_status' => 'handled',
             'created_from' => 'WEB FORM',
+            'is_reply' => 'true',
             'issue' => $request->parts_issue
         ]));
 
