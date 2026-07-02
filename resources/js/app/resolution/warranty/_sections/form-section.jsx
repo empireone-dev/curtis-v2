@@ -275,10 +275,12 @@ export default function FormSection() {
                             required: "Serial number is required",
                             pattern: {
                                 value: /^A\d{16}$/,
-                                message: "Invalid format. Serial number must start with 'A' followed by 15 digits."
+                                // Updated the message to say 16 digits to match the regex
+                                message: "Invalid format. Serial number must start with 'A' followed by 16 digits."
                             },
+                            // Move your custom onChange inside the register function!
+                            onChange: search_serial_number
                         })}
-                        onChange={search_serial_number}
                     />
                     <Input
                         id="purchase_date"
@@ -642,7 +644,7 @@ export default function FormSection() {
                             Check your Spam/Junk folder for confirmation emails and future claim-related communications.
                         </div>
 
-                        
+
                         <Checkbox
                             name="isAgree"
                             label="By submitting this warranty claim, I certify that all information and documentation provided, including photographs, model and serial number information, and my shipping/mailing address, are true, complete, and accurate to the best of my knowledge. I confirm that the product has not been intentionally damaged, modified, or misused. I understand that, if my claim is approved, Curtis may, at its sole discretion and in accordance with the applicable warranty terms, repair or replace the product or provide a refund of the purchase price. "

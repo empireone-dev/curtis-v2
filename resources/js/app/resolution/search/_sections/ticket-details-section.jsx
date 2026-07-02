@@ -71,13 +71,15 @@ export default function TicketDetailsSection() {
             </div>
 
             {/* 3. Dynamic Content Area */}
-            <div className="bg-white p-5 rounded-b-lg rounded-tr-lg border border-gray-200 shadow-sm min-h-[250px]">
-
+            <div className="bg-white p-5 rounded-b-lg rounded-tr-lg border border-gray-200 shadow-sm min-h-[250px] flex flex-col gap-3">
+                <div className='bg-green-50 text-green-900 p-2 rounded-md border border-green-100 leading-relaxed'>
+                    <p className="text-gray-800 font-black">CASE FILE: {ticket_info?.ticket_id}</p>
+                </div>
                 {/* OVERVIEW TAB */}
                 {activeTab === 'overview' && (
                     <div className="animate-fade-in">
                         <div className="bg-red-50 text-red-900 p-4 rounded-md border border-red-100 text-sm leading-relaxed">
-                           Customer detailed explanation / Issue: <br />"{ticket.issue}"
+                            Customer detailed explanation / Issue: <br />"{ticket.issue}"
                         </div>
                         <div className="mt-6 flex gap-4">
                             <StepperSection />
@@ -118,8 +120,8 @@ export default function TicketDetailsSection() {
                     <div className="grid grid-cols-2 gap-3 animate-fade-in">
 
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Serial Number</p>
-                            <p className="text-gray-800 font-medium">{ticket_info?.serial_number}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Case File</p>
+                            <p className="text-gray-800 font-medium">{ticket_info?.ticket_id}</p>
                         </div>
                         <div>
                             <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Brand</p>

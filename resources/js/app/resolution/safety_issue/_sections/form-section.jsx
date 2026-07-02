@@ -248,14 +248,16 @@ export default function FormSection() {
                         disabled={window.location.pathname.split('/')[3] != 'blank'}
                         maxLength={17}
                         required={true}
-                        {...register("serial_number", {
+                       {...register("serial_number", {
                             required: "Serial number is required",
                             pattern: {
                                 value: /^A\d{16}$/,
-                                message: "Invalid format. Serial number must start with 'A' followed by 15 digits."
+                                // Updated the message to say 16 digits to match the regex
+                                message: "Invalid format. Serial number must start with 'A' followed by 16 digits."
                             },
+                            // Move your custom onChange inside the register function!
+                            onChange: search_serial_number
                         })}
-                        onChange={search_serial_number}
                     />
                     <Input
                         id="purchase_date"

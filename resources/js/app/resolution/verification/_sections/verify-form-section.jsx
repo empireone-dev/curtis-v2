@@ -113,11 +113,13 @@ export default function VerifyFormSection() {
                     {...register("serial_number", {
                         required: "Serial number is required",
                         pattern: {
-                            value: serialRegex,
-                            message: "Invalid format. Serial number must start with 'A' followed by 15 digits."
+                            value: /^A\d{16}$/,
+                            // Updated the message to say 16 digits to match the regex
+                            message: "Invalid format. Serial number must start with 'A' followed by 16 digits."
                         },
+                        // Move your custom onChange inside the register function!
+                        onChange: search_serial_number
                     })}
-                    onChange={search_serial_number}
                 />
 
                 <Button
@@ -133,7 +135,7 @@ export default function VerifyFormSection() {
                     ticket?.id === undefined && <Button
                         className="w-full"
                         variant="danger"
-                        type="submit"
+                        type="button"
                         onClick={() => router.visit(`/resolution/${call_type}/confirmation`)}
                     >
                         GO BACK
