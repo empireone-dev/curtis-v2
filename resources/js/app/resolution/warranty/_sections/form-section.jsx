@@ -155,7 +155,7 @@ export default function FormSection() {
         try {
             formData.append('call_type', 'CF-Warranty Claim');
             await create_ticket_service(formData);
-            router.visit(`/resolution/success/${formData.serial_number}`)
+            router.visit(`/resolution/success/${data.serial_number}`)
             reset();
 
         } catch (error) {
