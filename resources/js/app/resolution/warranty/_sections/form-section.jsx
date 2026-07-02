@@ -154,20 +154,8 @@ export default function FormSection() {
 
         try {
             formData.append('call_type', 'CF-Warranty Claim');
-            await toast.promise(
-                create_ticket_service(formData),
-                {
-                    pending: 'Submitting your ticket...',
-                    success: {
-                        render: 'Your form has been successfully submitted. You will receive an email confirmation shortly. 🛠️',
-                        autoClose: false, // Prevents auto-closing on success
-                    },
-                    error: {
-                        render: 'Failed to submit the form. Please try again. ❌',
-                        autoClose: false, // Prevents auto-closing on error
-                    }
-                }
-            );
+            await create_ticket_service(formData);
+            router.visit(`/resolution/success/${formData.serial_number}`)
             reset();
 
         } catch (error) {

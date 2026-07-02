@@ -23,6 +23,7 @@ Route::prefix('resolution')->group(function () {
     Route::inertia('/', 'resolution/page');
     Route::inertia('/registration', 'resolution/registration/page');
     Route::inertia('/product_registration', 'resolution/product_registration/page');
+    Route::inertia('/success/{serial}', 'resolution/success/page');
     $categories = ['warranty', 'parts', 'safety_issue', 'search', 'product_registration'];
     foreach ($categories as $category) {
         Route::prefix($category)->group(function () use ($category) {
@@ -34,12 +35,14 @@ Route::prefix('resolution')->group(function () {
 });
 
 Route::prefix('/accounts/administrator')->middleware(['auth', 'verified'])->group(function () {
-    
+
     // Maps to /accounts/administrator/dashboard
     Route::get('/dashboard', function () {
         return Inertia::render('accounts/administrator/dashboard/page');
     })->name('dashboard');
-
+    Route::get('/analytics', function () {
+        return Inertia::render('accounts/administrator/analytics/page');
+    })->name('analytics');
     Route::get('/warranty', function () {
         return Inertia::render('accounts/administrator/resolutions/warranty/page');
     })->name('warranty');

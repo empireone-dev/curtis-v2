@@ -120,6 +120,7 @@ export default function FormSection() {
     }, [ticket, setValue]);
 
 
+
     const onSubmit = async (data) => {
 
         const formData = new FormData();
@@ -145,21 +146,8 @@ export default function FormSection() {
 
         try {
             formData.append('call_type', 'Safety Issue');
-            await toast.promise(
-                create_ticket_service(formData),
-                {
-                    pending: 'Submitting your ticket...',
-                    success: {
-                        render: 'Your form has been successfully submitted. You will receive an email confirmation shortly. 🛠️',
-                        autoClose: false, // Prevents auto-closing on success
-                    },
-                    error: {
-                        render: 'Failed to submit the form. Please try again. ❌',
-                        autoClose: false, // Prevents auto-closing on error
-                    }
-                }
-            );
-
+            await create_ticket_service(formData);
+            router.visit(`/resolution/success/${formData.serial_number}`)
             reset();
         } catch (error) {
             console.error("Submission failed:", error);
@@ -248,7 +236,7 @@ export default function FormSection() {
                         disabled={window.location.pathname.split('/')[3] != 'blank'}
                         maxLength={17}
                         required={true}
-                       {...register("serial_number", {
+                        {...register("serial_number", {
                             required: "Serial number is required",
                             pattern: {
                                 value: /^A\d{16}$/,
@@ -575,7 +563,7 @@ export default function FormSection() {
                             Check your Spam/Junk folder for confirmation emails and future claim-related communications.
                         </div>
 
-                        
+
                         <Checkbox
                             name="isAgree"
                             label="By submitting this warranty claim, I certify that all information and documentation provided, including photographs, model and serial number information, and my shipping/mailing address, are true, complete, and accurate to the best of my knowledge. I confirm that the product has not been intentionally damaged, modified, or misused. I understand that, if my claim is approved, Curtis may, at its sole discretion and in accordance with the applicable warranty terms, repair or replace the product or provide a refund of the purchase price. "

@@ -12,6 +12,7 @@ export default function TopbarSection() {
 
     const navigation = [
         { name: "Dashboard", link: "/accounts/administrator/dashboard", active: path == 'dashboard' },
+        { name: "Analytics", link: "/accounts/administrator/analytics", active: path == 'analytics' },
         { name: "Users", link: "/accounts/administrator/users", active: path == 'users' },
         { name: "Productivity", link: "/accounts/administrator/productivity", active: path == 'productivity' },
         { name: "Registered Products", link: "/accounts/administrator/registered_products", active: path == 'registered_products' },
