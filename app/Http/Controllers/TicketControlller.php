@@ -184,58 +184,64 @@ class TicketControlller extends Controller
             'parts_issue'     => 'nullable|string',
         ]);
 
-        $callType = $request->input('call_type');
-        $validation = $this->getValidation($callType);
+        $isExist = false;
+        if ($request->filled('serial_number')) {
+            $isExist = Ticket::where('serial_number', $request->input('serial_number'))->exists();
+        }
 
+        if (!$isExist) {
+            $callType = $request->input('call_type');
+            $validation = $this->getValidation($callType);
+            $ticket = Ticket::create(array_merge($validated, [
+                'user_id'      => $this->queueing($callType),
+                'call_type'    => $callType ?? 'CF-Warranty Claim',
+                'status'       => $validation,
+                'cases_status' => 'handled',
+                'created_from' => 'WEB FORM',
+                'is_reply' => 'true',
+                'issue' => $request->parts_issue
+            ]));
 
-        $ticket = Ticket::create(array_merge($validated, [
-            'user_id'      => $this->queueing($callType),
-            'call_type'    => $callType ?? 'CF-Warranty Claim',
-            'status'       => $validation,
-            'cases_status' => 'handled',
-            'created_from' => 'WEB FORM',
-            'is_reply' => 'true',
-            'issue' => $request->parts_issue
-        ]));
+            // 3. Generate subject and update the model directly in memory
+            $subject = $this->generateSubject($callType, $ticket->id);
+            $ticket->update(['ticket_id' => $subject]);
+            $ticket->url = url("/resolution/search/{$ticket->serial_number}");
+            $this->send_initial_email($subject, $ticket, $callType);
 
-        // 3. Generate subject and update the model directly in memory
-        $subject = $this->generateSubject($callType, $ticket->id);
-        $ticket->update(['ticket_id' => $subject]);
-        $ticket->url = url("/resolution/search/{$ticket->serial_number}");
-        $this->send_initial_email($subject, $ticket, $callType);
-
-        Activity::create([
-            'user_id' => 0,
-            'ticket_id' => $ticket->id,
-            'type' => 'TICKET CREATED',
-            'message' => json_encode($ticket)
-        ]);
-        $fileCategories = [
-            'readable_serial_section',
-            'bill_of_sale',
-            'parts_model',
-            'receipt_model',
-            'defect_issue'
-        ];
-        $folder = date("Y");
-        $filesData = [];
-        foreach ($fileCategories as $category) {
-            if ($request->hasFile($category)) {
-                foreach ($request->file($category) as $uploadedFile) {
-                    $path = $uploadedFile->store($folder, 's3');
-                    $filesData[] = [
-                        'ticket_id'  => $ticket->id,
-                        'url'        => Storage::disk('s3')->url($path),
-                        'type'       => $category, // Dynamically assigns 'bill_of_sale', etc.
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+            Activity::create([
+                'user_id' => 0,
+                'ticket_id' => $ticket->id,
+                'type' => 'TICKET CREATED',
+                'message' => json_encode($ticket)
+            ]);
+            $fileCategories = [
+                'readable_serial_section',
+                'bill_of_sale',
+                'parts_model',
+                'receipt_model',
+                'defect_issue'
+            ];
+            $folder = date("Y");
+            $filesData = [];
+            foreach ($fileCategories as $category) {
+                if ($request->hasFile($category)) {
+                    foreach ($request->file($category) as $uploadedFile) {
+                        $path = $uploadedFile->store($folder, 's3');
+                        $filesData[] = [
+                            'ticket_id'  => $ticket->id,
+                            'url'        => Storage::disk('s3')->url($path),
+                            'type'       => $category, // Dynamically assigns 'bill_of_sale', etc.
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
                 }
             }
+            if (!empty($filesData)) {
+                File::insert($filesData);
+            }
         }
-        if (!empty($filesData)) {
-            File::insert($filesData);
-        }
+
         return response()->json(['message' => 'success'], 200);
     }
 }
