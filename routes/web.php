@@ -5,7 +5,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('homepage/page');
+    // return Inertia::render('homepage/page');
+    return Inertia::render('auth/login/page');
 });
 
 Route::prefix('email')->group(function () {
@@ -40,6 +41,9 @@ Route::prefix('/accounts/administrator')->middleware(['auth', 'verified'])->grou
     Route::get('/dashboard', function () {
         return Inertia::render('accounts/administrator/dashboard/page');
     })->name('dashboard');
+    Route::get('/emails', function () {
+        return Inertia::render('accounts/administrator/emails/page');
+    })->name('emails');
     Route::get('/analytics', function () {
         return Inertia::render('accounts/administrator/analytics/page');
     })->name('analytics');

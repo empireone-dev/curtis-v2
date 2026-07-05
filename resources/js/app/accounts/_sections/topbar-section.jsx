@@ -14,6 +14,7 @@ export default function TopbarSection() {
         { name: "Dashboard", link: "/accounts/administrator/dashboard", active: path == 'dashboard' },
         { name: "Analytics", link: "/accounts/administrator/analytics", active: path == 'analytics' },
         { name: "Users", link: "/accounts/administrator/users", active: path == 'users' },
+        { name: "Emails", link: "/accounts/administrator/emails", active: path == 'emails' },
         { name: "Productivity", link: "/accounts/administrator/productivity", active: path == 'productivity' },
         { name: "Registered Products", link: "/accounts/administrator/registered_products", active: path == 'registered_products' },
         { name: "ASC", id: "Asc", link: "/accounts/administrator/asc", active: path == 'asc' },
