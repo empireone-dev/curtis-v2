@@ -1,11 +1,14 @@
 
 import React from "react";
 import Layout from './../../layout'
+import CreatedTicketStatsSection from "./_sections/created-ticket-stats-section";
+import ProcessedTicketStatsSection from "./_sections/processed-ticket-stats-section";
 export default function Page() {
     return (
         <Layout>
-            <div className="mx-auto transition-all duration-500 px-3 sm:px-5 py-2.5 sm:py-3 max-w-[95vw] sm:max-w-7xl  flex items-center justify-center">
-              dada
+            <div className="flex flex-col gap-3">
+                <CreatedTicketStatsSection />
+                <ProcessedTicketStatsSection />
             </div>
         </Layout>
     );

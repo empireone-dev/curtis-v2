@@ -10,11 +10,16 @@ export const appSlice = createSlice({
         products: [],
         common_issues: [],
         ticket: {
-            id:'',
+            id: "",
             email: "",
         },
+        desktopCollapsed: false,
+        sidebarOpen: false,
     },
     reducers: {
+        setSidebarOpen: (state) => {
+            state.sidebarOpen = !state.sidebarOpen;
+        },
         setLoading: (state, action) => {
             state.setLoading = action.payload;
         },
@@ -30,14 +35,19 @@ export const appSlice = createSlice({
         setTicket: (state, action) => {
             state.ticket = action.payload;
         },
+        setDesktopCollapsed: (state) => {
+            state.desktopCollapsed = !state.desktopCollapsed;
+        },
     },
 });
 export const {
     setLoading,
+    setSidebarOpen,
     setProductRegistration,
     setProducts,
     setCommonIssues,
     setTicket,
+    desktopCollapsed,
 } = appSlice.actions;
 
 export default appSlice.reducer;

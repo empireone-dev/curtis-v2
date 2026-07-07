@@ -1,12 +1,24 @@
 import React from 'react'
-import TopbarSection from './_sections/topbar-section'
+import SidebarSection from './_sections/sidebar-section'
+import { useSelector } from 'react-redux';
+import TopbarSection from './_sections/topbar-section';
 
 export default function Layout({ children }) {
+    const { desktopCollapsed } = useSelector((store) => store.app);
     return (
-        <div>
-            <TopbarSection />
-            <div className="mt-24 mx-12">
-                {children}
+         <div className="h-full bg-white ">
+            <SidebarSection />
+            <div
+                className={`${
+                    desktopCollapsed ? "" : "lg:pl-72"
+                } flex flex-col min-h-screen transition-all duration-300`}
+            >
+                <TopbarSection />
+                <main
+                    className={`flex-1 p-6 bg-gray-100 mt-24  ${desktopCollapsed ? "ml-20" : ""}`}
+                >
+                    {children}
+                </main>
             </div>
         </div>
     )
