@@ -55,14 +55,14 @@ export default function ProcessedTicketStatsSection() {
     };
     return (
         <div>
-            {/* --- BAR GRAPH SECTION --- */}
-            <div>
-                <h2>Sales vs Profit (Bar Graph)</h2>
-                <div style={{ width: '100%', height: '300px' }}>
+            <div className="flex-1 basis-[500px] min-w-[300px] p-5 bg-white border border-gray-200 rounded-xl">
+                <h3 className="mb-5 text-lg font-semibold text-gray-700">
+                   Number of ticket processed
+                </h3>
+                <div className="w-full h-[350px]">
                     <Bar options={options} data={chartData} />
                 </div>
             </div>
-
         </div>
     )
 }
