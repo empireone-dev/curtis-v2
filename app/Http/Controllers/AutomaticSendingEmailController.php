@@ -16,6 +16,7 @@ class AutomaticSendingEmailController extends Controller
             ->whereDate('created_at', Carbon::now()->subDays(3)->toDateString())
             ->where('call_type', 'CF-Warranty Claim')
             ->whereNotNull('email')
+            ->whereNotNull('serial_number')
             // Group the missing file checks together
             ->where(function ($query) {
                 $query->whereDoesntHave('files', function ($q) {
