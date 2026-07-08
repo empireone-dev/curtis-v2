@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AutomaticSendingEmailController;
 use App\Http\Controllers\ProductRegistrationControlller;
 use App\Http\Controllers\TicketControlller;
 use Illuminate\Http\Request;
@@ -11,7 +12,11 @@ Route::get('/user', function (Request $request) {
 
 
 
+Route::get('/send_lacking_information_notification', [AutomaticSendingEmailController::class, 'send_lacking_information_notification']);
+
+
 Route::resource('tickets', TicketControlller::class);
+Route::post('/upload_lacking_information', [TicketControlller::class, 'upload_lacking_information']);
 Route::get('/search_serial_number/{id}', [TicketControlller::class, 'search_serial_number']);
 Route::get('/get_ticket_by_serial_number/{id}', [TicketControlller::class, 'get_ticket_by_serial_number']);
 Route::get('/get_product_registration_by_serial_number/{id}', [TicketControlller::class, 'get_product_registration_by_serial_number']);

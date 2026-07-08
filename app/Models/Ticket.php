@@ -68,6 +68,12 @@ class Ticket extends Model
     ];
 
 
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(File::class, 'ticket_id', 'id')->where('type', '<>', 'upload');
+    }
+    
     public function activities(): HasMany
     {
         return $this->hasMany(Activity::class, 'ticket_id', 'id')->where('type', '<>', 'upload');

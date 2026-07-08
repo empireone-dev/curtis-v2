@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import StepperSection from './stepper-section';
 import moment from 'moment';
+import UploadLackingInformationSection from './upload-lacking-information-section';
 
 export default function TicketDetailsSection() {
     const { ticket: ticket_info } = useSelector((store) => store.app);
     // Managing our interactive tabs
     const [activeTab, setActiveTab] = useState('overview');
+    const url = new URL(window.location.href);
 
+    // Get the value of the 'tab' parameter
+    const tabValue = url.searchParams.get("tab");
+
+    useEffect(() => {
+        setActiveTab(tabValue ?? 'overview')
+    }, [])
     // Using the data from your previous JSON payload as default state
     const ticket = {
         id: ticket_info?.ticket_id,
@@ -62,6 +70,9 @@ export default function TicketDetailsSection() {
                 <button onClick={() => setActiveTab('overview')} className={tabClass('overview')}>
                     Overview & Issue
                 </button>
+                <button onClick={() => setActiveTab('upload')} className={tabClass('upload')}>
+                    Files
+                </button>
                 <button onClick={() => setActiveTab('customer')} className={tabClass('customer')}>
                     Customer Details
                 </button>
@@ -87,6 +98,10 @@ export default function TicketDetailsSection() {
                     </div>
                 )}
 
+
+                {
+                    activeTab === 'upload' && <UploadLackingInformationSection />
+                }
                 {/* CUSTOMER TAB */}
                 {activeTab === 'customer' && (
                     <div className="grid grid-cols-1 gap-3 animate-fade-in">

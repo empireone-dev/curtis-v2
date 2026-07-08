@@ -17,13 +17,20 @@ class TicketControlller extends Controller
 
     public function get_ticket_by_serial_number($serial_number)
     {
-        $ticket = Ticket::where('serial_number', $serial_number)->with(['activities', 'product_registration'])->first();
+        $ticket = Ticket::where('serial_number', $serial_number)->with(['activities', 'product_registration','files'])->first();
         if ($ticket) {
             return response()->json([
                 'data' => $ticket,
                 'message' => 'success'
             ], 200);
         }
+    }
+
+    public function upload_lacking_information(Request $request)
+    {
+        return response()->json([
+            'message' => 'success'
+        ], 200);
     }
 
     public function get_product_registration_by_serial_number($serial_number)
