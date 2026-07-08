@@ -54,7 +54,8 @@ class AutomaticSendingEmailController extends Controller
             'tickets_found' => $tickets->count(),
             // Grab the actual count from Google's response
             'emails_sent'   => $googleResponse['emails_sent'] ?? 0,
-            'error_msg'     => $googleResponse['message'] ?? null
+            'error_msg'     => $googleResponse['message'] ?? null,
+            'tickets' => $tickets,
         ], 200);
     }
 }
