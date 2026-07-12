@@ -6,7 +6,12 @@ import moment from 'moment';
 const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValues }) => {
     const [formatError, setFormatError] = useState(''); // State para sa format validation error
     const call_type = window.location.pathname.split('/')[2];
-
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const rawLackings = urlParams.get('lackings');
+    const lackings = rawLackings ? rawLackings.split(',') : [];
+    const notes = urlParams.get('notes');
+    console.log('lackingslackings', lackings);
     const uploadRequirements = [
         // 1. Model & Serial Number (Hidden if product_registration)
         call_type !== 'product_registration' ? {
@@ -109,11 +114,19 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
         });
     };
 
-    console.log('watchValues', watchValues?.uploaded_files)
+
+    // console.log('watchValues', )
     const default_files = watchValues?.uploaded_files
     return (
-        <div className="mt-6 mb-4">
+        <div className="">
             {/* Section Header */}
+            {
+                notes && <div className='border border-blue-500 rounded-md p-2 text-blue-500 shadow-sm mb-4 bg-blue-100'>
+                    Agent Note :<br /> <div className='px-3'>
+                        {notes}
+                    </div>
+                </div>
+            }
             <div className="mb-4">
                 <h2 className="text-xl font-bold text-gray-800 flex items-center gap-1 capitalize">
                     {call_type ? call_type.replace('_', ' ') : 'Claim'} File Upload
@@ -172,26 +185,28 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
                                 )}
                             </div>
 
-                            {/* Upload Target Zone */}
-                            <div className={`relative border-2 border-dashed rounded-lg p-6 hover:bg-gray-100 transition-colors text-center cursor-pointer bg-white ${isSectionMissing ? 'border-red-300' : 'border-gray-300'
-                                }`}>
-                                <input
-                                    type="file"
-                                    accept={req.accept}
-                                    required={req.required && categoryFiles.length === 0}
-                                    onChange={(e) => handleFileChange(e, req)} // Gi-pasa ang tibuok 'req' object para sa validation
-                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                />
-                                <div className="flex flex-col items-center justify-center gap-2 pointer-events-none">
-                                    <FiUploadCloud className={`w-8 h-8 ${isSectionMissing ? 'text-red-400' : 'text-gray-400'}`} />
-                                    <span className="text-sm font-medium text-blue-600">
-                                        Click to upload or drag and drop
-                                    </span>
-                                    <span className="text-xs text-gray-400 font-medium">
-                                        {req.notes}
-                                    </span>
+                            {
+                                lackings.includes(req.id) && <div className={`relative border-2 border-dashed rounded-lg p-6 hover:bg-gray-100 transition-colors text-center cursor-pointer bg-white ${isSectionMissing ? 'border-red-300' : 'border-gray-300'
+                                    }`}>
+                                    <input
+                                        type="file"
+                                        accept={req.accept}
+                                        required={req.required && categoryFiles.length === 0}
+                                        onChange={(e) => handleFileChange(e, req)} // Gi-pasa ang tibuok 'req' object para sa validation
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                    <div className="flex flex-col items-center justify-center gap-2 pointer-events-none">
+                                        <FiUploadCloud className={`w-8 h-8 ${isSectionMissing ? 'text-red-400' : 'text-gray-400'}`} />
+                                        <span className="text-sm font-medium text-blue-600">
+                                            Click to upload or drag and drop
+                                        </span>
+                                        <span className="text-xs text-gray-400 font-medium">
+                                            {req.notes}
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
+                            }
+
 
                             {
                                 default_files[req.id] && <div className="mt-4 space-y-2">

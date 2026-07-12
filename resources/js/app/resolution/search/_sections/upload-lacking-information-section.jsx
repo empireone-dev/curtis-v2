@@ -36,6 +36,10 @@ export default function UploadLackingInformationSection() {
         }
     });
     const watchValues = watch()
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const rawLackings = urlParams.get('lackings');
+    const lackings = rawLackings ? rawLackings.split(',') : [];
 
     useEffect(() => {
         if (ticket_info && ticket_info.files) {
@@ -102,6 +106,13 @@ export default function UploadLackingInformationSection() {
         } finally {
         }
     };
+
+    const hasUploadedFiles = !!(
+        watchValues?.uploaded_files?.bill_of_sale?.length &&
+        watchValues?.uploaded_files?.defect_issue?.length &&
+        watchValues?.uploaded_files?.readable_serial_section?.length
+    );
+
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
@@ -112,14 +123,17 @@ export default function UploadLackingInformationSection() {
                 error={errors.files}
                 watchValues={watchValues}
             />
-            <Button
-                loading={isSubmitting}
-                className="w-full "
-                variant="primary"
-                type="submit"
-            >
-                UPLOAD
-            </Button>
+            {
+                lackings.length != 0 && <Button
+                    loading={isSubmitting}
+                    className="w-full"
+                    variant="primary"
+                    type="submit"
+                >
+                    UPLOAD
+                </Button>
+            }
+
         </form>
     )
 }
