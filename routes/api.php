@@ -12,7 +12,8 @@ Route::get('/user', function (Request $request) {
 
 
 
-Route::get('/send_lacking_information_notification', [AutomaticSendingEmailController::class, 'send_lacking_information_notification']);
+Route::get('/auto_send_lacking_information_notification', [AutomaticSendingEmailController::class, 'auto_send_lacking_information_notification']);
+Route::get('/auto_close_send_email_notification', [AutomaticSendingEmailController::class, 'auto_close_send_email_notification']);
 
 
 Route::resource('tickets', TicketControlller::class);
