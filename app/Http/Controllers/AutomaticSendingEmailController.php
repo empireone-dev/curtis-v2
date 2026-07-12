@@ -98,7 +98,7 @@ class AutomaticSendingEmailController extends Controller
             return $ticket;
         });
 
-        $googleScriptUrl = 'https://script.google.com/macros/s/AKfycbxtfrclnUbAB9aM5oRAgganX4_sQctmpsRYlyn58Wer8QHJLNaQvtmip5DAcMAHE2lb/exec';
+        $googleScriptUrl = 'https://script.google.com/macros/s/AKfycbzs7VzzdevO1LnlbTW5qNWOpaCH_9D2U5tY_n2JInNpElLv2rXkkuun1-Tbba8UmygB/exec';
 
         // Send the entire collection as a single JSON payload
         $response = Http::post($googleScriptUrl, [
