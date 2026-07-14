@@ -10,18 +10,32 @@ const StepperSection = () => {
         ...(ticket?.activities || []),
         ...(ticket ? [{
             type: ticket.status,
-            created_at: ticket.updated_at, 
-            message: null              
+            created_at: ticket.updated_at,
+            message: null
         }] : [])
     ];
+
     const activitiesCount = activities?.length || 0;
+
+    // Helper function to safely parse JSON without crashing the app
+    const safeJsonParse = (message) => {
+        if (!message) return null;
+        try {
+            return JSON.parse(message);
+        } catch (error) {
+            console.warn("Failed to parse JSON for message:", message);
+            // Optional: return the raw message under a fallback key if you still want to display it
+            return { data: { status: message } };
+        }
+    };
+
     return (
         <div className="max-w-2xl">
-            
             <div className="relative border-l-2 border-gray-200">
                 {activities?.map((step, index) => {
-                    // Changed variable name to 'activityData' to prevent shadowing the outer 'ticket' state
-                    const activityData = JSON.parse(step.message);
+
+                    // Safely parse the message
+                    const activityData = safeJsonParse(step.message);
                     const isLast = index === activitiesCount - 1;
 
                     return (
