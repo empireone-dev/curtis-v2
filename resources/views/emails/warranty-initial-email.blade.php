@@ -23,7 +23,6 @@
 
         .header {
             background: #2563eb;
-            /* Updated to match Curtis International blue */
             padding: 30px;
             text-align: center;
             color: white;
@@ -46,6 +45,16 @@
             border-radius: 6px;
             margin: 20px 0;
             border-left: 4px solid #2563eb;
+        }
+
+        /* Added style for the new note section */
+        .info-box {
+            background-color: #fffbeb;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 14px;
         }
 
         .claim-details ul {
@@ -107,6 +116,12 @@
                 </div>
 
                 <p>If we require any additional information or clearer photos to process your request, we will reply directly to this email. Otherwise, keep an eye on your inbox for updates regarding the shipment or resolution of your requested parts.</p>
+
+                <!-- New Note Added Here -->
+                <div class="info-box">
+                    <p><strong>Note:</strong> Please do not throw/recycle the unit until all the required information has been validated. You will receive a notification to do so when we have already received and verified all the important information. If the unit is disposed of or is no longer with you, we cannot assist you further with your claim.</p>
+                    <p><strong>Disclaimer:</strong> We do NOT want the consumer to open the unit at any time, and doing so will void the warranty.</p>
+                </div>
 
                 <div class="button-container">
                     <a href="{{ $ticket->url }}" class="btn-primary" style="color:white">Track Claim Status</a>

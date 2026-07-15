@@ -47,6 +47,16 @@
             border-left: 4px solid #2563eb;
         }
 
+        /* Added style for the new note section */
+        .info-box {
+            background-color: #fffbeb;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
         .claim-details ul {
             list-style-type: none;
             padding: 0;
@@ -91,7 +101,7 @@
             </div>
             <div class="content">
                 <p>Hi <strong>{{ $ticket->fname??'' }}</strong>,</p>
-                <p>Thank you for reaching out to <strong>Curtis International Ltd.</strong>We have successfully received your product safety concern report.</p>
+                <p>Thank you for reaching out to <strong>Curtis International Ltd.</strong> We have successfully received your product safety concern report.</p>
 
                 <p>Our support team is currently reviewing your submitted details and the documents you provided (Bill of Sale, Model/Serial Number, and Photo or video of the issue). We typically validate and respond to requests within <strong>24–48 business hours</strong>.</p>
 
@@ -106,6 +116,12 @@
                 </div>
 
                 <p>If our team requires any additional information or clearer photos to investigate this incident thoroughly, we will reply directly to this email. We appreciate your patience while we look into this matter.</p>
+
+                <!-- New Note Added Here -->
+                <div class="info-box">
+                    <p><strong>Note:</strong> Please do not throw/recycle the unit until all the required information has been validated. You will receive a notification to do so when we have already received and verified all the important information. If the unit is disposed of or is no longer with you, we cannot assist you further with your claim.</p>
+                    <p><strong>Disclaimer:</strong> We do NOT want the consumer to open the unit at any time, and doing so will void the warranty.</p>
+                </div>
 
                 <div class="button-container">
                     <a href="{{ $ticket->url }}" class="btn-primary" style="color:white">Track Report Status</a>
