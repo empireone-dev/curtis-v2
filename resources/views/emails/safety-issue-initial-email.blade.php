@@ -105,6 +105,7 @@
 
                 <p>Our support team is currently reviewing your submitted details and the documents you provided (Bill of Sale, Model/Serial Number, and Photo or video of the issue). We typically validate and respond to requests within <strong>24–48 business hours</strong>.</p>
 
+                <p><em>*Note - Support Team is open from 8 AM - 5 PM EST, Mondays to Fridays.</em></p>
                 <div class="claim-details">
                     <p style="margin-top: 0;"><strong>Your Report Summary:</strong></p>
                     <ul>
