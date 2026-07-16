@@ -102,9 +102,9 @@ class AutomaticSendingEmailController extends Controller
         $googleResponse = $response->json();
         $ticketIds = $processedTickets->pluck('id')->toArray();
         if (!empty($ticketIds)) {
-            Ticket::whereIn('id', $ticketIds)->update([
-                'status' => 'CLOSED'
-            ]);
+            // Ticket::whereIn('id', $ticketIds)->update([
+            //     'status' => 'CLOSED'
+            // ]);
         }
 
         return response()->json([
