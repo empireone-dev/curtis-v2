@@ -7,9 +7,9 @@ import Button from '@/app/_components/button';
 import { useSelector } from 'react-redux';
 import store from '@/app/store/store';
 import { get_ticket_by_serial_number_thunk } from '@/app/_redux/app-thunk';
+import { router } from '@inertiajs/react';
 
 export default function UploadLackingInformationSection() {
-
     const { ticket: ticket_info } = useSelector((store) => store.app);
     const {
         register,
@@ -17,7 +17,7 @@ export default function UploadLackingInformationSection() {
         watch,
         setError,
         control,
-        setValue, // We will use this to loop through our redux state
+        setValue,
         reset,
         formState: { errors, isSubmitting }
     } = useForm({
@@ -35,7 +35,8 @@ export default function UploadLackingInformationSection() {
             }
         }
     });
-    const watchValues = watch()
+
+    const watchValues = watch();
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const rawLackings = urlParams.get('lackings');
@@ -55,25 +56,25 @@ export default function UploadLackingInformationSection() {
     useEffect(() => {
         register("files", {
             validate: (value) => {
-                const requiredCategories = ['readable_serial_section', 'bill_of_sale', 'defect_issue'];
+                // If there are no lackings, technically no files are required to be uploaded
+                if (lackings.length === 0) return true;
 
-                // Check if any required category is empty or missing
-                const missingCategories = requiredCategories.filter(
+                // Dynamically check ONLY the categories requested in the `lackings` array
+                const missingCategories = lackings.filter(
                     (id) => !value?.[id] || value[id].length === 0
                 );
 
                 if (missingCategories.length > 0) {
-                    return "All attachment sections are mandatory. Please upload the missing files.";
+                    return "Please upload all the required missing files.";
                 }
                 return true;
             }
         });
-    }, [register]);
+    }, [register, rawLackings]);
+
 
     const onSubmit = async (data) => {
-
         const formData = new FormData();
-
 
         Object.keys(data).forEach(key => {
             if (key === 'files') {
@@ -90,33 +91,34 @@ export default function UploadLackingInformationSection() {
         try {
             const serialNumber = window.location.pathname.split('/')[3];
             const toastId = toast.loading('Uploading files...');
-            formData.append('call_type', 'CF-Warranty Claim');
+            formData.append('call_type', ticket_info.call_type);
+            formData.append('id', ticket_info.id);
+
             await upload_lacking_information_service(formData);
             await store.dispatch(get_ticket_by_serial_number_thunk(serialNumber));
             toast.update(toastId, {
                 render: 'Files uploaded successfully! 🛠️',
                 type: 'success',
+                closeButton: true,
                 isLoading: false,
-                autoClose: 3000 // Automatically close after 3 seconds
             });
-            reset();
+
+            setValue('files.readable_serial_section', []);
+            setValue('files.bill_of_sale', []);
+            setValue('files.defect_issue', []);
         } catch (error) {
             console.error("Submission failed:", error);
             alert("Failed to submit the form. Please try again.");
-        } finally {
         }
     };
 
-    const hasUploadedFiles = !!(
-        watchValues?.uploaded_files?.bill_of_sale?.length &&
-        watchValues?.uploaded_files?.defect_issue?.length &&
-        watchValues?.uploaded_files?.readable_serial_section?.length
+    // Updated this to be dynamic as well, just in case you use it elsewhere in your UI
+    const hasUploadedFiles = lackings.every(
+        id => watchValues?.uploaded_files?.[id]?.length > 0
     );
 
     return (
-        <form
-            onSubmit={handleSubmit(onSubmit)}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
             <UploadFileSection
                 files={watchValues.files || {}}
                 setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
@@ -124,16 +126,17 @@ export default function UploadLackingInformationSection() {
                 watchValues={watchValues}
             />
             {
-                lackings.length != 0 && <Button
-                    loading={isSubmitting}
-                    className="w-full"
-                    variant="primary"
-                    type="submit"
-                >
-                    UPLOAD
-                </Button>
+                lackings.length !== 0 && (
+                    <Button
+                        loading={isSubmitting}
+                        className="w-full"
+                        variant="primary"
+                        type="submit"
+                    >
+                        UPLOAD
+                    </Button>
+                )
             }
-
         </form>
     )
 }

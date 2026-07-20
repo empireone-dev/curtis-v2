@@ -6,6 +6,7 @@ import UploadLackingInformationSection from './upload-lacking-information-sectio
 
 export default function TicketDetailsSection() {
     const { ticket: ticket_info } = useSelector((store) => store.app);
+    const [isExpanded, setIsExpanded] = useState(false);
     // Managing our interactive tabs
     const [activeTab, setActiveTab] = useState('overview');
     const url = new URL(window.location.href);
@@ -90,7 +91,21 @@ export default function TicketDetailsSection() {
                 {activeTab === 'overview' && (
                     <div className="animate-fade-in">
                         <div className="bg-red-50 text-red-900 p-4 rounded-md border border-red-100 text-sm leading-relaxed">
-                            Customer detailed explanation / Issue: <br />"{ticket.issue}"
+                            Customer detailed explanation / Issue: <br />
+                            "{isExpanded || (ticket?.issue?.length ?? 0) <= 120
+                                ? ticket?.issue
+                                : `${ticket?.issue?.substring(0, 120)}...`
+                            }"
+
+                            {/* Only show the button if the issue string is longer than 120 characters */}
+                            {(ticket?.issue?.length ?? 0) > 120 && (
+                                <button
+                                    onClick={() => setIsExpanded(!isExpanded)}
+                                    className="text-red-700 hover:text-red-800 hover:underline font-semibold ml-2 transition-colors"
+                                >
+                                    {isExpanded ? "See less" : "See more"}
+                                </button>
+                            )}
                         </div>
                         <div className="mt-6 flex gap-4">
                             <StepperSection />

@@ -56,8 +56,8 @@ const StepperSection = () => {
                             </span>
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">
                                 <div>
-                                    <h3 className="font-semibold text-lg text-gray-900">
-                                        {step.type} {activityData?.data?.status ?? ''}
+                                    <h3 className="font-semibold text-lg text-gray-900 uppercase ">
+                                        {step.type == "upload" ? "" : step.type} {activityData?.data?.status == "Upload Complete by Customer" ? 'Customer-Provided Photo/Video' : activityData?.data?.status}
                                     </h3>
                                     <p className="mt-1 text-sm text-gray-700">
                                         {moment(step.created_at).format('LLL')}

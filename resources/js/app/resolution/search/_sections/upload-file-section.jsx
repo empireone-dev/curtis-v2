@@ -1,19 +1,22 @@
-import React, { useState } from 'react'; // Gidugang ang useState diri
+import React, { useState } from 'react';
 import { FiUploadCloud, FiX, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
 import { FaFileImage, FaFileVideo } from 'react-icons/fa';
-import moment from 'moment';
 
 const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValues }) => {
-    const [formatError, setFormatError] = useState(''); // State para sa format validation error
-    const call_type = window.location.pathname.split('/')[2];
+    const [formatError, setFormatError] = useState('');
+    
+    const pathParts = window.location.pathname.split('/');
+    const call_type = pathParts.length > 2 ? pathParts[2] : ''; 
+    
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     const rawLackings = urlParams.get('lackings');
     const lackings = rawLackings ? rawLackings.split(',') : [];
     const notes = urlParams.get('notes');
+    
     console.log('lackingslackings', lackings);
+    
     const uploadRequirements = [
-        // 1. Model & Serial Number (Hidden if product_registration)
         call_type !== 'product_registration' ? {
             id: 'readable_serial_section',
             label: 'Model & Serial Number',
@@ -24,7 +27,6 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
             required: true
         } : null,
 
-        // 2. Bill of Sale (Always shown)
         {
             id: 'bill_of_sale',
             label: 'Bill of Sale / Receipt',
@@ -32,10 +34,9 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
             accept: '.jpg,.jpeg,.png',
             notes: 'Max size: 10MB. Formats: JPG, PNG.',
             icon: <FaFileImage className="w-6 h-6 text-green-500" />,
-            required: call_type === "safety_issue" || parts_issue == '["Want to buy Parts"]' ? false : true
+            required: call_type === "safety_issue" || parts_issue === '["Want to buy Parts"]' ? false : true
         },
 
-        // 3. Parts Photo OR Defect Issue (Hidden if product_registration)
         call_type === 'parts'
             ? {
                 id: 'parts_model',
@@ -68,7 +69,6 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
         const selectedFiles = Array.from(e.target.files);
         const currentCategoryFiles = files[req.id] || [];
 
-        // Definition sa mga valid formats
         const allowedImageExtensions = ['.jpg', '.jpeg', '.png'];
         const allowedVideoExtensions = ['.mp4', '.mov'];
 
@@ -77,13 +77,11 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
         const validFiles = selectedFiles.filter(file => {
             const extension = '.' + file.name.split('.').pop().toLowerCase();
 
-            // Atong tan-awon kung unsa ra dapat ang dawaton base sa "accept" property sa requirement
             if (req.accept === '.jpg,.jpeg,.png') {
                 const isValidImg = allowedImageExtensions.includes(extension);
                 if (!isValidImg) hasInvalidFile = true;
                 return isValidImg;
             } else {
-                // Modawat og Image ug Video
                 const isValidImg = allowedImageExtensions.includes(extension);
                 const isValidVid = allowedVideoExtensions.includes(extension);
                 if (!isValidImg && !isValidVid) hasInvalidFile = true;
@@ -92,10 +90,9 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
         });
 
         if (hasInvalidFile) {
-            // Mao kini ang error message nga mugawas
             setFormatError("Unsupported file format. Please upload a JPG, PNG, MP4, or MOV file.");
         } else {
-            setFormatError(''); // Clear error kung sakto ang format
+            setFormatError(''); 
         }
 
         if (validFiles.length > 0) {
@@ -114,31 +111,31 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
         });
     };
 
+    const default_files = watchValues?.uploaded_files || {};
 
-    // console.log('watchValues', )
-    const default_files = watchValues?.uploaded_files
     return (
         <div className="">
-            {/* Section Header */}
-            {
-                notes && <div className='border border-blue-500 rounded-md p-2 text-blue-500 shadow-sm mb-4 bg-blue-100'>
-                    Agent Note :<br /> <div className='px-3'>
+            {notes && (
+                <div className='border border-blue-500 rounded-md p-2 text-blue-500 shadow-sm mb-4 bg-blue-100'>
+                    Agent Note :<br /> 
+                    <div className='px-3'>
                         {notes}
                     </div>
                 </div>
-            }
+            )}
+            
             <div className="mb-4">
                 <h2 className="text-xl font-bold text-gray-800 flex items-center gap-1 capitalize">
-                    {call_type ? call_type.replace('_', ' ') : 'Claim'} File Upload
+                    {call_type ? call_type.replace(/_/g, ' ') : 'Claim'} File Upload
                     <span className="text-red-500" title="Required fields">*</span>
                 </h2>
 
                 <p className="text-gray-600 mt-1 text-sm">
-                    To process your {call_type ? call_type.replace('_', ' ') : 'claim'} claim quickly, please upload the required documentation below.
+                    To process your {call_type ? call_type.replace(/_/g, ' ') : 'claim'} claim quickly, please upload the required documentation below.
                     All categories marked with an asterisk (<span className="text-red-500">*</span>) are mandatory.
                 </p>
             </div>
-            {/* Local Format Error Alert Banner */}
+            
             {formatError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm font-medium transition-all duration-200">
                     <FiAlertCircle className="w-5 h-5 flex-shrink-0 text-red-500" />
@@ -146,7 +143,6 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
                 </div>
             )}
 
-            {/* Global Missing Fields Error Message Banner */}
             {error && !formatError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm font-medium animate-pulse">
                     <FiAlertCircle className="w-5 h-5 flex-shrink-0 text-red-500" />
@@ -157,22 +153,29 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
             <div className="space-y-6">
                 {uploadRequirements.map((req) => {
                     const categoryFiles = files[req.id] || [];
-                    const isSectionMissing = error && categoryFiles.length === 0 && req.required;
-                    console.log('categoryFiles', req.id)
+                    
+                    // NEW LOGIC: Only required if it's explicitly set to required AND it's in the lackings list
+                    const isDynamicRequired = req.required && lackings.includes(req.id);
+                    
+                    // The section is missing if there's a global error, no files uploaded, and it is actually required
+                    const isSectionMissing = error && categoryFiles.length === 0 && isDynamicRequired;
+                    
                     return (
                         <div
                             key={req.id}
-                            className={`p-5 border rounded-lg transition-all duration-200 ${isSectionMissing
-                                ? 'border-red-300 bg-red-50/30 ring-1 ring-red-200'
-                                : 'border-gray-200 bg-gray-50'
-                                }`}
+                            className={`p-5 border rounded-lg transition-all duration-200 ${
+                                isSectionMissing
+                                    ? 'border-red-300 bg-red-50/30 ring-1 ring-red-200'
+                                    : 'border-gray-200 bg-gray-50'
+                            }`}
                         >
                             <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                     {req.icon}
                                     <div>
                                         <h3 className="font-semibold text-gray-800 flex items-center gap-1">
-                                            {req.label} {req.required && <span className="text-red-500">*</span>}
+                                            {/* Render asterisk only if dynamically required */}
+                                            {req.label} {isDynamicRequired && <span className="text-red-500">*</span>}
                                         </h3>
                                         <p className="text-sm text-gray-500">{req.description}</p>
                                     </div>
@@ -185,15 +188,18 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
                                 )}
                             </div>
 
-                            {
-                                lackings.includes(req.id) && <div className={`relative border-2 border-dashed rounded-lg p-6 hover:bg-gray-100 transition-colors text-center cursor-pointer bg-white ${isSectionMissing ? 'border-red-300' : 'border-gray-300'
-                                    }`}>
+                            {/* Only show the upload section if the req.id is in the lackings array */}
+                            {lackings.includes(req.id) && (
+                                <div className={`relative border-2 border-dashed rounded-lg p-6 hover:bg-gray-100 transition-colors text-center cursor-pointer bg-white ${
+                                    isSectionMissing ? 'border-red-300' : 'border-gray-300'
+                                }`}>
                                     <input
                                         type="file"
                                         accept={req.accept}
-                                        required={req.required && categoryFiles.length === 0}
-                                        onChange={(e) => handleFileChange(e, req)} // Gi-pasa ang tibuok 'req' object para sa validation
+                                        required={isDynamicRequired && categoryFiles.length === 0}
+                                        onChange={(e) => handleFileChange(e, req)}
                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                        multiple 
                                     />
                                     <div className="flex flex-col items-center justify-center gap-2 pointer-events-none">
                                         <FiUploadCloud className={`w-8 h-8 ${isSectionMissing ? 'text-red-400' : 'text-gray-400'}`} />
@@ -205,16 +211,19 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
                                         </span>
                                     </div>
                                 </div>
-                            }
+                            )}
 
-
-                            {
-                                default_files[req.id] && <div className="mt-4 space-y-2">
+                            {/* Previous Uploads (Will ALWAYS show if they exist, regardless of lackings array) */}
+                            {default_files?.[req.id] && (
+                                <div className="mt-4 space-y-2">
                                     {default_files[req.id].map((file, index) => (
                                         <a
                                             target='_blank'
+                                            rel="noopener noreferrer"
                                             href={file.url}
-                                            key={index} className="flex items-center justify-between p-2 bg-white border border-gray-200 rounded text-sm shadow-sm">
+                                            key={index} 
+                                            className="flex items-center justify-between p-2 bg-white border border-gray-200 rounded text-sm shadow-sm hover:bg-gray-50 transition-colors"
+                                        >
                                             <div className="flex items-center gap-2 truncate">
                                                 <FiCheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                                                 <span className="truncate text-gray-700">{file.url}</span>
@@ -222,8 +231,9 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue, watchValu
                                         </a>
                                     ))}
                                 </div>
-                            }
-                            {/* File Preview Cards */}
+                            )}
+                            
+                            {/* Newly Uploaded File Preview Cards */}
                             {categoryFiles.length > 0 && (
                                 <div className="mt-4 space-y-2">
                                     {categoryFiles.map((file, index) => (

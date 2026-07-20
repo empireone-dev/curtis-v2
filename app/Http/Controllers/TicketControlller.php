@@ -17,7 +17,7 @@ class TicketControlller extends Controller
 
     public function get_ticket_by_serial_number($serial_number)
     {
-        $ticket = Ticket::where('serial_number', $serial_number)->with(['activities', 'product_registration','files'])->first();
+        $ticket = Ticket::where('serial_number', $serial_number)->with(['activities', 'product_registration', 'files'])->first();
         if ($ticket) {
             return response()->json([
                 'data' => $ticket,
@@ -28,6 +28,38 @@ class TicketControlller extends Controller
 
     public function upload_lacking_information(Request $request)
     {
+        $fileCategories = [
+            'readable_serial_section',
+            'bill_of_sale',
+            'parts_model',
+            'receipt_model',
+            'defect_issue'
+        ];
+        $folder = date("Y");
+        $filesData = [];
+        foreach ($fileCategories as $category) {
+            if ($request->hasFile($category)) {
+                foreach ($request->file($category) as $uploadedFile) {
+                    $path = $uploadedFile->store($folder, 's3');
+                    $filesData[] = [
+                        'ticket_id'  => $request->id,
+                        'url'        => Storage::disk('s3')->url($path),
+                        'type'       => $category, // Dynamically assigns 'bill_of_sale', etc.
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+        }
+        Activity::create([
+            'user_id' => 0,
+            'ticket_id' => $request->id,
+            'message' => 'Customer uploaded the lacking information.',
+            'type' => 'upload',
+        ]);
+        if (!empty($filesData)) {
+            File::insert($filesData);
+        }
         return response()->json([
             'message' => 'success'
         ], 200);

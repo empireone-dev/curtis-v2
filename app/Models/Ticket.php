@@ -76,7 +76,7 @@ class Ticket extends Model
     
     public function activities(): HasMany
     {
-        return $this->hasMany(Activity::class, 'ticket_id', 'id')->where('type', '<>', 'upload');
+        return $this->hasMany(Activity::class, 'ticket_id', 'id');
     }
     public function product_registration(): HasOne
     {
