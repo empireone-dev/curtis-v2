@@ -51,6 +51,12 @@ class TicketControlller extends Controller
                 }
             }
         }
+        $ticket = Ticket::where('id', $request->id)->first();
+        if ($ticket && $ticket->status == 'CLOSED') {
+            $ticket->update([
+                'status' => 'WARRANTY VALIDATION'
+            ]);
+        }
         Activity::create([
             'user_id' => 0,
             'ticket_id' => $request->id,
