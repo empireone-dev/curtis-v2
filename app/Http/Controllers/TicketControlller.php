@@ -39,7 +39,8 @@ class TicketControlller extends Controller
         $validatedData['phone'] = $this->formatPhoneNumber($validatedData['phone']);
         Ticket::create([
             ...$validatedData,
-            'item_number' => $validatedData['model']
+            'item_number' => $validatedData['model'],
+            'status' => 'CLOSED'
         ]);
         if ($validatedData['is_sending_email']) {
             Mail::to($validatedData['email'])->send(new AIReferWebForm());
