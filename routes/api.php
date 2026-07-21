@@ -5,12 +5,16 @@ use App\Http\Controllers\ProductRegistrationControlller;
 use App\Http\Controllers\TicketControlller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\EnsureValidApiKey;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 
+Route::middleware([EnsureValidApiKey::class])->group(function () {
+    Route::post('/ticket_creation', [TicketControlller::class, 'ticket_creation']);
+});
 
 Route::get('/auto_send_lacking_information_notification', [AutomaticSendingEmailController::class, 'auto_send_lacking_information_notification']);
 Route::get('/auto_close_send_email_notification', [AutomaticSendingEmailController::class, 'auto_close_send_email_notification']);

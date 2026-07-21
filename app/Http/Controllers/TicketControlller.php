@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AIReferWebForm;
 use App\Models\Activity;
 use App\Models\File;
 use App\Models\ProductRegistration;
@@ -10,10 +11,45 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class TicketControlller extends Controller
 {
+
+    private function formatPhoneNumber($phone)
+    {
+        $cleaned = preg_replace('/[^0-9]/', '', $phone);
+        if (strlen($cleaned) === 10) {
+            return preg_replace("/^(\d{3})(\d{3})(\d{4})$/", "($1) $2-$3", $cleaned);
+        }
+        return $phone;
+    }
+    public function ticket_creation(Request $request)
+    {
+        $validatedData = $request->validate([
+            'model' => 'nullable|string',
+            'phone' => 'required|string', // Required as per the image
+            'fname' => 'nullable|string',
+            'lname' => 'nullable|string',
+            'email' => 'required_if:is_sending_email,true|nullable|email',
+            'remarks' => 'required|string',
+            'is_sending_email' => 'required|boolean',
+        ]);
+        $validatedData['phone'] = $this->formatPhoneNumber($validatedData['phone']);
+        Ticket::create([
+            ...$validatedData,
+            'item_number' => $validatedData['model']
+        ]);
+        if ($validatedData['is_sending_email']) {
+            Mail::to($validatedData['email'])->send(new AIReferWebForm());
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Ticket created successfully.',
+            'data' => $validatedData
+        ], 200);
+    }
 
     public function get_ticket_by_serial_number($serial_number)
     {

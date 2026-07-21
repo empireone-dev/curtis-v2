@@ -9,6 +9,10 @@ Route::get('/', function () {
     return Inertia::render('auth/login/page');
 });
 
+Route::get('/preview-webform', function () {
+    return view('emails.ai_refer_webform');
+});
+
 Route::prefix('email')->group(function () {
     Route::view('/warranty-initial-email', 'emails.warranty-initial-email');
     Route::view('/parts-initial-email', 'emails.parts-initial-email');

@@ -1,4 +1,4 @@
-add php in plesk 
+add php in plesk
 /opt/plesk/php/8.4/bin/php $(which composer) update
 
 
@@ -10,7 +10,7 @@ ticket status
 - WARRANTY VALIDATION
 - LACKING INFORMATION
 - DECISION MAKING
-- REFUND/REPLACEMENT/REPAIR/RMA REQUEST 
+- REFUND/REPLACEMENT/REPAIR/RMA REQUEST
 - if Replacement(WAITING FOR PHOTOS TO DISTROY)
 - if Repair (REPAIR SUCCESS, REPAIR UNSUCCESSFUL)
 - PROCESS TICKET
@@ -18,3 +18,14 @@ ticket status
 
 - PARTS VALIDATION
 - SAFETY ISSUE VALIDATION
+
+
+
+
+
+
+
+App\Models\ApiKey::create([
+'name' => 'AI Caller',
+'key' => bin2hex(random_bytes(32)) // Generates a secure 64-character random string
+]);
