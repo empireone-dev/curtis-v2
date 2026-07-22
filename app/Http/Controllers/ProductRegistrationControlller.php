@@ -49,10 +49,25 @@ class ProductRegistrationControlller extends Controller
 
         // 3. Safely create the database record first
         $pr = ProductRegistration::create($textData);
+        $reviewsIoPayload = [
+            'name'     => $request->fname . ' ' . $request->lname,
+            'email'    => $request->email,
+            'order_id' => $pr->id,
+            'products' => [
+                [
+                    'sku'  => $pr->model,
+                    'name' => $request->model
+                ]
+            ]
+        ];
 
+        $reviewRequest = new \Illuminate\Http\Request();
+        $reviewRequest->merge($reviewsIoPayload);
+        app(IOController::class)->add_review($reviewRequest);
+        
         // 4. Handle the file uploads and update the record
         $folder = date("Y");
-
+        app(IOController::class)->add_review($request);
         foreach ($fileCategories as $category) {
             if ($request->hasFile($category)) {
                 // NOTE: If there are multiple files in one category, this loop 
