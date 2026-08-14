@@ -32,20 +32,22 @@ class TicketControlller extends Controller
             'phone' => 'required|string', // Required as per the image
             'fname' => 'nullable|string',
             'lname' => 'nullable|string',
-            'email' => 'required_if:is_sending_email,true|nullable|email',
+            'email' => 'nullable|string',
+            // 'email' => 'required_if:is_sending_email,true|nullable|email',
             'remarks' => 'required|string',
-            'is_sending_email' => 'required|boolean',
+            'call_type' => 'required|string',
+            // 'is_sending_email' => 'required|boolean',
         ]);
         $validatedData['phone'] = $this->formatPhoneNumber($validatedData['phone']);
         Ticket::create([
             ...$validatedData,
             'item_number' => $validatedData['model'],
             'status' => 'CLOSED',
-            'call_type' => 'Refer to Website/Webform'
+            'call_type' => $request->call_type
         ]);
-        if ($validatedData['is_sending_email']) {
-            Mail::to($validatedData['email'])->send(new AIReferWebForm());
-        }
+        // if ($validatedData['is_sending_email']) {
+        //     Mail::to($validatedData['email'])->send(new AIReferWebForm());
+        // }
         return response()->json([
             'status' => 'success',
             'message' => 'Ticket created successfully.',
