@@ -10,23 +10,23 @@ import {
 // 1. Register the Chart.js components needed for a Doughnut chart
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function PercentageProvidePhotos({ props_data }) {
+export default function PercentageOfApprovedClaims({ props_data }) {
     // --- DATA EXTRACTION ---
     // Safely extract the percentages from the passed props, defaulting to 0
-    const providesValue = props_data?.total_percentage_provide_photos || 0;
-    const notProvidesValue = props_data?.total_percentage_not_provide_photos || 0;
+    const fastPercentage = props_data?.percentage_fast_approved || 0;
+    const slowPercentage = props_data?.percentage_slow_approved || 0;
 
-    // Extract raw counts for the UI (falling back to 0 if not present)
-    const providesCount = props_data?.provides_count || 0;
-    const notProvidesCount = props_data?.not_provides_count || 0;
-    const totalCount = providesCount + notProvidesCount;
+    // Extract the raw counts for the UI
+    const fastCount = props_data?.fast_approved_count || 0;
+    const slowCount = props_data?.slow_approved_count || 0;
+    const totalCount = props_data?.total_approved_count || 0;
 
     // Extract the raw lists of tickets for the exports
-    const providesList = props_data?.data?.provides || [];
-    const notProvidesList = props_data?.data?.not_provides || [];
+    const fastList = props_data?.data?.fast_approved || [];
+    const slowList = props_data?.data?.slow_approved || [];
 
-    // Calculate total (should naturally be 100, but formatting cleanly)
-    const totalPercentage = (providesValue + notProvidesValue).toFixed(0);
+    // Calculate total percentage (should naturally be 100, formatting cleanly)
+    const totalPercentage = (fastPercentage + slowPercentage).toFixed(0);
 
     // --- CSV EXPORT LOGIC ---
     const exportToCSV = (dataset, filename) => {
@@ -38,12 +38,22 @@ export default function PercentageProvidePhotos({ props_data }) {
         // 1. Extract headers dynamically from the first object's keys
         const headers = Object.keys(dataset[0]).join(',');
 
-        // 2. Map through the data and format rows (wrapping values in quotes to prevent comma breaks)
+        // 2. Map through the data and format rows 
         const rows = dataset.map(obj => {
             return Object.values(obj).map(val => {
-                // Escape quotes inside the string and wrap in quotes
-                const stringVal = val === null || val === undefined ? '' : String(val);
+
+                let stringVal = '';
+
+                // Check if the value exists
+                if (val !== null && val !== undefined) {
+                    // IF the value is an object/array (like the approved_claims relationship)
+                    // THEN stringify it into JSON so it doesn't print [object Object]
+                    stringVal = typeof val === 'object' ? JSON.stringify(val) : String(val);
+                }
+
+                // Escape quotes inside the string and wrap in quotes to prevent comma breaks
                 return `"${stringVal.replace(/"/g, '""')}"`;
+
             }).join(',');
         }).join('\n');
 
@@ -65,11 +75,11 @@ export default function PercentageProvidePhotos({ props_data }) {
 
     // --- CHART DATA ---
     const statusData = {
-        labels: ['Provides', 'Not Provides'],
+        labels: ['Fast (≤ 3 Days)', 'Slow (> 3 Days)'],
         datasets: [
             {
-                data: [providesValue, notProvidesValue],
-                backgroundColor: ['#10b981', '#f59e0b'], // Emerald for Provides, Amber for Not Provides
+                data: [fastPercentage, slowPercentage],
+                backgroundColor: ['#10b981', '#f59e0b'], // Emerald for Fast, Amber for Slow
                 hoverBackgroundColor: ['#059669', '#d97706'], // Slightly darker on hover
                 borderWidth: 0, // Removes the border between segments for a cleaner look
                 cutout: '75%', // Controls the thickness of the doughnut ring
@@ -107,26 +117,26 @@ export default function PercentageProvidePhotos({ props_data }) {
 
     return (
         <div className="font-sans">
+
             <div className="flex flex-col gap-6 md:flex-row">
+                {/* --- DOUGHNUT CHART CONTAINER --- */}
+                <div className="flex items-center justify-center flex-1 p-5 bg-white border border-gray-200 rounded-xl">
 
-                {/* --- MAIN WIDGET CONTAINER --- */}
-                <div className="flex flex-col w-full gap-6 p-5 bg-white border border-gray-200 lg:flex-row rounded-xl">
-
-                    {/* --- LEFT COLUMN: Text & KPI Cards --- */}
+                    {/* Left Column: Headings & Cards */}
                     <div className='flex flex-col justify-center flex-1 w-full gap-3'>
                         <h2 className="w-full mb-2 text-2xl font-semibold text-left text-gray-700">
-                            Provides vs. Not Provides
+                            Percentage of Approved Claims
                         </h2>
 
                         <div className="w-full">
                             <h3 className="mb-6 text-lg font-bold text-gray-900">
-                                Web Form — Percentage Provide Photos
+                                Web Form — Turnaround Time
                             </h3>
 
-                            {/* KPI SUMMARY CARDS */}
+                            {/* --- KPI SUMMARY CARDS --- */}
                             <div className="flex flex-col w-full gap-4 sm:flex-row">
 
-                                {/* Provides Card */}
+                                {/* Fast Card */}
                                 <div className="flex flex-col flex-1 p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
                                     <div className="flex items-center">
                                         <div className="p-3 mr-4 rounded-full bg-emerald-50">
@@ -136,14 +146,14 @@ export default function PercentageProvidePhotos({ props_data }) {
                                             </svg>
                                         </div>
                                         <div>
-                                            <p className="text-sm font-medium tracking-wide text-gray-500 uppercase">Provides</p>
-                                            <p className="text-2xl font-bold text-gray-900">{providesValue}%</p>
-                                            <p className="text-xs text-gray-400">Vol: {providesCount}</p>
+                                            <p className="text-sm font-medium tracking-wide text-gray-500 uppercase">Fast (≤ 3 Days)</p>
+                                            <p className="text-2xl font-bold text-gray-900">{fastPercentage}%</p>
+                                            <p className="text-xs text-gray-400">Vol: {fastCount}</p>
                                         </div>
                                     </div>
                                     {/* Export Button */}
                                     <button
-                                        onClick={() => exportToCSV(providesList, 'provided_photos_tickets.csv')}
+                                        onClick={() => exportToCSV(fastList, 'fast_approved_claims.csv')}
                                         className="flex items-center justify-center w-full gap-2 py-2 mt-4 text-sm font-medium transition-colors rounded-lg text-emerald-700 bg-emerald-50 hover:bg-emerald-100"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -153,24 +163,24 @@ export default function PercentageProvidePhotos({ props_data }) {
                                     </button>
                                 </div>
 
-                                {/* Not Provides Card */}
+                                {/* Slow Card */}
                                 <div className="flex flex-col flex-1 p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
                                     <div className="flex items-center">
                                         <div className="p-3 mr-4 rounded-full bg-amber-50">
-                                            {/* Folder open icon */}
+                                            {/* Clock icon */}
                                             <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                             </svg>
                                         </div>
                                         <div>
-                                            <p className="text-sm font-medium tracking-wide text-gray-500 uppercase">Not Provides</p>
-                                            <p className="text-2xl font-bold text-gray-900">{notProvidesValue}%</p>
-                                            <p className="text-xs text-gray-400">Vol: {notProvidesCount}</p>
+                                            <p className="text-sm font-medium tracking-wide text-gray-500 uppercase">Slow (&gt; 3 Days)</p>
+                                            <p className="text-2xl font-bold text-gray-900">{slowPercentage}%</p>
+                                            <p className="text-xs text-gray-400">Vol: {slowCount}</p>
                                         </div>
                                     </div>
                                     {/* Export Button */}
                                     <button
-                                        onClick={() => exportToCSV(notProvidesList, 'not_provided_photos_tickets.csv')}
+                                        onClick={() => exportToCSV(slowList, 'slow_approved_claims.csv')}
                                         className="flex items-center justify-center w-full gap-2 py-2 mt-4 text-sm font-medium transition-colors rounded-lg text-amber-700 bg-amber-50 hover:bg-amber-100"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -184,8 +194,9 @@ export default function PercentageProvidePhotos({ props_data }) {
                         </div>
                     </div>
 
-                    {/* --- RIGHT COLUMN: Doughnut Chart --- */}
+                    {/* Right Column: The Chart itself */}
                     <div className="relative w-full h-[300px] flex justify-center items-center flex-1">
+
                         <Doughnut options={chartOptions} data={statusData} />
 
                         {/* Center Text inside the Doughnut */}
@@ -194,8 +205,8 @@ export default function PercentageProvidePhotos({ props_data }) {
                             <span className="text-sm text-gray-500">{totalCount} Total Claims</span>
                         </div>
                     </div>
-
                 </div>
+
             </div>
         </div>
     );

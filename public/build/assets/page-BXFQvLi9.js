@@ -1,0 +1,1 @@
+import"./rolldown-runtime-BM3Ffeng.js";import{n as e,t}from"./jsx-runtime-DBA9_yck.js";import n from"./layout-D2qyn5rk.js";import r from"./sample-DEVwgCtX.js";e();var i=t();function a(){return(0,i.jsx)(n,{children:(0,i.jsx)(r,{})})}export{a as default};

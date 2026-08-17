@@ -13,6 +13,7 @@ import PerformanceMetrixSection from './performance-metrix-section';
 import TicketAgeSection from './ticket-age-section';
 import { useSelector } from 'react-redux';
 import PercentageProvidePhotos from './percentage-provide-photos';
+import PercentageOfApprovedClaims from './⁠percentage_of_approved_claims';
 
 export default function TabsSection() {
     const [activeTab, setActiveTab] = useState(0);
@@ -28,6 +29,7 @@ export default function TabsSection() {
                 <div className="flex flex-col gap-8">
                     <CreatedTicketStatsSection props_data={analytics?.data?.total_tickets_created_chart_data} />
                     <PercentageProvidePhotos props_data={analytics?.data?.provide_photos}/>
+                    <PercentageOfApprovedClaims props_data={analytics?.data?.percentage_of_approved_claims} />
                     {/* <ProcessedTicketStatsSection />
                     <OpenVsCloseSection /> */}
                 </div>

@@ -73,10 +73,18 @@ class Ticket extends Model
     {
         return $this->hasMany(File::class, 'ticket_id', 'id')->where('type', '<>', 'upload');
     }
-    
+
     public function activities(): HasMany
     {
         return $this->hasMany(Activity::class, 'ticket_id', 'id');
+    }
+    public function approved_claims(): HasMany
+    {
+        return $this->hasMany(Activity::class, 'ticket_id', 'id')
+            ->where(function ($query) {
+                $query->where('type', 'TICKET CREATED')
+                    ->orWhere('type', 'DECISION MAKING');
+            });
     }
     public function product_registration(): HasOne
     {
