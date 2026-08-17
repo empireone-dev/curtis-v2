@@ -1,5 +1,6 @@
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
+import moment from 'moment';
 import {
     Chart as ChartJS,
     ArcElement,
@@ -25,6 +26,9 @@ export default function PercentageOfApprovedClaims({ props_data }) {
     const fastList = props_data?.data?.fast_approved || [];
     const slowList = props_data?.data?.slow_approved || [];
 
+    // Combine both lists for the "Total Tickets" export
+    const totalList = [...fastList, ...slowList];
+
     // Calculate total percentage (should naturally be 100, formatting cleanly)
     const totalPercentage = (fastPercentage + slowPercentage).toFixed(0);
 
@@ -35,26 +39,82 @@ export default function PercentageOfApprovedClaims({ props_data }) {
             return;
         }
 
-        // 1. Extract headers dynamically from the first object's keys
-        const headers = Object.keys(dataset[0]).join(',');
+        // 1. Extract headers and force the first three columns
+        const allObjectKeys = Object.keys(dataset[0]);
 
-        // 2. Map through the data and format rows 
+        // Remove 'created_at' and 'decisionDate' from the dynamic keys so they don't duplicate
+        const remainingKeys = allObjectKeys.filter(
+            key => key !== 'created_at' && key !== 'decisionDate'
+        );
+
+        // Construct the final headers array with our priority keys first
+        const headersArray = ['created_at', 'decisionDate', 'Turnaround Time', ...remainingKeys];
+        const headers = headersArray.join(',');
+
+        // 2. Map through the data and format rows
         const rows = dataset.map(obj => {
-            return Object.values(obj).map(val => {
 
+            // --- TIME CALCULATION LOGIC USING MOMENT.JS ---
+            let turnaroundString = 'N/A';
+            const startDate = moment(obj.created_at);
+            // Fallback to updated_at if decisionDate wasn't appended by backend
+            const endDate = moment(obj.decisionDate || obj.updated_at);
+
+            if (startDate.isValid() && endDate.isValid()) {
+                const diffMs = Math.abs(endDate.diff(startDate));
+                const duration = moment.duration(diffMs);
+
+                // Use Math.floor(duration.asDays()) instead of duration.days() 
+                // to prevent days from rolling over into "months" after 30 days
+                const diffDays = Math.floor(duration.asDays());
+                const diffHours = duration.hours();   // Gets remaining hours (0-23)
+                const diffMins = duration.minutes();  // Gets remaining minutes (0-59)
+
+                // Singular/Plural wording
+                const dayText = diffDays === 1 ? 'day' : 'days';
+                const hourText = diffHours === 1 ? 'hour' : 'hours';
+                const minText = diffMins === 1 ? 'min' : 'mins';
+
+                turnaroundString = `${diffDays} ${dayText}, ${diffHours} ${hourText}, and ${diffMins} ${minText}`;
+            }
+
+            // --- FORMATTING THE FIRST 3 COLUMNS ---
+            let formattedCreatedAt = obj.created_at ? moment(obj.created_at).format('LL') : '';
+            let formattedDecisionDate = obj.decisionDate
+                ? moment(obj.decisionDate).format('LL')
+                : (obj.updated_at ? moment(obj.updated_at).format('LL') : '');
+
+            // Wrap the first 3 priority columns in quotes for the CSV
+            const col1 = `"${formattedCreatedAt}"`;
+            const col2 = `"${formattedDecisionDate}"`;
+            const col3 = `"${turnaroundString}"`;
+
+            // --- DATE FORMATTING & MAPPING FOR THE REST OF THE ROW ---
+            const restOfRowValues = remainingKeys.map(key => {
+                let val = obj[key];
+
+                // LL Formatting for any other dates like 'updated_at' using Moment.js
+                if (val && key === 'updated_at') {
+                    const dateObj = moment(val);
+                    if (dateObj.isValid()) {
+                        val = dateObj.format('LL');
+                    }
+                }
+
+                // Handle nested objects (like approved_claims arrays) to prevent [object Object]
                 let stringVal = '';
-
-                // Check if the value exists
                 if (val !== null && val !== undefined) {
-                    // IF the value is an object/array (like the approved_claims relationship)
-                    // THEN stringify it into JSON so it doesn't print [object Object]
                     stringVal = typeof val === 'object' ? JSON.stringify(val) : String(val);
                 }
 
                 // Escape quotes inside the string and wrap in quotes to prevent comma breaks
                 return `"${stringVal.replace(/"/g, '""')}"`;
+            });
 
-            }).join(',');
+            // Combine the forced first 3 columns with the rest of the dynamic row values
+            const finalRowValues = [col1, col2, col3, ...restOfRowValues];
+
+            return finalRowValues.join(',');
         }).join('\n');
 
         // 3. Combine headers and rows
@@ -182,6 +242,33 @@ export default function PercentageOfApprovedClaims({ props_data }) {
                                     <button
                                         onClick={() => exportToCSV(slowList, 'slow_approved_claims.csv')}
                                         className="flex items-center justify-center w-full gap-2 py-2 mt-4 text-sm font-medium transition-colors rounded-lg text-amber-700 bg-amber-50 hover:bg-amber-100"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Export CSV
+                                    </button>
+                                </div>
+
+                                {/* Total Card */}
+                                <div className="flex flex-col flex-1 p-6 bg-white border border-gray-200 shadow-sm rounded-xl">
+                                    <div className="flex items-center">
+                                        <div className="p-3 mr-4 rounded-full bg-blue-50">
+                                            {/* Document Collection icon */}
+                                            <svg className="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium tracking-wide text-gray-500 uppercase">Total Tickets</p>
+                                            <p className="text-2xl font-bold text-gray-900">{totalPercentage}%</p>
+                                            <p className="text-xs text-gray-400">Vol: {totalCount}</p>
+                                        </div>
+                                    </div>
+                                    {/* Export Button */}
+                                    <button
+                                        onClick={() => exportToCSV(totalList, 'total_approved_claims.csv')}
+                                        className="flex items-center justify-center w-full gap-2 py-2 mt-4 text-sm font-medium transition-colors rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100"
                                     >
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
