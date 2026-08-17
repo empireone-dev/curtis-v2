@@ -24,7 +24,7 @@ export default function SearchSection() {
 
     // 3. Extract the values from the URL, or use the fallbacks if not present
     const urlDateRange = searchParams.get('date_range') || fallbackDateRange;
-    const urlCallType = searchParams.get('call_type') || '';
+    const urlCallType = searchParams.get('call_type') || 'CF-Warranty Claim';
 
     // 4. Initialize useForm with the extracted values
     const {
