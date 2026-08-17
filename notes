@@ -29,3 +29,16 @@ App\Models\ApiKey::create([
 'name' => 'AI Caller',
 'key' => bin2hex(random_bytes(32)) // Generates a secure 64-character random string
 ]);
+
+
+
+WAITING FOR PHOTOS > SHIP TO WAREHOUSE
+
+
+TO DO
+API AP CURTIS ADJUSTMENT
+percentage_provide_photos question
+- tanan nga ticket na After pag VALIDATION > Resource > Process
+
+After field destroy 
+-

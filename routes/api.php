@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AutomaticSendingEmailController;
 use App\Http\Controllers\IOController;
 use App\Http\Controllers\ProductRegistrationControlller;
@@ -23,6 +24,10 @@ Route::get('/auto_send_lacking_information_notification', [AutomaticSendingEmail
 Route::get('/auto_close_send_email_notification', [AutomaticSendingEmailController::class, 'auto_close_send_email_notification']);
 
 Route::post('/add_review', [IOController::class, 'add_review']);
+
+Route::get('/get_analytics', [AnalyticsController::class, 'get_analytics']);
+
+
 
 Route::resource('tickets', TicketControlller::class);
 Route::post('/upload_lacking_information', [TicketControlller::class, 'upload_lacking_information']);

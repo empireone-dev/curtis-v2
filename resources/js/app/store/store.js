@@ -1,8 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import appSlice from "../_redux/app-slice";
+import analyticsSlice from "../_redux/analytics-slice";
 const store = configureStore({
     reducer: {
         app: appSlice,
+        analytics: analyticsSlice,
     },
 });
 
