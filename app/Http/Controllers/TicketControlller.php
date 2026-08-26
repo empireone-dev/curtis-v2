@@ -47,7 +47,7 @@ class TicketControlller extends Controller
                         'referer'         => true,
                         'track_redirects' => true
                     ],
-                    'timeout' => 10,
+                    'timeout' => 30,
                 ])
                 // Appending query param handles cases where Google converts redirected POST to GET
                 ->post($webAppUrl . '?email=' . urlencode($request->email), [
