@@ -102,7 +102,11 @@ export default function FormSection() {
     useEffect(() => {
         if (ticket?.id) {
             const searching = ticket?.model === '' ? null : ticket?.model?.toLowerCase();
-
+            validate_email({
+                target: {
+                    value: ticket?.email
+                }
+            });
             const searchProductsList = productFilter.find((product) =>
                 product.some((value) => typeof value === 'string' && value?.toLowerCase().includes(searching))
             );
@@ -351,7 +355,7 @@ export default function FormSection() {
                                 message: "Invalid email address"
                             }
                         })}
-                            onChange={validate_email}
+                        onChange={validate_email}
                     />
 
                     {
@@ -664,7 +668,7 @@ export default function FormSection() {
                             <div className="flex justify-center pt-2 md:pt-4 mt-12">
                                 <Button
                                     loading={isSubmitting}
-                                    disabled={!watchValues.isAgree  || !isValidEmail}
+                                    disabled={!watchValues.isAgree || !isValidEmail}
                                     className="w-full sm:w-auto px-12"
                                     variant="primary"
                                     type="submit"

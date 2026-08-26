@@ -92,7 +92,11 @@ export default function FormSection() {
     useEffect(() => {
         if (ticket?.id) {
             const searching = ticket?.model === '' ? null : ticket?.model?.toLowerCase();
-
+            validate_email({
+                target: {
+                    value: ticket?.email
+                }
+            });
             const searchProductsList = productFilter.find((product) =>
                 product.some((value) => typeof value === 'string' && value?.toLowerCase().includes(searching))
             );
