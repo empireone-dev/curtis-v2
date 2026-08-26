@@ -4,13 +4,13 @@ import Select from '@/app/_components/select';
 import { router } from '@inertiajs/react';
 import { Controller, useForm } from 'react-hook-form';
 import { countries } from "@/app/_json/country.json";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import Checkbox from '@/app/_components/checkbox';
 import Textarea from '@/app/_components/textarea';
 import UploadFileSection from '../../_sections/upload-file-section';
-import { create_ticket_service } from '@/app/services/tickets-service';
+import { create_ticket_service, validate_email_service } from '@/app/services/tickets-service';
 import Radio from '@/app/_components/radio';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,6 +20,9 @@ import { get_product_registration_by_serial_number_thunk, get_ticket_by_serial_n
 export default function FormSection() {
     const { product_registration, products, ticket } = useSelector((store) => store.app);
 
+    const [isValidEmail, setIsValidEmail] = useState(false)
+
+    const debounceTimer = useRef(null);
     const {
         register,
         handleSubmit,
@@ -28,6 +31,7 @@ export default function FormSection() {
         control,
         setValue, // We will use this to loop through our redux state
         reset,
+        clearErrors,
         formState: { errors, isSubmitting }
     } = useForm({
         defaultValues: {
@@ -204,6 +208,40 @@ export default function FormSection() {
             );
         }
     }
+
+    const validate_email = (e) => {
+        // 1. Maintain React Hook Form's native state tracking
+        register("email").onChange(e);
+
+        const emailValue = e.target.value;
+
+        // 2. Clear existing timer on every keystroke
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+
+        debounceTimer.current = setTimeout(async () => {
+            if (emailValue) {
+                setIsValidEmail(false)
+                setError('email', {
+                    type: 'manual',
+                    message: 'Validating email, please wait...'
+                });
+                const result = await validate_email_service(emailValue);
+                console.log('resultresult', result.valid)
+                setIsValidEmail(result.valid)
+                if (!result.valid) {
+                    setError('email', {
+                        type: 'manual',
+                        message: 'Email address not found!'
+                    })
+                } else {
+                    clearErrors('email');
+                }
+            }
+        }, 2000); // 2000ms = 2 seconds
+
+    };
     const formatUSPhone = (value) => {
         if (!value) return value;
         const phoneNumber = value.replace(/[^\d]/g, "");
@@ -313,199 +351,114 @@ export default function FormSection() {
                                 message: "Invalid email address"
                             }
                         })}
-                    />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                        <Input
-                            id="phone"
-                            type="tel"
-                            label="Phone Number"
-                            error={errors.phone?.message}
-                            required={true}
-                            maxLength={14} // Restricts input to the exact length of (XXX) XXX-XXXX
-                            {...register("phone", {
-                                required: "Phone number is required",
-                                pattern: {
-                                    value: /^\(\d{3}\) \d{3}-\d{4}$/,
-                                    message: "Must be a valid US phone number: (XXX) XXX-XXXX",
-                                },
-                                onChange: (e) => {
-                                    e.target.value = formatUSPhone(e.target.value);
-                                },
-                            })}
-                        />
-
-                        <Input
-                            id="phone2"
-                            type="tel"
-                            label="Secondary Phone Number"
-                            error={errors.phone2?.message}
-                            maxLength={14}
-                            {...register("phone2", {
-                                pattern: {
-                                    value: /^\(\d{3}\) \d{3}-\d{4}$/,
-                                    message: "Must be a valid US phone number: (XXX) XXX-XXXX",
-                                },
-                                onChange: (e) => {
-                                    e.target.value = formatUSPhone(e.target.value);
-                                },
-                            })}
-                        />
-                    </div>
-
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
-                        <Select
-                            label="Model Number"
-                            name="item_number"
-                            options={
-                                productFilter?.map((res) => ({
-                                    ...res,
-                                    label: res[1],
-                                    value: res[1],
-                                })) || []
-                            }
-                            value={watchValues.item_number}
-                            onChange={(val) =>
-                                setValue("item_number", val)
-                            }
-                            required={true}
-                            error={errors.item_number?.message}
-                        />
-                        <Input
-                            id="unit"
-                            label="Item Unit"
-                            error={errors.unit?.message}
-                            disabled
-                            {...register("unit")}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                        <Input
-                            id="brand"
-                            label="Brand"
-                            disabled
-                            error={errors.brand?.message}
-                            {...register("brand")}
-                        />
-                        <Input
-                            id="class"
-                            disabled
-                            label="Item Class"
-                            error={errors.class?.message}
-                            {...register("class")}
-                        />
-                    </div>
-
-
-
-                    <div className="w-full">
-                        <Input
-                            id="address"
-                            label="Physical Address"
-                            error={errors.address?.message}
-                            required={true}
-                            {...register("address", { required: "Physical address is required" })}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                        <Controller
-                            name="country"
-                            control={control}
-                            rules={{ required: "Country is required" }}
-                            render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                <Select
-                                    label="Country"
-                                    required
-                                    name="country"
-                                    ref={ref}
-                                    value={value}
-                                    onChange={onChange} // Pass the Controller's onChange directly to your component
-                                    error={error?.message}
-                                    options={
-                                        countries?.map((res) => ({
-                                            ...res,
-                                            label: res.name,
-                                            value: res.value,
-                                        })) || []
-                                    }
-                                />
-                            )}
-                        />
-
-                        <Controller
-                            name="state"
-                            control={control}
-                            rules={{ required: "State is required" }}
-                            render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                <Select
-                                    label="State"
-                                    required
-                                    name="state"
-                                    ref={ref}
-                                    value={value}
-                                    onChange={onChange} // Pass the Controller's onChange directly to your component
-                                    error={error?.message}
-                                    options={
-                                        states?.regions?.map((res) => ({
-                                            ...res,
-                                            label: res.name,
-                                            value: res.value,
-                                        })) || []
-                                    }
-                                />
-                            )}
-                        />
-
-                        <Input
-                            id="city"
-                            label="City"
-                            error={errors.city?.message}
-                            required={true}
-                            {...register("city", { required: "City is required" })}
-                        />
-                        <Input
-                            id="zip_code"
-                            label="Zip Code / Postal Code"
-                            error={errors.zip_code?.message}
-                            required={true}
-                            {...register("zip_code", { required: "Zip code is required" })}
-                        />
-                    </div>
-                    <Checkbox
-                        id="has_address_2"
-                        className='my-3'
-                        checked={watchValues.has_address_2}
-                        label="My physical address is the same as my mailing address."
-                        onChange={(val) =>
-                            setValue("has_address_2", val.target.checked)
-                        }
+                            onChange={validate_email}
                     />
 
                     {
-                        !watchValues.has_address_2 && <>
+                        isValidEmail && <>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                <Input
+                                    id="phone"
+                                    type="tel"
+                                    label="Phone Number"
+                                    error={errors.phone?.message}
+                                    required={true}
+                                    maxLength={14} // Restricts input to the exact length of (XXX) XXX-XXXX
+                                    {...register("phone", {
+                                        required: "Phone number is required",
+                                        pattern: {
+                                            value: /^\(\d{3}\) \d{3}-\d{4}$/,
+                                            message: "Must be a valid US phone number: (XXX) XXX-XXXX",
+                                        },
+                                        onChange: (e) => {
+                                            e.target.value = formatUSPhone(e.target.value);
+                                        },
+                                    })}
+                                />
+
+                                <Input
+                                    id="phone2"
+                                    type="tel"
+                                    label="Secondary Phone Number"
+                                    error={errors.phone2?.message}
+                                    maxLength={14}
+                                    {...register("phone2", {
+                                        pattern: {
+                                            value: /^\(\d{3}\) \d{3}-\d{4}$/,
+                                            message: "Must be a valid US phone number: (XXX) XXX-XXXX",
+                                        },
+                                        onChange: (e) => {
+                                            e.target.value = formatUSPhone(e.target.value);
+                                        },
+                                    })}
+                                />
+                            </div>
+
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+
+                                <Select
+                                    label="Model Number"
+                                    name="item_number"
+                                    options={
+                                        productFilter?.map((res) => ({
+                                            ...res,
+                                            label: res[1],
+                                            value: res[1],
+                                        })) || []
+                                    }
+                                    value={watchValues.item_number}
+                                    onChange={(val) =>
+                                        setValue("item_number", val)
+                                    }
+                                    required={true}
+                                    error={errors.item_number?.message}
+                                />
+                                <Input
+                                    id="unit"
+                                    label="Item Unit"
+                                    error={errors.unit?.message}
+                                    disabled
+                                    {...register("unit")}
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                <Input
+                                    id="brand"
+                                    label="Brand"
+                                    disabled
+                                    error={errors.brand?.message}
+                                    {...register("brand")}
+                                />
+                                <Input
+                                    id="class"
+                                    disabled
+                                    label="Item Class"
+                                    error={errors.class?.message}
+                                    {...register("class")}
+                                />
+                            </div>
                             <div className="w-full">
                                 <Input
-                                    id="address_2"
-                                    label="Mailing Address"
-                                    error={errors.address_2?.message}
+                                    id="address"
+                                    label="Physical Address"
+                                    error={errors.address?.message}
                                     required={true}
-                                    {...register("address_2", { required: "Mailing address is required" })}
+                                    {...register("address", { required: "Physical address is required" })}
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                                 <Controller
-                                    name="country_2"
+                                    name="country"
                                     control={control}
                                     rules={{ required: "Country is required" }}
                                     render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                                         <Select
                                             label="Country"
                                             required
-                                            name="country_2"
+                                            name="country"
                                             ref={ref}
                                             value={value}
                                             onChange={onChange} // Pass the Controller's onChange directly to your component
@@ -522,14 +475,14 @@ export default function FormSection() {
                                 />
 
                                 <Controller
-                                    name="state_2"
+                                    name="state"
                                     control={control}
                                     rules={{ required: "State is required" }}
                                     render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                                         <Select
                                             label="State"
                                             required
-                                            name="state_2"
+                                            name="state"
                                             ref={ref}
                                             value={value}
                                             onChange={onChange} // Pass the Controller's onChange directly to your component
@@ -546,93 +499,182 @@ export default function FormSection() {
                                 />
 
                                 <Input
-                                    id="city_2"
+                                    id="city"
                                     label="City"
                                     error={errors.city?.message}
                                     required={true}
-                                    {...register("city_2", { required: "City is required" })}
+                                    {...register("city", { required: "City is required" })}
                                 />
                                 <Input
-                                    id="zip_code_2"
+                                    id="zip_code"
                                     label="Zip Code / Postal Code"
                                     error={errors.zip_code?.message}
                                     required={true}
-                                    {...register("zip_code_2", { required: "Zip code is required" })}
+                                    {...register("zip_code", { required: "Zip code is required" })}
                                 />
+                            </div>
+                            <Checkbox
+                                id="has_address_2"
+                                className='my-3'
+                                checked={watchValues.has_address_2}
+                                label="My physical address is the same as my mailing address."
+                                onChange={(val) =>
+                                    setValue("has_address_2", val.target.checked)
+                                }
+                            />
+
+                            {
+                                !watchValues.has_address_2 && <>
+                                    <div className="w-full">
+                                        <Input
+                                            id="address_2"
+                                            label="Mailing Address"
+                                            error={errors.address_2?.message}
+                                            required={true}
+                                            {...register("address_2", { required: "Mailing address is required" })}
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                        <Controller
+                                            name="country_2"
+                                            control={control}
+                                            rules={{ required: "Country is required" }}
+                                            render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                                <Select
+                                                    label="Country"
+                                                    required
+                                                    name="country_2"
+                                                    ref={ref}
+                                                    value={value}
+                                                    onChange={onChange} // Pass the Controller's onChange directly to your component
+                                                    error={error?.message}
+                                                    options={
+                                                        countries?.map((res) => ({
+                                                            ...res,
+                                                            label: res.name,
+                                                            value: res.value,
+                                                        })) || []
+                                                    }
+                                                />
+                                            )}
+                                        />
+
+                                        <Controller
+                                            name="state_2"
+                                            control={control}
+                                            rules={{ required: "State is required" }}
+                                            render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                                <Select
+                                                    label="State"
+                                                    required
+                                                    name="state_2"
+                                                    ref={ref}
+                                                    value={value}
+                                                    onChange={onChange} // Pass the Controller's onChange directly to your component
+                                                    error={error?.message}
+                                                    options={
+                                                        states?.regions?.map((res) => ({
+                                                            ...res,
+                                                            label: res.name,
+                                                            value: res.value,
+                                                        })) || []
+                                                    }
+                                                />
+                                            )}
+                                        />
+
+                                        <Input
+                                            id="city_2"
+                                            label="City"
+                                            error={errors.city?.message}
+                                            required={true}
+                                            {...register("city_2", { required: "City is required" })}
+                                        />
+                                        <Input
+                                            id="zip_code_2"
+                                            label="Zip Code / Postal Code"
+                                            error={errors.zip_code?.message}
+                                            required={true}
+                                            {...register("zip_code_2", { required: "Zip code is required" })}
+                                        />
+                                    </div>
+                                </>
+                            }
+
+                            <div className="w-full">
+                                <Textarea
+                                    name="detailed_explanation_issue"
+                                    label="Detailed explanation of the issue."
+                                    {...register("detailed_explanation_issue", { required: "Issue is required" })}
+                                    error={errors.detailed_explanation_issue?.message}
+                                />
+                            </div>
+
+
+                            <div className='flex flex-row gap-3 my-3'>
+                                <Radio
+                                    name="parts_issue"
+                                    label="Missing Part(s)"
+                                    checked={watchValues.parts_issue === '["Missing Parts"]'}
+                                    onChange={() => setValue("parts_issue", '["Missing Parts"]')}
+                                />
+
+
+                                <Radio
+                                    name="parts_issue"
+                                    label="Want to Buy Part(s)"
+                                    checked={watchValues.parts_issue === '["Want to buy Parts"]'}
+                                    onChange={() => setValue("parts_issue", '["Want to buy Parts"]')}
+                                />
+                                <Radio
+                                    name="parts_issue"
+                                    label="Damaged Part(s)"
+                                    checked={watchValues.parts_issue === '["Damage Parts"]'}
+                                    onChange={() => setValue("parts_issue", '["Damage Parts"]')}
+                                />
+                            </div>
+
+                            {
+                                watchValues.parts_issue === '["Damage Parts"]' && <div className='border border-green-500 rounded-md p-2 text-green-500 shadow-sm mb-4 bg-green-100'>
+                                    Note: We provide a 48-hour warranty for shipping damaged parts.
+                                </div>
+                            }
+                            {
+                                watchValues.parts_issue === '["Missing Parts"]' && <div className='border border-green-500 rounded-md p-2 text-green-500 shadow-sm mb-4 bg-green-100'>
+                                    Note: Missing parts must be reported within 14 days after purchase.
+                                </div>
+                            }
+                            <UploadFileSection
+                                parts_issue={watchValues.parts_issue}
+                                files={watchValues.files || {}}
+                                setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
+                                error={errors.files} // <-- Pass the error object down
+                            />
+                            <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
+                                Check your Spam/Junk folder for confirmation emails and future claim-related communications.
+                            </div>
+
+                            <Checkbox
+                                name="isAgree"
+                                label="By submitting this warranty claim, I certify that all information and documentation provided, including photographs, model and serial number information, and my shipping/mailing address, are true, complete, and accurate to the best of my knowledge. I confirm that the product has not been intentionally damaged, modified, or misused. I understand that, if my claim is approved, Curtis may, at its sole discretion and in accordance with the applicable warranty terms, repair or replace the product or provide a refund of the purchase price. "
+                                checked={watchValues.isAgree}
+                                onChange={(e) => setValue("isAgree", e.target.checked)}
+                            />
+                            <div className="flex justify-center pt-2 md:pt-4 mt-12">
+                                <Button
+                                    loading={isSubmitting}
+                                    disabled={!watchValues.isAgree  || !isValidEmail}
+                                    className="w-full sm:w-auto px-12"
+                                    variant="primary"
+                                    type="submit"
+                                >
+                                    SUBMIT
+                                </Button>
                             </div>
                         </>
                     }
 
-                    <div className="w-full">
-                        <Textarea
-                            name="detailed_explanation_issue"
-                            label="Detailed explanation of the issue."
-                            {...register("detailed_explanation_issue", { required: "Issue is required" })}
-                            error={errors.detailed_explanation_issue?.message}
-                        />
-                    </div>
-
-
-                    <div className='flex flex-row gap-3 my-3'>
-                        <Radio
-                            name="parts_issue"
-                            label="Missing Part(s)"
-                            checked={watchValues.parts_issue === '["Missing Parts"]'}
-                            onChange={() => setValue("parts_issue", '["Missing Parts"]')}
-                        />
-
-
-                        <Radio
-                            name="parts_issue"
-                            label="Want to Buy Part(s)"
-                            checked={watchValues.parts_issue === '["Want to buy Parts"]'}
-                            onChange={() => setValue("parts_issue", '["Want to buy Parts"]')}
-                        />
-                        <Radio
-                            name="parts_issue"
-                            label="Damaged Part(s)"
-                            checked={watchValues.parts_issue === '["Damage Parts"]'}
-                            onChange={() => setValue("parts_issue", '["Damage Parts"]')}
-                        />
-                    </div>
-
-                    {
-                        watchValues.parts_issue === '["Damage Parts"]' && <div className='border border-green-500 rounded-md p-2 text-green-500 shadow-sm mb-4 bg-green-100'>
-                            Note: We provide a 48-hour warranty for shipping damaged parts.
-                        </div>
-                    }
-                    {
-                        watchValues.parts_issue === '["Missing Parts"]' && <div className='border border-green-500 rounded-md p-2 text-green-500 shadow-sm mb-4 bg-green-100'>
-                            Note: Missing parts must be reported within 14 days after purchase.
-                        </div>
-                    }
-                    <UploadFileSection
-                        parts_issue={watchValues.parts_issue}
-                        files={watchValues.files || {}}
-                        setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
-                        error={errors.files} // <-- Pass the error object down
-                    />
-                    <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
-                        Check your Spam/Junk folder for confirmation emails and future claim-related communications.
-                    </div>
-
-                    <Checkbox
-                        name="isAgree"
-                        label="By submitting this warranty claim, I certify that all information and documentation provided, including photographs, model and serial number information, and my shipping/mailing address, are true, complete, and accurate to the best of my knowledge. I confirm that the product has not been intentionally damaged, modified, or misused. I understand that, if my claim is approved, Curtis may, at its sole discretion and in accordance with the applicable warranty terms, repair or replace the product or provide a refund of the purchase price. "
-                        checked={watchValues.isAgree}
-                        onChange={(e) => setValue("isAgree", e.target.checked)}
-                    />
-                    <div className="flex justify-center pt-2 md:pt-4 mt-12">
-                        <Button
-                            loading={isSubmitting}
-                            disabled={!watchValues.isAgree}
-                            className="w-full sm:w-auto px-12"
-                            variant="primary"
-                            type="submit"
-                        >
-                            SUBMIT
-                        </Button>
-                    </div>
                 </>
                 }
             </form>

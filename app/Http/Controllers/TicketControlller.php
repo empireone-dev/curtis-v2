@@ -11,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,6 +26,43 @@ class TicketControlller extends Controller
         }
         return $phone;
     }
+
+    public function validate_email(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $webAppUrl = env('VALIDATE_EMAIL');
+        if (!$webAppUrl) {
+            return response()->json(['status' => 'error', 'valid' => false, 'message' => 'Service unconfigured'], 500);
+        }
+
+        try {
+            $response = Http::asJson()
+                ->withOptions([
+                    'allow_redirects' => [
+                        'max'             => 5,
+                        'strict'          => false, // Allows standard HTTP redirect follow
+                        'referer'         => true,
+                        'track_redirects' => true
+                    ],
+                    'timeout' => 10,
+                ])
+                // Appending query param handles cases where Google converts redirected POST to GET
+                ->post($webAppUrl . '?email=' . urlencode($request->email), [
+                    'email' => $request->email,
+                ]);
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+            return response()->json(['status' => 'error', 'valid' => false], 200);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'valid' => false, 'message' => $e], 200);
+        }
+    }
+
     public function ticket_creation(Request $request)
     {
         $validatedData = $request->validate([
@@ -270,7 +308,6 @@ class TicketControlller extends Controller
             'call_type'     => 'nullable|string', // Added since it's used below
             'parts_issue'     => 'nullable|string',
         ]);
-
         $isExist = false;
         if ($request->filled('serial_number')) {
             $isExist = Ticket::where('serial_number', $request->input('serial_number'))->exists();

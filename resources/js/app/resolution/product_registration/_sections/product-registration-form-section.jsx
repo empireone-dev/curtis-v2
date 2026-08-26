@@ -3,16 +3,19 @@ import Input from '@/app/_components/input';
 import Select from '@/app/_components/select';
 import { Controller, useForm } from 'react-hook-form';
 import { countries } from "@/app/_json/country.json";
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import UploadFileSection from '../../_sections/upload-file-section';
 import { useSelector, useDispatch } from 'react-redux';
 import { create_product_registration_service } from '@/app/services/product-registration-service';
 import { get_product_registration_by_serial_number_thunk } from '@/app/_redux/app-thunk';
+import { validate_email_service } from '@/app/services/tickets-service';
 
 export default function ProductRegistrationFormSection() {
     const { products, ticket } = useSelector((store) => store.app);
     const dispatch = useDispatch();
+    const [isValidEmail, setIsValidEmail] = useState(false)
+    const debounceTimer = useRef(null);
 
     const {
         register,
@@ -21,6 +24,8 @@ export default function ProductRegistrationFormSection() {
         watch,
         setValue,
         reset,
+        setError,
+        clearErrors,
         formState: { errors, isSubmitting }
     } = useForm({
         defaultValues: {
@@ -120,6 +125,40 @@ export default function ProductRegistrationFormSection() {
 
     // Unified check for whether a ticket is registered
     const isTicketRegistered = ticket?.id || ticket?.ticket?.id;
+
+    const validate_email = (e) => {
+        // 1. Maintain React Hook Form's native state tracking
+        register("email").onChange(e);
+
+        const emailValue = e.target.value;
+
+        // 2. Clear existing timer on every keystroke
+        if (debounceTimer.current) {
+            clearTimeout(debounceTimer.current);
+        }
+
+        debounceTimer.current = setTimeout(async () => {
+            if (emailValue) {
+                setIsValidEmail(false)
+                setError('email', {
+                    type: 'manual',
+                    message: 'Validating email, please wait...'
+                });
+                const result = await validate_email_service(emailValue);
+                console.log('resultresult', result.valid)
+                setIsValidEmail(result.valid)
+                if (!result.valid) {
+                    setError('email', {
+                        type: 'manual',
+                        message: 'Email address not found!'
+                    })
+                } else {
+                    clearErrors('email');
+                }
+            }
+        }, 2000); // 2000ms = 2 seconds
+
+    };
 
     return (
         <>
@@ -249,129 +288,138 @@ export default function ProductRegistrationFormSection() {
                                         message: "Invalid email address"
                                     }
                                 })}
+
+                                onChange={validate_email}
                             />
 
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <Controller
-                                name="country"
-                                control={control}
-                                rules={{ required: "Country is required" }}
-                                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                    <Select
-                                        label="Country "
-                                        required
+                        {
+                            isValidEmail &&
+                            <>
+
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                    <Controller
                                         name="country"
-                                        ref={ref}
-                                        value={value}
-                                        onChange={onChange}
-                                        error={error?.message}
-                                        options={
-                                            countries?.map((res) => ({
-                                                ...res,
-                                                label: res.name,
-                                                value: res.value,
-                                            })) || []
-                                        }
+                                        control={control}
+                                        rules={{ required: "Country is required" }}
+                                        render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                            <Select
+                                                label="Country "
+                                                required
+                                                name="country"
+                                                ref={ref}
+                                                value={value}
+                                                onChange={onChange}
+                                                error={error?.message}
+                                                options={
+                                                    countries?.map((res) => ({
+                                                        ...res,
+                                                        label: res.name,
+                                                        value: res.value,
+                                                    })) || []
+                                                }
+                                            />
+                                        )}
                                     />
-                                )}
-                            />
 
-                            <Controller
-                                name="state"
-                                control={control}
-                                rules={{ required: "State" }}
-                                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                    <Select
-                                        label="State"
-                                        required
+                                    <Controller
                                         name="state"
-                                        ref={ref}
-                                        value={value}
-                                        onChange={onChange}
-                                        error={error?.message}
-                                        options={
-                                            states?.regions?.map((res) => ({
-                                                ...res,
-                                                label: res.name,
-                                                value: res.value,
-                                            })) || []
-                                        }
+                                        control={control}
+                                        rules={{ required: "State" }}
+                                        render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                            <Select
+                                                label="State"
+                                                required
+                                                name="state"
+                                                ref={ref}
+                                                value={value}
+                                                onChange={onChange}
+                                                error={error?.message}
+                                                options={
+                                                    states?.regions?.map((res) => ({
+                                                        ...res,
+                                                        label: res.name,
+                                                        value: res.value,
+                                                    })) || []
+                                                }
+                                            />
+                                        )}
                                     />
-                                )}
-                            />
 
-                            <Input
-                                id="city"
-                                label="City "
-                                error={errors.city?.message}
-                                required={true}
-                                {...register("city", { required: "City is required" })}
-                            />
+                                    <Input
+                                        id="city"
+                                        label="City "
+                                        error={errors.city?.message}
+                                        required={true}
+                                        {...register("city", { required: "City is required" })}
+                                    />
 
-                            <Input
-                                id="zipcode"
-                                label="Zip / Postal Code "
-                                error={errors.zipcode?.message}
-                                required={true}
-                                {...register("zipcode", { required: "Zip code is required" })}
-                            />
+                                    <Input
+                                        id="zipcode"
+                                        label="Zip / Postal Code "
+                                        error={errors.zipcode?.message}
+                                        required={true}
+                                        {...register("zipcode", { required: "Zip code is required" })}
+                                    />
 
 
-                        </div>
+                                </div>
 
-                        <Input
-                            id="address1"
-                            label="Address 1 "
-                            error={errors.address1?.message}
-                            required={true}
-                            {...register("address1", { required: "Address is required" })}
-                        />
-
-                        <Input
-                            id="address2"
-                            label="Address 2"
-                            error={errors.address2?.message}
-                            {...register("address2")}
-                        />
-
-                        <div className="mt-4 flex flex-col gap-2 text-sm text-gray-700">
-                            <p>
-                                Entire Picture of the Receipt that shows Date of Purchase, Name of Store,
-                                Unit Description, Unit Price, Order Summary with Total Breakdown:
-                            </p>
-                            <p className="text-red-500 font-medium">
-                                NOTE: It must be clear and readable. Not valid if required information is incomplete.
-                            </p>
-                            <p className="text-red-500 font-medium">
-                                Photos and Receipt must be in the following file formats: .jpg, .jpeg, .png, .pdf
-                            </p>
-
-                            <div className="mt-2">
-                                <UploadFileSection
-                                    buttonText="Click to upload receipt/bill of sale."
-                                    files={watchValues.files || {}}
-                                    setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
-                                    error={errors.files}
+                                <Input
+                                    id="address1"
+                                    label="Address 1 "
+                                    error={errors.address1?.message}
+                                    required={true}
+                                    {...register("address1", { required: "Address is required" })}
                                 />
-                                {errors.files?.message && (
-                                    <span className="text-red-500 text-sm mt-1">{errors.files.message}</span>
-                                )}
-                            </div>
-                        </div>
 
-                        {/* Submit Button */}
-                        <div className="mt-6 w-full">
-                            <Button
-                                loading={isSubmitting}
-                                className="w-full bg-[#3B82F6] hover:bg-blue-600 text-white font-medium py-3 rounded uppercase"
-                                variant="primary"
-                                type="submit"
-                            >
-                                Register
-                            </Button>
-                        </div>
+                                <Input
+                                    id="address2"
+                                    label="Address 2"
+                                    error={errors.address2?.message}
+                                    {...register("address2")}
+                                />
+
+                                <div className="mt-4 flex flex-col gap-2 text-sm text-gray-700">
+                                    <p>
+                                        Entire Picture of the Receipt that shows Date of Purchase, Name of Store,
+                                        Unit Description, Unit Price, Order Summary with Total Breakdown:
+                                    </p>
+                                    <p className="text-red-500 font-medium">
+                                        NOTE: It must be clear and readable. Not valid if required information is incomplete.
+                                    </p>
+                                    <p className="text-red-500 font-medium">
+                                        Photos and Receipt must be in the following file formats: .jpg, .jpeg, .png, .pdf
+                                    </p>
+
+                                    <div className="mt-2">
+                                        <UploadFileSection
+                                            buttonText="Click to upload receipt/bill of sale."
+                                            files={watchValues.files || {}}
+                                            setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
+                                            error={errors.files}
+                                        />
+                                        {errors.files?.message && (
+                                            <span className="text-red-500 text-sm mt-1">{errors.files.message}</span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Submit Button */}
+                                <div className="mt-6 w-full">
+                                    <Button
+                                        loading={isSubmitting}
+                                        disabled={!isValidEmail}
+                                        className="w-full bg-[#3B82F6] hover:bg-blue-600 text-white font-medium py-3 rounded uppercase"
+                                        variant="primary"
+                                        type="submit"
+                                    >
+                                        Register
+                                    </Button>
+                                </div>
+                            </>
+                        }
                     </>
                 }
 

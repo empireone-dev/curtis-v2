@@ -15,6 +15,22 @@ export async function create_ticket_service(data) {
         throw error; // It's usually better to throw the error so the UI can catch it and show a message
     }
 }
+export async function validate_email_service(data) {
+    try {
+        const response = await fetch(`/api/validate_email?email=${data}`, {
+            method: "POST",
+            body: data,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to create ticket:", error);
+        throw error; // It's usually better to throw the error so the UI can catch it and show a message
+    }
+}
 
 export async function upload_lacking_information_service(data) {
     try {
