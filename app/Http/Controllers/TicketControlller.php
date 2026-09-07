@@ -57,9 +57,9 @@ class TicketControlller extends Controller
             if ($response->successful()) {
                 return $response->json();
             }
-            return response()->json(['status' => 'error', 'valid' => false], 200);
+            return response()->json(['status' => 'error1', 'valid' => false], 200);
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'valid' => false, 'message' => $e], 200);
+            return response()->json(['status' => 'error2', 'valid' => false, 'message' => $e], 200);
         }
     }
 
