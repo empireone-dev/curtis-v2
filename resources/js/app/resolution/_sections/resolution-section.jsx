@@ -1,36 +1,39 @@
 import { Link } from '@inertiajs/react';
 import React from 'react';
+import useTranslation from '@/app/_hooks/useTranslation';
 
 export default function ResolutionSection() {
+    const { t } = useTranslation();
+
     const sections = [
         {
             id: 'registration',
-            label: 'Product Registration',
-            description: 'Register your new product to activate your warranty and receive important updates.',
+            label: t('resolution.section.registration.label'),
+            description: t('resolution.section.registration.description'),
             icon: '📝',
             link: "/resolution/product_registration",
             is_disabled: false 
         },
         {
             id: 'warranty',
-            label: 'Warranty Claim',
-            description: 'File a claim for defective items under active warranty coverage.',
+            label: t('resolution.section.warranty.label'),
+            description: t('resolution.section.warranty.description'),
             icon: '📋',
             link: "/resolution/warranty/confirmation",
             is_disabled: false
         },
         {
             id: 'parts',
-            label: 'Parts Request',
-            description: 'Request or replace missing components, hardware, or structural elements.',
+            label: t('resolution.section.parts.label'),
+            description: t('resolution.section.parts.description'),
             icon: '⚙️',
             link: "/resolution/parts/confirmation",
             is_disabled: false
         },
         {
             id: 'safety_issue',
-            label: 'Safety Concerns',
-            description: 'Report immediate hazards, malfunctions, or critical product design vulnerabilities.',
+            label: t('resolution.section.safety_issue.label'),
+            description: t('resolution.section.safety_issue.description'),
             icon: '⚠️',
             link: "/resolution/safety_issue/blank",
             is_disabled: false

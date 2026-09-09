@@ -10,8 +10,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { create_product_registration_service } from '@/app/services/product-registration-service';
 import { get_product_registration_by_serial_number_thunk } from '@/app/_redux/app-thunk';
 import { validate_email_service } from '@/app/services/tickets-service';
+import useTranslation from '@/app/_hooks/useTranslation';
 
 export default function ProductRegistrationFormSection() {
+    const { t } = useTranslation();
     const { products, ticket } = useSelector((store) => store.app);
     const dispatch = useDispatch();
     const [isValidEmail, setIsValidEmail] = useState(false)
@@ -170,7 +172,7 @@ export default function ProductRegistrationFormSection() {
                 {
                     isTicketRegistered && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
-                            This serial number is already registered.
+                            {t('form.registration_already_exists')}
                         </div>
                     )
                 }
@@ -178,15 +180,15 @@ export default function ProductRegistrationFormSection() {
 
                     <Input
                         id="serial"
-                        label={<div className='text-xs'>Serial Number (e.g. A1234567890123456)</div>}
+                        label={<div className='text-xs'>{t('form.serial_number_label')}</div>}
                         error={errors.serial?.message}
                         maxLength={17}
                         required={true}
                         {...register("serial", {
-                            required: "Serial number is required",
+                            required: t('form.serial_number_required'),
                             pattern: {
                                 value: serialRegex,
-                                message: "Invalid format. Serial number must start with 'A' followed by 16 digits."
+                                message: t('form.serial_number_invalid')
                             },
                             onChange: search_serial_number // Fixed: React Hook Form safe onChange
                         })}
@@ -196,12 +198,12 @@ export default function ProductRegistrationFormSection() {
                     <Input
                         id="purchase_date"
                         type="date"
-                        label="Purchase Date"
+                        label={t('form.purchase_date_label')}
                         disabled={ticket?.ticket?.id}
                         max={new Date().toISOString().split("T")[0]}
                         error={errors.purchase_date?.message}
                         required={true}
-                        {...register("purchase_date", { required: "Purchase Date is required" })}
+                        {...register("purchase_date", { required: t('form.purchase_date_required') })}
                         onKeyDown={(e) => {
                             if (e.key !== "Tab") {
                                 e.preventDefault();
@@ -215,11 +217,11 @@ export default function ProductRegistrationFormSection() {
                     />
 
                     <Select
-                        label="Model Number"
+                        label={t('form.model_number_label')}
                         name="model"
                         required
                         {...register("model", {
-                            required: "Model Number is required",
+                            required: t('form.model_number_label') + ' is required',
                         })}
                         options={
                             productFilter?.map((res) => ({
@@ -242,32 +244,32 @@ export default function ProductRegistrationFormSection() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Input
                                 id="fname"
-                                label="First Name "
+                                label={t('form.first_name_label')}
                                 error={errors.fname?.message}
                                 required={true}
-                                {...register("fname", { required: "First name is required" })}
+                                {...register("fname", { required: t('form.first_name_required') })}
                             />
                             <Input
                                 id="lname"
-                                label="Last Name "
+                                label={t('form.last_name_label')}
                                 error={errors.lname?.message}
                                 required={true}
-                                {...register("lname", { required: "Last name is required" })}
+                                {...register("lname", { required: t('form.last_name_required') })}
                             />
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Input
                                 id="phone"
                                 type="tel"
-                                label="Phone "
+                                label={t('form.phone_label')}
                                 error={errors.phone?.message}
                                 required={true}
                                 maxLength={14}
                                 {...register("phone", {
-                                    required: "Phone number is required",
+                                    required: t('form.phone_required'),
                                     pattern: {
                                         value: /^\(\d{3}\) \d{3}-\d{4}$/,
-                                        message: "Must be a valid US phone number: (XXX) XXX-XXXX",
+                                        message: t('form.phone_invalid'),
                                     },
                                     onChange: (e) => {
                                         e.target.value = formatUSPhone(e.target.value);
@@ -278,14 +280,14 @@ export default function ProductRegistrationFormSection() {
                             <Input
                                 id="email"
                                 type="email"
-                                label="Email "
+                                label={t('form.email_label')}
                                 error={errors.email?.message}
                                 required={true}
                                 {...register("email", {
-                                    required: "Email is required",
+                                    required: t('form.email_required'),
                                     pattern: {
                                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                        message: "Invalid email address"
+                                        message: t('form.email_invalid')
                                     }
                                 })}
 
@@ -302,10 +304,10 @@ export default function ProductRegistrationFormSection() {
                                     <Controller
                                         name="country"
                                         control={control}
-                                        rules={{ required: "Country is required" }}
+                                        rules={{ required: t('form.country_required') }}
                                         render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                                             <Select
-                                                label="Country "
+                                                label={t('form.country_label')}
                                                 required
                                                 name="country"
                                                 ref={ref}
@@ -326,10 +328,10 @@ export default function ProductRegistrationFormSection() {
                                     <Controller
                                         name="state"
                                         control={control}
-                                        rules={{ required: "State" }}
+                                        rules={{ required: t('form.state_required') }}
                                         render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                                             <Select
-                                                label="State"
+                                                label={t('form.state_label')}
                                                 required
                                                 name="state"
                                                 ref={ref}
@@ -349,18 +351,18 @@ export default function ProductRegistrationFormSection() {
 
                                     <Input
                                         id="city"
-                                        label="City "
+                                        label={t('form.city_label')}
                                         error={errors.city?.message}
                                         required={true}
-                                        {...register("city", { required: "City is required" })}
+                                        {...register("city", { required: t('form.city_required') })}
                                     />
 
                                     <Input
                                         id="zipcode"
-                                        label="Zip / Postal Code "
+                                        label={t('form.zip_code_label')}
                                         error={errors.zipcode?.message}
                                         required={true}
-                                        {...register("zipcode", { required: "Zip code is required" })}
+                                        {...register("zipcode", { required: t('form.zip_code_required') })}
                                     />
 
 
@@ -368,34 +370,33 @@ export default function ProductRegistrationFormSection() {
 
                                 <Input
                                     id="address1"
-                                    label="Address 1 "
+                                    label={t('form.physical_address_label')}
                                     error={errors.address1?.message}
                                     required={true}
-                                    {...register("address1", { required: "Address is required" })}
+                                    {...register("address1", { required: t('form.physical_address_required') })}
                                 />
 
                                 <Input
                                     id="address2"
-                                    label="Address 2"
+                                    label={t('form.mailing_address_label')}
                                     error={errors.address2?.message}
                                     {...register("address2")}
                                 />
 
                                 <div className="mt-4 flex flex-col gap-2 text-sm text-gray-700">
                                     <p>
-                                        Entire Picture of the Receipt that shows Date of Purchase, Name of Store,
-                                        Unit Description, Unit Price, Order Summary with Total Breakdown:
+                                        {t('form.receipt_instructions')}
                                     </p>
                                     <p className="text-red-500 font-medium">
-                                        NOTE: It must be clear and readable. Not valid if required information is incomplete.
+                                        {t('form.receipt_readable_notice')}
                                     </p>
                                     <p className="text-red-500 font-medium">
-                                        Photos and Receipt must be in the following file formats: .jpg, .jpeg, .png, .pdf
+                                        {t('form.receipt_format_notice')}
                                     </p>
 
                                     <div className="mt-2">
                                         <UploadFileSection
-                                            buttonText="Click to upload receipt/bill of sale."
+                                            buttonText={t('form.upload_receipt_button')}
                                             files={watchValues.files || {}}
                                             setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
                                             error={errors.files}
@@ -415,7 +416,7 @@ export default function ProductRegistrationFormSection() {
                                         variant="primary"
                                         type="submit"
                                     >
-                                        Register
+                                        {t('form.register')}
                                     </Button>
                                 </div>
                             </>

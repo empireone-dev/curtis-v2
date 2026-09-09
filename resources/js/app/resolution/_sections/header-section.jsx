@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 import { languages } from "@/app/_json/languages.json";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedLang } from "@/app/_redux/app-slice";
+import useTranslation from "@/app/_hooks/useTranslation";
 
 export default function HeaderSection({ title = '' }) {
     const call_type = typeof window !== 'undefined' ? window.location.pathname?.split('/')[2]?.replace('_', ' ') : '';
     const dispatch = useDispatch();
     const { selectedLang } = useSelector((store) => store.app);
+    const { t } = useTranslation();
 
     const [isLangOpen, setIsLangOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -103,7 +105,7 @@ export default function HeaderSection({ title = '' }) {
             </div>
 
             <div className="text-[16px] tracking-widest text-blue-200 uppercase flex space-x-3 z-10 mb-8 animate-fade-in-up [animation-delay:400ms]">
-                <span>Customer {call_type === "safety issue" ? "Safety Concern" : call_type ?? ''}</span>
+                <span>{t('resolution.header.customer')} {call_type === "safety issue" ? t('resolution.header.safety_concern') : call_type ?? ''}</span>
             </div>
 
             {/* Wave SVG Background */}

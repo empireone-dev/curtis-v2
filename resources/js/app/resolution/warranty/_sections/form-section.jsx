@@ -17,8 +17,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { get_product_registration_by_serial_number_thunk, get_ticket_by_serial_number_thunk } from '@/app/_redux/app-thunk';
 import store from '@/app/store/store';
 import { validate_email_service } from '../../../services/tickets-service';
+import useTranslation from '@/app/_hooks/useTranslation';
 
 export default function FormSection() {
+    const { t } = useTranslation();
     const { products, ticket } = useSelector((store) => store.app);
     const [isValidEmail, setIsValidEmail] = useState(false)
 
@@ -270,7 +272,7 @@ export default function FormSection() {
                 {
                     !ticket?.ticket?.id && is_under_45_days && (
                         <div className='border border-green-500 rounded-md p-2 text-green-500 shadow-sm mb-4 bg-green-100'>
-                            The purchase was within the last 45 days. For faster resolution, please return it to the retailer for refund or replacement.
+                            {t('form.under_45_days_notice')}
                         </div>
                     )
                 }
@@ -279,7 +281,7 @@ export default function FormSection() {
                     ticket?.ticket?.id && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
                             <div>
-                                A previous claim has been identified for this serial number. If you believe this information is incorrect or would like us to review it further, please check here to dispute this finding
+                                {t('form.previous_claim_notice')}
 
                             </div>
                             <div className='flex items-center justify-end'>
@@ -287,7 +289,7 @@ export default function FormSection() {
                                     onClick={() => window.open(`/resolution/search/${ticket?.ticket?.serial_number}`, '_blank')}
                                     variant='primary'
                                 >
-                                    CHECK THE TICKET STATUS
+                                    {t('form.check_ticket_status')}
                                 </Button>
                             </div>
                         </div>
@@ -297,17 +299,17 @@ export default function FormSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <Input
                         id="serial_number"
-                        label="Serial Number (e.g. A1234567890123456)"
+                        label={t('form.serial_number_label')}
                         error={errors.serial_number?.message}
                         disabled={window.location.pathname.split('/')[3] != 'blank'}
                         maxLength={17}
                         required={true}
                         {...register("serial_number", {
-                            required: "Serial number is required",
+                            required: t('form.serial_number_required'),
                             pattern: {
                                 value: /^A\d{16}$/,
                                 // Updated the message to say 16 digits to match the regex
-                                message: "Invalid format. Serial number must start with 'A' followed by 16 digits."
+                                message: t('form.serial_number_invalid')
                             },
                             // Move your custom onChange inside the register function!
                             onChange: search_serial_number
@@ -316,12 +318,12 @@ export default function FormSection() {
                     <Input
                         id="purchase_date"
                         type="date"
-                        label="Purchase Date"
+                        label={t('form.purchase_date_label')}
                         disabled={ticket?.ticket?.id}
                         max={new Date().toISOString().split("T")[0]} // Restricts selection to today or earlier
                         error={errors.purchase_date?.message}
                         required={true}
-                        {...register("purchase_date", { required: "Purchase Date is required" })}
+                        {...register("purchase_date", { required: t('form.purchase_date_required') })}
                         onKeyDown={(e) => {
                             if (e.key !== "Tab") {
                                 e.preventDefault();
@@ -340,18 +342,18 @@ export default function FormSection() {
                 <div className=' flex flex-col gap-3'>
                     {
                         (!ticket?.ticket?.id && watchValues.purchase_date && call_type == 'warranty' && is_under_45_days && is_correct_pattern) && <>
-                            Have you tried contacting the store for the return policy?
+                            {t('form.contacted_store_question')}
                             <div className='flex gap-8 my-3'>
                                 <Radio
                                     name="has_contacted_store"
-                                    label="Yes"
+                                    label={t('form.yes')}
                                     checked={watchValues.has_contacted_store === 'Yes'}
                                     onChange={() => setValue("has_contacted_store", 'Yes')}
                                 />
 
                                 <Radio
                                     name="has_contacted_store"
-                                    label="No"
+                                    label={t('form.no')}
                                     checked={watchValues.has_contacted_store === 'No'}
                                     onChange={() => setValue("has_contacted_store", 'No')}
                                 />
@@ -360,8 +362,8 @@ export default function FormSection() {
                             {watchValues.has_contacted_store == 'Yes' && (
                                 <Textarea
                                     name="store_refusal_reason"
-                                    label="State the reason why the store did not take the unit back"
-                                    {...register("store_refusal_reason", { required: "Reason is required" })}
+                                    label={t('form.store_refusal_reason_label')}
+                                    {...register("store_refusal_reason", { required: t('form.store_refusal_reason_required') })}
                                     error={errors.store_refusal_reason?.message}
                                 />
                             )}
@@ -371,7 +373,7 @@ export default function FormSection() {
                 </div>
                 {
                     (watchValues.has_contacted_store == 'No' && is_under_45_days) && <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4'>
-                        We highly suggest returning it to the retailer for refund or replacement.
+                        {t('form.return_suggestion')}
                     </div>
                 }
 
@@ -380,30 +382,30 @@ export default function FormSection() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <Input
                                 id="fname"
-                                label="First Name"
+                                label={t('form.first_name_label')}
                                 error={errors.fname?.message}
                                 required={true}
-                                {...register("fname", { required: "First name is required" })}
+                                {...register("fname", { required: t('form.first_name_required') })}
                             />
                             <Input
                                 id="lname"
-                                label="Last Name"
+                                label={t('form.last_name_label')}
                                 error={errors.lname?.message}
                                 required={true}
-                                {...register("lname", { required: "Last name is required" })}
+                                {...register("lname", { required: t('form.last_name_required') })}
                             />
                         </div>
                         <Input
                             id="email"
                             type="email"
-                            label="Email"
+                            label={t('form.email_label')}
                             error={errors.email?.message}
                             required={true}
                             {...register("email", {
-                                required: "Email is required",
+                                required: t('form.email_required'),
                                 pattern: {
                                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: "Invalid email address"
+                                    message: t('form.email_invalid')
                                 }
                             })}
                             onChange={validate_email}
@@ -416,15 +418,15 @@ export default function FormSection() {
                                     <Input
                                         id="phone"
                                         type="tel"
-                                        label="Phone Number"
+                                        label={t('form.phone_label')}
                                         error={errors.phone?.message}
                                         required={true}
                                         maxLength={14} // Restricts input to the exact length of (XXX) XXX-XXXX
                                         {...register("phone", {
-                                            required: "Phone number is required",
+                                            required: t('form.phone_required'),
                                             pattern: {
                                                 value: /^\(\d{3}\) \d{3}-\d{4}$/,
-                                                message: "Must be a valid US phone number: (XXX) XXX-XXXX",
+                                                message: t('form.phone_invalid'),
                                             },
                                             onChange: (e) => {
                                                 e.target.value = formatUSPhone(e.target.value);
@@ -435,13 +437,13 @@ export default function FormSection() {
                                     <Input
                                         id="phone2"
                                         type="tel"
-                                        label="Secondary Phone Number"
+                                        label={t('form.phone2_label')}
                                         error={errors.phone2?.message}
                                         maxLength={14}
                                         {...register("phone2", {
                                             pattern: {
                                                 value: /^\(\d{3}\) \d{3}-\d{4}$/,
-                                                message: "Must be a valid US phone number: (XXX) XXX-XXXX",
+                                                message: t('form.phone_invalid'),
                                             },
                                             onChange: (e) => {
                                                 e.target.value = formatUSPhone(e.target.value);
@@ -454,7 +456,7 @@ export default function FormSection() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
                                     <Select
-                                        label="Model Number"
+                                        label={t('form.model_number_label')}
                                         name="item_number"
                                         options={
                                             productFilter?.map((res) => ({
@@ -473,7 +475,7 @@ export default function FormSection() {
                                     />
                                     <Input
                                         id="unit"
-                                        label="Item Unit"
+                                        label={t('form.item_unit_label')}
                                         error={errors.unit?.message}
                                         disabled
                                         {...register("unit")}
@@ -483,7 +485,7 @@ export default function FormSection() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                                     <Input
                                         id="brand"
-                                        label="Brand"
+                                        label={t('form.brand_label')}
                                         disabled
                                         error={errors.brand?.message}
                                         {...register("brand")}
@@ -491,7 +493,7 @@ export default function FormSection() {
                                     <Input
                                         id="class"
                                         disabled
-                                        label="Item Class"
+                                        label={t('form.item_class_label')}
                                         error={errors.class?.message}
                                         {...register("class")}
                                     />
@@ -500,10 +502,10 @@ export default function FormSection() {
                                 <div className="w-full">
                                     <Input
                                         id="address"
-                                        label="Physical Address"
+                                        label={t('form.physical_address_label')}
                                         error={errors.address?.message}
                                         required={true}
-                                        {...register("address", { required: "Street address is required" })}
+                                        {...register("address", { required: t('form.physical_address_required') })}
                                     />
                                 </div>
 
@@ -511,10 +513,10 @@ export default function FormSection() {
                                     <Controller
                                         name="country"
                                         control={control}
-                                        rules={{ required: "Country is required" }}
+                                        rules={{ required: t('form.country_required') }}
                                         render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                                             <Select
-                                                label="Country"
+                                                label={t('form.country_label')}
                                                 required
                                                 name="country"
                                                 ref={ref}
@@ -535,10 +537,10 @@ export default function FormSection() {
                                     <Controller
                                         name="state"
                                         control={control}
-                                        rules={{ required: "State is required" }}
+                                        rules={{ required: t('form.state_required') }}
                                         render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                                             <Select
-                                                label="State"
+                                                label={t('form.state_label')}
                                                 required
                                                 name="state"
                                                 ref={ref}
@@ -558,17 +560,17 @@ export default function FormSection() {
 
                                     <Input
                                         id="city"
-                                        label="City"
+                                        label={t('form.city_label')}
                                         error={errors.city?.message}
                                         required={true}
-                                        {...register("city", { required: "City is required" })}
+                                        {...register("city", { required: t('form.city_required') })}
                                     />
                                     <Input
                                         id="zip_code"
-                                        label="Zip Code / Postal Code"
+                                        label={t('form.zip_code_label')}
                                         error={errors.zip_code?.message}
                                         required={true}
-                                        {...register("zip_code", { required: "Zip code is required" })}
+                                        {...register("zip_code", { required: t('form.zip_code_required') })}
                                     />
                                 </div>
 
@@ -576,7 +578,7 @@ export default function FormSection() {
                                     id="has_address_2"
                                     className='my-3'
                                     checked={watchValues.has_address_2}
-                                    label="My physical address is the same as my mailing address."
+                                    label={t('form.same_address_label')}
                                     onChange={(val) =>
                                         setValue("has_address_2", val.target.checked)
                                     }
@@ -586,10 +588,10 @@ export default function FormSection() {
                                         <div className="w-full">
                                             <Input
                                                 id="address_2"
-                                                label="Mailing Address"
+                                                label={t('form.mailing_address_label')}
                                                 error={errors.address_2?.message}
                                                 required={true}
-                                                {...register("address_2", { required: "Mailing address is required" })}
+                                                {...register("address_2", { required: t('form.mailing_address_required') })}
                                             />
                                         </div>
 
@@ -597,10 +599,10 @@ export default function FormSection() {
                                             <Controller
                                                 name="country_2"
                                                 control={control}
-                                                rules={{ required: "Country is required" }}
+                                                rules={{ required: t('form.country_required') }}
                                                 render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                                                     <Select
-                                                        label="Country"
+                                                        label={t('form.country_label')}
                                                         required
                                                         name="country_2"
                                                         ref={ref}
@@ -621,10 +623,10 @@ export default function FormSection() {
                                             <Controller
                                                 name="state_2"
                                                 control={control}
-                                                rules={{ required: "State is required" }}
+                                                rules={{ required: t('form.state_required') }}
                                                 render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
                                                     <Select
-                                                        label="State"
+                                                        label={t('form.state_label')}
                                                         required
                                                         name="state_2"
                                                         ref={ref}
@@ -644,17 +646,17 @@ export default function FormSection() {
 
                                             <Input
                                                 id="city_2"
-                                                label="City"
+                                                label={t('form.city_label')}
                                                 error={errors.city?.message}
                                                 required={true}
-                                                {...register("city_2", { required: "City is required" })}
+                                                {...register("city_2", { required: t('form.city_required') })}
                                             />
                                             <Input
                                                 id="zip_code_2"
-                                                label="Zip Code / Postal Code"
+                                                label={t('form.zip_code_label')}
                                                 error={errors.zip_code?.message}
                                                 required={true}
-                                                {...register("zip_code_2", { required: "Zip code is required" })}
+                                                {...register("zip_code_2", { required: t('form.zip_code_required') })}
                                             />
                                         </div>
                                     </>
@@ -662,8 +664,8 @@ export default function FormSection() {
                                 <div className="w-full">
                                     <Textarea
                                         name="detailed_explanation_issue"
-                                        label="Detailed explanation of the issue."
-                                        {...register("detailed_explanation_issue", { required: "Issue is required" })}
+                                        label={t('form.issue_explanation_label')}
+                                        {...register("detailed_explanation_issue", { required: t('form.issue_explanation_required') })}
                                         error={errors.detailed_explanation_issue?.message}
                                     />
                                 </div>
@@ -675,13 +677,13 @@ export default function FormSection() {
                                 />
 
                                 <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
-                                    Check your Spam/Junk folder for confirmation emails and future claim-related communications.
+                                    {t('form.spam_notice')}
                                 </div>
 
 
                                 <Checkbox
                                     name="isAgree"
-                                    label="By submitting this warranty claim, I certify that all information and documentation provided, including photographs, model and serial number information, and my shipping/mailing address, are true, complete, and accurate to the best of my knowledge. I confirm that the product has not been intentionally damaged, modified, or misused. I understand that, if my claim is approved, Curtis may, at its sole discretion and in accordance with the applicable warranty terms, repair or replace the product or provide a refund of the purchase price. "
+                                    label={t('form.agree_warranty')}
                                     checked={watchValues.isAgree}
                                     onChange={(e) => setValue("isAgree", e.target.checked)}
                                 />
@@ -696,7 +698,7 @@ export default function FormSection() {
                                         variant="primary"
                                         type="submit"
                                     >
-                                        SUBMIT
+                                        {t('form.submit')}
                                     </Button>
                                 </div>
 

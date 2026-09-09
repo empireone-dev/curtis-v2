@@ -1,17 +1,18 @@
 import { router } from '@inertiajs/react';
 import React, { useState } from 'react';
+import useTranslation from '@/app/_hooks/useTranslation';
 
 export default function ConfirmationSection() {
-    
+    const { t } = useTranslation();
     const call_type = window.location.pathname.split('/')[2]
     return (
         <div>
             <div className="text-center mb-8">
                 <span className="text-sm font-bold tracking-wider text-blue-800 uppercase mb-2 block drop-shadow-sm">
-                    Customer Intake
+                    {t('confirmation.customer_intake')}
                 </span>
                 <h2 className="text-2xl font-semibold text-blue-800">
-                    "Have you already registered your unit?"
+                    "{t('confirmation.question')}"
                 </h2>
             </div>
 
@@ -26,7 +27,7 @@ export default function ConfirmationSection() {
             hover:from-blue-100 hover:to-blue-200 hover:border-blue-500 hover:shadow-lg hover:scale-105
         `}
                 >
-                    YES
+                    {t('confirmation.yes')}
                 </button>
 
                 <button
@@ -39,7 +40,7 @@ export default function ConfirmationSection() {
             hover:from-gray-100 hover:to-gray-200 hover:border-gray-500 hover:shadow-lg hover:scale-105
         `}
                 >
-                    NO
+                    {t('confirmation.no')}
                 </button>
             </div>
 

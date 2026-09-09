@@ -10,8 +10,10 @@ import store from '@/app/store/store';
 import { get_product_registration_by_serial_number_thunk } from '@/app/_redux/app-thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import { setTicket } from '@/app/_redux/app-slice';
+import useTranslation from '@/app/_hooks/useTranslation';
 
 export default function VerifyFormSection() {
+    const { t } = useTranslation();
     const { ticket } = useSelector((store) => store.app);
     const [isError, setIsError] = useState(false)
     const [isloading, setLoading] = useState(false)
@@ -75,14 +77,14 @@ export default function VerifyFormSection() {
     return (
         <>
             {
-                isError && <div className='text-red-500 text-sm leading-relaxed text-center py-3'>Not found on the record!</div>
+                isError && <div className='text-red-500 text-sm leading-relaxed text-center py-3'>{t('verification.not_found')}</div>
             }
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 animate-fadeIn mt-5">
                 {
                     ticket?.id === null && (
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
                             <div className='py-3'>
-                                No product registration found!
+                                {t('verification.no_registration_found')}
                             </div>
                         </div>
                     )
@@ -91,14 +93,14 @@ export default function VerifyFormSection() {
                     ticket?.ticket?.id && (
                         <div className='border border-orange-500 rounded-md p-2 text-orange-500 shadow-sm mb-4 bg-orange-100'>
                             <div className='py-3'>
-                                A previous claim has been identified for this serial number. If you believe this information is incorrect or would like us to review it further, please check here to dispute this finding
+                                {t('form.previous_claim_notice')}
                             </div>
                             <div className='flex items-center justify-end'>
                                 <Button
                                     onClick={() => window.open(`/resolution/search/${ticket?.ticket?.serial_number}`, '_blank')}
                                     variant='primary'
                                 >
-                                    CHECK THE TICKET STATUS
+                                    {t('form.check_ticket_status')}
                                 </Button>
                             </div>
                         </div>
@@ -106,16 +108,16 @@ export default function VerifyFormSection() {
                 }
                 <Input
                     id="serial_number"
-                    label="Serial Number (e.g. A1234567890123456)"
+                    label={t('form.serial_number_label')}
                     error={errors.serial_number?.message}
                     maxLength={17}
                     required={true}
                     {...register("serial_number", {
-                        required: "Serial number is required",
+                        required: t('form.serial_number_required'),
                         pattern: {
                             value: /^A\d{16}$/,
                             // Updated the message to say 16 digits to match the regex
-                            message: "Invalid format. Serial number must start with 'A' followed by 16 digits."
+                            message: t('form.serial_number_invalid')
                         },
                         // Move your custom onChange inside the register function!
                         onChange: search_serial_number
@@ -129,7 +131,7 @@ export default function VerifyFormSection() {
                     disabled={is_disabled()}
                     loading={isSubmitting}
                 >
-                    {isSubmitting ? 'VERIFYING...' : 'SUBMIT'}
+                    {isSubmitting ? t('verification.verifying') : t('verification.submit')}
                 </Button>
                 {
                     ticket?.id === undefined && <Button
@@ -138,7 +140,7 @@ export default function VerifyFormSection() {
                         type="button"
                         onClick={() => router.visit(`/resolution/${call_type}/confirmation`)}
                     >
-                        GO BACK
+                        {t('verification.go_back')}
                     </Button>
                 }
             </form>
