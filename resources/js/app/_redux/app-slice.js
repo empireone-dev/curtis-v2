@@ -15,8 +15,12 @@ export const appSlice = createSlice({
         },
         desktopCollapsed: false,
         sidebarOpen: false,
+        selectedLang: { code: "en", label: "English" },
     },
     reducers: {
+        setSelectedLang: (state, action) => {
+            state.selectedLang = action.payload;
+        },
         setSidebarOpen: (state) => {
             state.sidebarOpen = !state.sidebarOpen;
         },
@@ -42,6 +46,7 @@ export const appSlice = createSlice({
 });
 export const {
     setLoading,
+    setSelectedLang,
     setSidebarOpen,
     setProductRegistration,
     setProducts,
