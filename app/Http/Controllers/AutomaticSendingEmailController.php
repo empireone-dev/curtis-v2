@@ -42,7 +42,7 @@ class AutomaticSendingEmailController extends Controller
             ->values();
 
 
-        $googleScriptUrl = 'https://script.google.com/macros/s/AKfycbwE2lG1ZG_dNwwwT8f_OpePh6wiEElGBf846AS_ZF1T-cj9QdOcVtbOR3oJoLuWkgU/exec';
+        $googleScriptUrl = 'https://script.google.com/macros/s/AKfycbwW1orDSrWkviTgI9rg5X1xQZ14yD_4lqnip7oVNvp-q7xS95JidLtmJUpkX_cBGhh-/exec';
 
         // Send the entire collection as a single JSON payload
         $response = Http::post($googleScriptUrl, [
@@ -92,7 +92,7 @@ class AutomaticSendingEmailController extends Controller
             })
             ->values();
 
-        $googleScriptUrl = 'https://script.google.com/macros/s/AKfycbzvcJcJdZ3OIBhcPwf-10xksg4tH1E7J3pxSSc2--gJTrPKYOmemXRN7hj7yR5PFsZh/exec';
+        $googleScriptUrl = 'https://script.google.com/macros/s/AKfycbxnLXU4Pg_IgGmKaaOrD-jLrx30sLzxDG7NHPviRZQwM_b3Lk4BFJFbZ43_tIBRSrUI/exec';
 
         // Send the entire collection as a single JSON payload
         $response = Http::post($googleScriptUrl, [

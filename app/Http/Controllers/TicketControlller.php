@@ -95,7 +95,9 @@ class TicketControlller extends Controller
 
     public function get_ticket_by_serial_number($serial_number)
     {
-        $ticket = Ticket::where('serial_number', $serial_number)->with(['activities', 'product_registration', 'files'])->first();
+        $ticket = Ticket::where('serial_number', $serial_number)
+            ->orWhere('ticket_id', $serial_number)
+            ->with(['activities', 'product_registration', 'files'])->first();
         if ($ticket) {
             return response()->json([
                 'data' => $ticket,
@@ -130,11 +132,12 @@ class TicketControlller extends Controller
             }
         }
         $ticket = Ticket::where('id', $request->id)->first();
-        if ($ticket && $ticket->status == 'CLOSED') {
+        if ($ticket) {
             $ticket->update([
                 'status' => 'WARRANTY VALIDATION',
                 'is_reply' => 'true',
-                'cases_status' => 'handled'
+                'cases_status' => 'handled',
+                'email_date' => Carbon::now()->addDay()->toDateTimeString()
             ]);
         }
         Activity::create([

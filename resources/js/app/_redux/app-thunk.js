@@ -20,6 +20,7 @@ export function get_products_thunk() {
 export function get_ticket_by_serial_number_thunk(ticket_id) {
     return async function (dispatch, getState) {
         const result = await get_ticket_by_serial_number_service(ticket_id);
+        console.log('result.datasssssssss',result)
         dispatch(appSlice.actions.setTicket(result.data));
     };
 }
