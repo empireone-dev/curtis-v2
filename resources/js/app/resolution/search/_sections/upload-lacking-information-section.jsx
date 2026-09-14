@@ -8,9 +8,11 @@ import { useSelector } from 'react-redux';
 import store from '@/app/store/store';
 import { get_ticket_by_serial_number_thunk } from '@/app/_redux/app-thunk';
 import { router } from '@inertiajs/react';
+import useTranslation from '@/app/_hooks/useTranslation';
 
 export default function UploadLackingInformationSection() {
     const { ticket: ticket_info } = useSelector((store) => store.app);
+    const { t } = useTranslation();
     const {
         register,
         handleSubmit,
@@ -65,7 +67,7 @@ export default function UploadLackingInformationSection() {
                 );
 
                 if (missingCategories.length > 0) {
-                    return "Please upload all the required missing files.";
+                    return t('lacking.missing_files_validation');
                 }
                 return true;
             }
@@ -90,14 +92,14 @@ export default function UploadLackingInformationSection() {
 
         try {
             const serialNumber = window.location.pathname.split('/')[3];
-            const toastId = toast.loading('Uploading files...');
+            const toastId = toast.loading(t('lacking.uploading'));
             formData.append('call_type', ticket_info.call_type);
             formData.append('id', ticket_info.id);
 
             await upload_lacking_information_service(formData);
             await store.dispatch(get_ticket_by_serial_number_thunk(serialNumber));
             toast.update(toastId, {
-                render: 'Files uploaded successfully! 🛠️',
+                render: t('lacking.upload_success'),
                 type: 'success',
                 closeButton: true,
                 isLoading: false,
@@ -108,7 +110,7 @@ export default function UploadLackingInformationSection() {
             setValue('files.defect_issue', []);
         } catch (error) {
             console.error("Submission failed:", error);
-            alert("Failed to submit the form. Please try again.");
+            alert(t('lacking.upload_failed'));
         }
     };
 
@@ -133,7 +135,7 @@ export default function UploadLackingInformationSection() {
                         variant="primary"
                         type="submit"
                     >
-                        UPLOAD
+                        {t('lacking.upload_button')}
                     </Button>
                 )
             }

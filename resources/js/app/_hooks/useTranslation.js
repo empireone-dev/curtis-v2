@@ -6,8 +6,16 @@ export default function useTranslation() {
     const { selectedLang } = useSelector((store) => store.app);
     const lang = selectedLang?.code || "en";
 
-    const t = (key, fallback = key) => {
-        return translations[lang]?.[key] ?? translations.en?.[key] ?? fallback;
+    const t = (key, params) => {
+        let value = translations[lang]?.[key] ?? translations.en?.[key] ?? key;
+
+        if (params && typeof value === "string") {
+            Object.entries(params).forEach(([placeholder, replacement]) => {
+                value = value.replaceAll(`{${placeholder}}`, replacement);
+            });
+        }
+
+        return value;
     };
 
     return { t, lang };
