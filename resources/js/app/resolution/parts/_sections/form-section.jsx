@@ -274,7 +274,7 @@ export default function FormSection() {
                             </div>
                             <div className='flex items-center justify-end'>
                                 <Button
-                                    onClick={() => window.open(`/resolution/search/${ticket?.ticket?.serial_number}`, '_blank')}
+                                    onClick={() => window.open(`/resolution/search/${ticket?.ticket?.serial_number ?? ticket?.ticket?.ticket_id}`, '_blank')}
                                     variant='primary'
                                 >
                                     {t('form.check_ticket_status')}
