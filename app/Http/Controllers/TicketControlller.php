@@ -158,14 +158,18 @@ class TicketControlller extends Controller
     {
 
         $product_registration = ProductRegistration::where('serial', $serial_number)->with(['ticket'])->first();
-        $ticket = Ticket::where('serial_number', $serial_number)->with(['activities', 'product_registration'])->first();
+        $ticket = Ticket::where('serial_number', $serial_number)
+            ->orWhere('ticket_id', $serial_number)
+            ->with(['activities', 'product_registration'])->first();
         if ($product_registration) {
             return response()->json([
                 'data' => $product_registration,
                 'message' => 'success'
             ], 200);
         } else if ($ticket) {
-            $ticket = Ticket::where('serial_number', $serial_number)->with(['activities', 'product_registration'])->first();
+            $ticket = Ticket::where('serial_number', $serial_number)
+                ->orWhere('ticket_id', $serial_number)
+                ->with(['activities', 'product_registration'])->first();
             return response()->json([
                 'id' => null,
                 'data' => [
