@@ -1,58 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import StepperSection from './stepper-section';
-import moment from 'moment';
-import UploadLackingInformationSection from './upload-lacking-information-section';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import useTranslation from "@/app/_hooks/useTranslation";
+import StepperSection from "./stepper-section";
+import moment from "moment";
+import UploadLackingInformationSection from "./upload-lacking-information-section";
 
 export default function TicketDetailsSection() {
     const { ticket: ticket_info } = useSelector((store) => store.app);
     const [isExpanded, setIsExpanded] = useState(false);
     // Managing our interactive tabs
-    const [activeTab, setActiveTab] = useState('overview');
+    const [activeTab, setActiveTab] = useState("overview");
     const url = new URL(window.location.href);
 
     // Get the value of the 'tab' parameter
     const tabValue = url.searchParams.get("tab");
 
     useEffect(() => {
-        setActiveTab(tabValue ?? 'overview')
-    }, [])
+        setActiveTab(tabValue ?? "overview");
+    }, []);
+
+    const { t } = useTranslation();
     // Using the data from your previous JSON payload as default state
     const ticket = {
         id: ticket_info?.ticket_id,
         status: ticket_info?.status,
-        decision: ticket_info?.decision_status ?? 'Pending Decision',
+        decision: ticket_info?.decision_status ?? t("search.pending_decision"),
         customer: {
-            name: `${ticket_info?.fname ?? ''} ${ticket_info?.lname ?? ''}`,
-            phone: `${ticket_info?.phone ?? ''}`,
-            email: `${ticket_info?.email ?? ''}`,
-            address: `${ticket_info?.address ?? ''} ${ticket_info?.city ?? ''} ${ticket_info?.state ?? ''} ${ticket_info?.country ?? ''}  ${ticket_info?.zip_code ?? ''}`,
-            address2: `${ticket_info?.address2 ?? 'N/A'}`,
+            name: `${ticket_info?.fname ?? ""} ${ticket_info?.lname ?? ""}`,
+            phone: `${ticket_info?.phone ?? ""}`,
+            email: `${ticket_info?.email ?? ""}`,
+            address: `${ticket_info?.address ?? ""} ${ticket_info?.city ?? ""} ${ticket_info?.state ?? ""} ${ticket_info?.country ?? ""}  ${ticket_info?.zip_code ?? ""}`,
+            address2: `${ticket_info?.address2 ?? t("search.na")}`,
         },
         product: {
             brand: `${ticket_info?.brand}`,
             item: `${ticket_info?.item_number}`,
             serial: `${ticket_info?.serial_number}`,
-            purchased: `${moment(ticket_info?.purchase_date).format('LL')}`
+            purchased: `${moment(ticket_info?.purchase_date).format("LL")}`,
         },
-        issue: ticket_info?.detailed_explanation_issue ?? ticket_info?.issue
+        issue: ticket_info?.detailed_explanation_issue ?? ticket_info?.issue,
     };
 
     // Helper for tab styling
     const tabClass = (tabName) => `
     px-4 py-2 font-medium text-sm rounded-t-lg transition-colors duration-200
-    ${activeTab === tabName
-            ? 'bg-white text-blue-600 border-t-2 border-blue-600 shadow-sm'
-            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-        }
+    ${
+        activeTab === tabName
+            ? "bg-white text-blue-600 border-t-2 border-blue-600 shadow-sm"
+            : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+    }
   `;
 
     return (
         <>
-
             {/* 1. Header Section */}
             <div className="flex justify-between flex-col items-start ">
-
                 <div className="flex space-x-3 py-3">
                     <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold tracking-wide">
                         {ticket_info?.call_type}
@@ -68,42 +70,55 @@ export default function TicketDetailsSection() {
 
             {/* 2. Interactive Tab Navigation */}
             <div className="flex space-x-2 border-b border-gray-200 mb-4">
-                <button onClick={() => setActiveTab('overview')} className={tabClass('overview')}>
-                    Overview & Issue
+                <button
+                    onClick={() => setActiveTab("overview")}
+                    className={tabClass("overview")}
+                >
+                    {t("search.overview_tab")}
                 </button>
-                <button onClick={() => setActiveTab('upload')} className={tabClass('upload')}>
-                    Files
+                <button
+                    onClick={() => setActiveTab("upload")}
+                    className={tabClass("upload")}
+                >
+                    {t("search.upload_tab")}
                 </button>
-                <button onClick={() => setActiveTab('customer')} className={tabClass('customer')}>
-                    Customer Details
+                <button
+                    onClick={() => setActiveTab("customer")}
+                    className={tabClass("customer")}
+                >
+                    {t("search.customer_tab")}
                 </button>
-                <button onClick={() => setActiveTab('product')} className={tabClass('product')}>
-                    Product Info
+                <button
+                    onClick={() => setActiveTab("product")}
+                    className={tabClass("product")}
+                >
+                    {t("search.product_tab")}
                 </button>
             </div>
 
             {/* 3. Dynamic Content Area */}
             <div className="bg-white p-5 rounded-b-lg rounded-tr-lg border border-gray-200 shadow-sm min-h-[250px] flex flex-col gap-3">
-                <div className='bg-green-50 text-green-900 p-2 rounded-md border border-green-100 leading-relaxed'>
-                    <p className="text-gray-800 font-black">CASE FILE: {ticket_info?.ticket_id}</p>
+                <div className="bg-green-50 text-green-900 p-2 rounded-md border border-green-100 leading-relaxed">
+                    <p className="text-gray-800 font-black">
+                         {t("search.case_file_title")}: {ticket_info?.ticket_id}
+                    </p>
                 </div>
                 {/* OVERVIEW TAB */}
-                {activeTab === 'overview' && (
+                {activeTab === "overview" && (
                     <div className="animate-fade-in">
                         <div className="bg-red-50 text-red-900 p-4 rounded-md border border-red-100 text-sm leading-relaxed">
-                            Customer detailed explanation / Issue: <br />
-                            "{isExpanded || (ticket?.issue?.length ?? 0) <= 120
+                           {t("search.customer_detailed_explanation")}: <br />"
+                            {isExpanded || (ticket?.issue?.length ?? 0) <= 120
                                 ? ticket?.issue
-                                : `${ticket?.issue?.substring(0, 120)}...`
-                            }"
-
+                                : `${ticket?.issue?.substring(0, 120)}...`}
+                            "
                             {/* Only show the button if the issue string is longer than 120 characters */}
                             {(ticket?.issue?.length ?? 0) > 120 && (
                                 <button
                                     onClick={() => setIsExpanded(!isExpanded)}
                                     className="text-red-700 hover:text-red-800 hover:underline font-semibold ml-2 transition-colors"
                                 >
-                                    {isExpanded ? "See less" : "See more"}
+                                    {isExpanded ? t("search.see_less") : t("search.see_more")}
                                 </button>
                             )}
                         </div>
@@ -113,71 +128,101 @@ export default function TicketDetailsSection() {
                     </div>
                 )}
 
-
-                {
-                    activeTab === 'upload' && <UploadLackingInformationSection />
-                }
+                {activeTab === "upload" && <UploadLackingInformationSection />}
                 {/* CUSTOMER TAB */}
-                {activeTab === 'customer' && (
+                {activeTab === "customer" && (
                     <div className="grid grid-cols-1 gap-3 animate-fade-in">
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Full Name</p>
-                            <p className="text-gray-800 font-medium">{ticket.customer.name}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.full_name")}
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {ticket.customer.name}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Phone</p>
-                            <p className="text-gray-800 font-medium">{ticket.customer.phone}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.phone")}
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {ticket.customer.phone}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Email</p>
-                            <a href={`mailto:${ticket.customer.email}`} className="text-blue-600 hover:underline font-medium">
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.email")}
+                            </p>
+                            <a
+                                href={`mailto:${ticket.customer.email}`}
+                                className="text-blue-600 hover:underline font-medium"
+                            >
                                 {ticket.customer.email}
                             </a>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Address</p>
-                            <p className="text-gray-800 font-medium">{ticket.customer.address}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.address")}
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {ticket.customer.address}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Mailing Address</p>
-                            <p className="text-gray-800 font-medium">{ticket.customer.address2}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.mailing_address")}
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {ticket.customer.address2}
+                            </p>
                         </div>
                     </div>
                 )}
 
                 {/* PRODUCT TAB */}
-                {activeTab === 'product' && (
+                {activeTab === "product" && (
                     <div className="grid grid-cols-2 gap-3 animate-fade-in">
-
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Case File</p>
-                            <p className="text-gray-800 font-medium">{ticket_info?.ticket_id}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.case_file")}
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {ticket_info?.ticket_id}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Brand</p>
-                            <p className="text-gray-800 font-medium">{ticket.product.brand}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.brand")}
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {ticket.product.brand}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Item Number</p>
-                            <p className="text-gray-800 font-medium">{ticket.product.item}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.item_number")}
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {ticket.product.item}
+                            </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Serial Number</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.serial_number")}
+                            </p>
                             <p className="text-gray-800 font-medium font-mono bg-gray-100 px-2 py-1 rounded inline-block">
                                 {ticket.product.serial}
                             </p>
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Purchase Date</p>
-                            <p className="text-gray-800 font-medium">{ticket.product.purchased}</p>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">
+                                {t("search.purchase_date")}
+                            </p>
+                            <p className="text-gray-800 font-medium">
+                                {ticket.product.purchased}
+                            </p>
                         </div>
-
-
-
-
                     </div>
                 )}
-
             </div>
         </>
     );
