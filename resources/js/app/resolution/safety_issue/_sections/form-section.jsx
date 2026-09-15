@@ -278,7 +278,7 @@ export default function FormSection() {
                         id="serial_number"
                         label={t('form.serial_number_label')}
                         error={errors.serial_number?.message}
-                        disabled={window.location.pathname.split('/')[3] != 'blank'}
+                        // disabled={window.location.pathname.split('/')[3] != 'blank'}
                         maxLength={17}
                         required={true}
                         {...register("serial_number", {
