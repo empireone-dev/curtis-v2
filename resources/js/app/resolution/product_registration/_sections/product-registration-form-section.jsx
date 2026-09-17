@@ -105,12 +105,12 @@ export default function ProductRegistrationFormSection() {
                     (id) => !value?.[id] || value[id].length === 0
                 );
                 if (missingCategories.length > 0) {
-                    return "All attachment sections are mandatory. Please upload the missing files.";
+                    return t('form.attachments_required');
                 }
                 return true;
             }
         });
-    }, [register]);
+    }, [register, t]);
     const serialRegex = /^A\d{16}$/;
 
     async function search_serial_number(e) {
