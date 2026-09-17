@@ -2,8 +2,10 @@ import React, { useState } from 'react'; // Gidugang ang useState diri
 import { FiUploadCloud, FiX, FiCheckCircle, FiAlertCircle } from 'react-icons/fi';
 import { FaFileImage, FaFileVideo } from 'react-icons/fa';
 import moment from 'moment';
+import useTranslation from '@/app/_hooks/useTranslation';
 
 const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
+    const { t } = useTranslation();
     const [formatError, setFormatError] = useState(''); // State para sa format validation error
     const call_type = window.location.pathname.split('/')[2];
 
@@ -11,10 +13,10 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
         // 1. Model & Serial Number (Hidden if product_registration)
         call_type !== 'product_registration' ? {
             id: 'readable_serial_section',
-            label: 'Model & Serial Number',
-            description: 'Clear and readable picture of the model & serial number sticker/plate.',
+            label: t('upload.model_serial_label'),
+            description: t('upload.model_serial_description'),
             accept: '.jpg,.jpeg,.png',
-            notes: 'Max size: 10MB. Formats: JPG, PNG.',
+            notes: t('upload.model_serial_notes'),
             icon: <FaFileImage className="w-6 h-6 text-blue-500" />,
             required: true
         } : null,
@@ -22,10 +24,10 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
         // 2. Bill of Sale (Always shown)
         {
             id: 'bill_of_sale',
-            label: 'Bill of Sale / Receipt',
-            description: 'Clear picture showing store name, purchase date, price, and unit description.',
+            label: t('upload.bill_of_sale_label'),
+            description: t('upload.bill_of_sale_description'),
             accept: '.jpg,.jpeg,.png',
-            notes: 'Max size: 10MB. Formats: JPG, PNG.',
+            notes: t('upload.bill_of_sale_notes'),
             icon: <FaFileImage className="w-6 h-6 text-green-500" />,
             required: call_type === "safety_issue" || parts_issue == '["Want to buy Parts"]' ? false : true
         },
@@ -34,25 +36,25 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
         call_type === 'parts'
             ? {
                 id: 'parts_model',
-                label: 'Photo of the parts',
+                label: t('upload.parts_label'),
                 description: (
                     <>
-                        * Clear picture of the part/s you need.<br />
-                        * Clear photo of the unit in which the missing/damaged part is located.
+                        * {t('upload.parts_description_line1')}<br />
+                        * {t('upload.parts_description_line2')}
                     </>
                 ),
                 accept: '.jpg,.jpeg,.png,.mp4,.mov',
-                notes: 'Max size: 50MB. Formats: JPG, PNG, MP4, MOV. Videos compressed under 30 seconds preferred.',
+                notes: t('upload.parts_notes'),
                 icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
                 required: true
             }
             : call_type !== 'product_registration'
                 ? {
                     id: 'defect_issue',
-                    label: 'Issue Evidence',
-                    description: 'Clear picture or video demonstrating the issue or defect.',
+                    label: t('upload.defect_label'),
+                    description: t('upload.defect_description'),
                     accept: '.jpg,.jpeg,.png,.mp4,.mov',
-                    notes: 'Max size: 50MB. Formats: JPG, PNG, MP4, MOV. Videos compressed under 30 seconds preferred.',
+                    notes: t('upload.defect_notes'),
                     icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
                     required: true
                 }
@@ -88,7 +90,7 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
 
         if (hasInvalidFile) {
             // Mao kini ang error message nga mugawas
-            setFormatError("Unsupported file format. Please upload a JPG, PNG, MP4, or MOV file.");
+            setFormatError(t('upload.unsupported_format'));
         } else {
             setFormatError(''); // Clear error kung sakto ang format
         }
@@ -114,13 +116,12 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
             {/* Section Header */}
             <div className="mb-4">
                 <h2 className="text-xl font-bold text-gray-800 flex items-center gap-1 capitalize">
-                    {call_type ? call_type.replace('_', ' ') : 'Claim'} File Upload
+                    {call_type ? call_type.replace('_', ' ') : t('upload.claim')} {t('upload.file_upload_title')}
                     <span className="text-red-500" title="Required fields">*</span>
                 </h2>
 
                 <p className="text-gray-600 mt-1 text-sm">
-                    To process your {call_type ? call_type.replace('_', ' ') : 'claim'} claim quickly, please upload the required documentation below.
-                    All categories marked with an asterisk (<span className="text-red-500">*</span>) are mandatory.
+                    {t('upload.description', { type: call_type ? call_type.replace('_', ' ') : t('upload.claim') })}
                 </p>
             </div>
             {/* Local Format Error Alert Banner */}
@@ -135,7 +136,7 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
             {error && !formatError && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700 text-sm font-medium animate-pulse">
                     <FiAlertCircle className="w-5 h-5 flex-shrink-0 text-red-500" />
-                    <span>{error.message || "Please upload all required files to proceed."}</span>
+                    <span>{error.message || t('upload.required_files_notice')}</span>
                 </div>
             )}
 
@@ -165,7 +166,7 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
 
                                 {isSectionMissing && (
                                     <span className="text-xs font-semibold text-red-600 bg-red-100 px-2 py-1 rounded">
-                                        File missing
+                                        {t('upload.file_missing')}
                                     </span>
                                 )}
                             </div>
@@ -183,7 +184,7 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
                                 <div className="flex flex-col items-center justify-center gap-2 pointer-events-none">
                                     <FiUploadCloud className={`w-8 h-8 ${isSectionMissing ? 'text-red-400' : 'text-gray-400'}`} />
                                     <span className="text-sm font-medium text-blue-600">
-                                        Click to upload or drag and drop
+                                        {t('upload.click_to_upload')}
                                     </span>
                                     <span className="text-xs text-gray-400 font-medium">
                                         {req.notes}

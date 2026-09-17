@@ -187,12 +187,12 @@ export default function FormSection() {
                 );
 
                 if (missingCategories.length > 0) {
-                    return "All attachment sections are mandatory. Please upload the missing files.";
+                    return t('form.attachments_required');
                 }
                 return true;
             }
         });
-    }, [register]);
+    }, [register, t]);
 
     const states = countries?.find(res => res.value == watchValues.country)
     const call_type = window.location.pathname.split('/')[2]
