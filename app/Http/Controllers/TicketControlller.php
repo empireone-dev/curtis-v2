@@ -137,7 +137,7 @@ class TicketControlller extends Controller
                 'status' => 'WARRANTY VALIDATION',
                 'is_reply' => 'true',
                 'cases_status' => 'handled',
-                'email_date' => Carbon::now()->addDay()->toDateTimeString()
+                'email_date' => Carbon::now()->addDays(2)->toDateTimeString()
             ]);
         }
         Activity::create([
