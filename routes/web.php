@@ -32,6 +32,7 @@ Route::prefix('resolution')->group(function () {
     $categories = ['warranty', 'parts', 'safety_issue', 'search', 'product_registration'];
     foreach ($categories as $category) {
         Route::prefix($category)->group(function () use ($category) {
+            Route::inertia('/selection', 'resolution/safety_issue/selection/page');
             Route::inertia('/confirmation', 'resolution/confirmation/page');
             Route::inertia('/verification', 'resolution/verification/page');
             Route::inertia('/{id}', "resolution/{$category}/page");

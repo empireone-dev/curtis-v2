@@ -35,7 +35,8 @@ export default function ResolutionSection() {
             label: t('resolution.section.safety_issue.label'),
             description: t('resolution.section.safety_issue.description'),
             icon: '⚠️',
-            link: "/resolution/safety_issue/blank",
+            // link: "/resolution/safety_issue/blank",
+            link: "/resolution/safety_issue/selection",
             is_disabled: false
         }
     ];
