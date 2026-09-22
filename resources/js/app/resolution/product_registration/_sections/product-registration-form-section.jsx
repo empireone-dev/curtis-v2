@@ -16,7 +16,7 @@ export default function ProductRegistrationFormSection() {
     const { t } = useTranslation();
     const { products, ticket } = useSelector((store) => store.app);
     const dispatch = useDispatch();
-    const [isValidEmail, setIsValidEmail] = useState(false)
+    const [isValidEmail, setIsValidEmail] = useState(false);
     const debounceTimer = useRef(null);
 
     const {
@@ -27,6 +27,7 @@ export default function ProductRegistrationFormSection() {
         setValue,
         reset,
         setError,
+        trigger,
         clearErrors,
         formState: { errors, isSubmitting }
     } = useForm({
@@ -36,6 +37,7 @@ export default function ProductRegistrationFormSection() {
             lname: "",
             phone: "",
             email: "",
+            verify_email: "",
             model: "",
             serial: "",
             country: "",
@@ -77,7 +79,10 @@ export default function ProductRegistrationFormSection() {
                     });
                 });
             } else {
-                formData.append(key, data[key] === null ? '' : data[key]);
+                // Exclude verify_email field from payload
+                if (key !== 'verify_email') {
+                    formData.append(key, data[key] === null ? '' : data[key]);
+                }
             }
         });
         try {
@@ -111,6 +116,7 @@ export default function ProductRegistrationFormSection() {
             }
         });
     }, [register, t]);
+
     const serialRegex = /^A\d{16}$/;
 
     async function search_serial_number(e) {
@@ -127,40 +133,6 @@ export default function ProductRegistrationFormSection() {
 
     // Unified check for whether a ticket is registered
     const isTicketRegistered = ticket?.id || ticket?.ticket?.id;
-
-    // const validate_email = (e) => {
-    //     // 1. Maintain React Hook Form's native state tracking
-    //     register("email").onChange(e);
-
-    //     const emailValue = e.target.value;
-
-    //     // 2. Clear existing timer on every keystroke
-    //     if (debounceTimer.current) {
-    //         clearTimeout(debounceTimer.current);
-    //     }
-
-    //     debounceTimer.current = setTimeout(async () => {
-    //         if (emailValue) {
-    //             setIsValidEmail(false)
-    //             setError('email', {
-    //                 type: 'manual',
-    //                 message: 'Validating email, please wait...'
-    //             });
-    //             const result = await validate_email_service(emailValue);
-    //             console.log('resultresult', result.valid)
-    //             setIsValidEmail(result.valid)
-    //             if (!result.valid) {
-    //                 setError('email', {
-    //                     type: 'manual',
-    //                     message: 'Email address not found!'
-    //                 })
-    //             } else {
-    //                 clearErrors('email');
-    //             }
-    //         }
-    //     }, 3000); // 3000ms = 3 seconds
-
-    // };
 
     return (
         <>
@@ -190,10 +162,9 @@ export default function ProductRegistrationFormSection() {
                                 value: serialRegex,
                                 message: t('form.serial_number_invalid')
                             },
-                            onChange: search_serial_number // Fixed: React Hook Form safe onChange
+                            onChange: search_serial_number
                         })}
                     />
-
 
                     <Input
                         id="purchase_date"
@@ -257,7 +228,8 @@ export default function ProductRegistrationFormSection() {
                                 {...register("lname", { required: t('form.last_name_required') })}
                             />
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                             <Input
                                 id="phone"
                                 type="tel"
@@ -277,6 +249,9 @@ export default function ProductRegistrationFormSection() {
                                 })}
                             />
 
+
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-1 md:col-span-1">
                             <Input
                                 id="email"
                                 type="email"
@@ -288,16 +263,35 @@ export default function ProductRegistrationFormSection() {
                                     pattern: {
                                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                                         message: t('form.email_invalid')
+                                    },
+                                    onChange: () => {
+                                        if (watchValues.verify_email) {
+                                            trigger("verify_email");
+                                        }
                                     }
                                 })}
-
-                            // onChange={validate_email}
                             />
 
+                            <Input
+                                id="verify_email"
+                                type="email"
+                                label={t('form.verify_email_label')}
+                                error={errors.verify_email?.message}
+                                required={true}
+                                {...register("verify_email", {
+                                    required: t('form.verify_email_required'),
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                        message: t('form.verify_email_invalid')
+                                    },
+                                    validate: (value) =>
+                                        value === watchValues.email ||
+                                        t('form.emails_do_not_match') ||
+                                        'Email addresses do not match'
+                                })}
+                            />
                         </div>
-
                         <>
-
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <Controller
                                     name="country"
@@ -362,8 +356,6 @@ export default function ProductRegistrationFormSection() {
                                     required={true}
                                     {...register("zipcode", { required: t('form.zip_code_required') })}
                                 />
-
-
                             </div>
 
                             <Input
@@ -409,7 +401,6 @@ export default function ProductRegistrationFormSection() {
                             <div className="mt-6 w-full">
                                 <Button
                                     loading={isSubmitting}
-                                    // disabled={!isValidEmail}
                                     className="w-full bg-[#3B82F6] hover:bg-blue-600 text-white font-medium py-3 rounded uppercase"
                                     variant="primary"
                                     type="submit"
@@ -420,7 +411,6 @@ export default function ProductRegistrationFormSection() {
                         </>
                     </>
                 }
-
             </form>
         </>
     );

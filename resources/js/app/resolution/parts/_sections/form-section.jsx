@@ -20,9 +20,7 @@ import useTranslation from '@/app/_hooks/useTranslation';
 
 export default function FormSection() {
     const { t } = useTranslation();
-    const { product_registration, products, ticket } = useSelector((store) => store.app);
-
-    const [isValidEmail, setIsValidEmail] = useState(false)
+    const { products, ticket } = useSelector((store) => store.app);
 
     const debounceTimer = useRef(null);
     const {
@@ -31,8 +29,9 @@ export default function FormSection() {
         watch,
         setError,
         control,
-        setValue, // We will use this to loop through our redux state
+        setValue,
         reset,
+        trigger,
         clearErrors,
         formState: { errors, isSubmitting }
     } = useForm({
@@ -40,6 +39,7 @@ export default function FormSection() {
             fname: "",
             lname: "",
             email: "",
+            verify_email: "",
             phone: "",
             phone2: "",
             item_number: "",
@@ -75,13 +75,10 @@ export default function FormSection() {
         }
     });
 
-    const watchValues = watch()
+    const watchValues = watch();
     const productFilter = products.slice(2);
 
-
     const is_under_45_days = watchValues.purchase_date && moment(watchValues.purchase_date).isAfter(moment().subtract(45, 'days'));
-
-    // TRUE if the item is older (46+ days ago)
     const is_over_45_days = watchValues.purchase_date && moment(watchValues.purchase_date).isBefore(moment().subtract(45, 'days'));
 
     useEffect(() => {
@@ -97,18 +94,12 @@ export default function FormSection() {
             setValue('class', searchProductsList[3] ?? '');
             setValue('address2', '');
         }
-
-    }, [watchValues.item_number])
-
+    }, [watchValues.item_number]);
 
     useEffect(() => {
         if (ticket?.id) {
             const searching = ticket?.model === '' ? null : ticket?.model?.toLowerCase();
-            // validate_email({
-            //     target: {
-            //         value: ticket?.email
-            //     }
-            // });
+
             const searchProductsList = productFilter.find((product) =>
                 product.some((value) => typeof value === 'string' && value?.toLowerCase().includes(searching))
             );
@@ -120,60 +111,51 @@ export default function FormSection() {
 
             if (ticket && typeof ticket === 'object') {
                 Object.keys(ticket).forEach((key) => {
-                    // Map the 'model' key from Redux to the 'item_number' form input
                     if (key === 'model') {
                         setValue('item_number', ticket[key]);
-                    } if (key === 'serial') {
+                    } else if (key === 'serial') {
                         setValue('serial_number', ticket[key]);
-                    } if (key === 'address1') {
+                    } else if (key === 'address1') {
                         setValue('address', ticket[key]);
-                    } if (key === 'zipcode') {
+                    } else if (key === 'zipcode') {
                         setValue('zip_code', ticket[key]);
                     } else {
-                        // Set all other fields normally
                         setValue(key, ticket[key]);
                     }
                 });
             }
         }
-
     }, [ticket, setValue]);
 
     const onSubmit = async (data) => {
-
         const formData = new FormData();
 
         Object.keys(data).forEach(key => {
             if (key === 'files') {
-                // Append files using the exact category ID expected by the backend
                 Object.keys(data.files).forEach(category => {
                     data.files[category].forEach(file => {
-                        // Use category[] so PHP receives an array of files per category
                         formData.append(`${category}[]`, file);
                     });
                 });
             } else {
-                // Handle standard text fields
-                if (key != 'common_issues') {
+                // Exclude verify_email from payload if not needed by backend
+                if (key !== 'common_issues' && key !== 'verify_email') {
                     formData.append(key, data[key] === null ? '' : data[key]);
                 }
-                if (key == 'store_refusal_reason') {
+                if (key === 'store_refusal_reason') {
                     formData.append('store_refusal_reason', is_over_45_days ? '' : data[key]);
                 }
-
             }
         });
 
         try {
             formData.append('call_type', 'Parts');
             await create_ticket_service(formData);
-            router.visit(`/resolution/success/${data.serial_number}`)
+            router.visit(`/resolution/success/${data.serial_number}`);
             reset();
-
         } catch (error) {
             console.error("Submission failed:", error);
             alert("Failed to submit the form. Please try again.");
-        } finally {
         }
     };
 
@@ -198,9 +180,8 @@ export default function FormSection() {
         });
     }, [register, watchValues.parts_issue, t]);
 
-    const states = countries?.find(res => res.value == watchValues.country)
-    const call_type = window.location.pathname.split('/')[2]
-
+    const states = countries?.find(res => res.value === watchValues.country);
+    const call_type = window.location.pathname.split('/')[2];
 
     const serialRegex = /^A\d{16}$/;
     async function search_serial_number(e) {
@@ -215,39 +196,6 @@ export default function FormSection() {
         }
     }
 
-    // const validate_email = (e) => {
-    //     // 1. Maintain React Hook Form's native state tracking
-    //     register("email").onChange(e);
-
-    //     const emailValue = e.target.value;
-
-    //     // 2. Clear existing timer on every keystroke
-    //     if (debounceTimer.current) {
-    //         clearTimeout(debounceTimer.current);
-    //     }
-
-    //     debounceTimer.current = setTimeout(async () => {
-    //         if (emailValue) {
-    //             setIsValidEmail(false)
-    //             setError('email', {
-    //                 type: 'manual',
-    //                 message: 'Validating email, please wait...'
-    //             });
-    //             const result = await validate_email_service(emailValue);
-    //             console.log('resultresult', result.valid)
-    //             setIsValidEmail(result.valid)
-    //             if (!result.valid) {
-    //                 setError('email', {
-    //                     type: 'manual',
-    //                     message: 'Email address not found!'
-    //                 })
-    //             } else {
-    //                 clearErrors('email');
-    //             }
-    //         }
-    //     }, 3000); // 3000ms = 3 seconds
-
-    // };
     const formatUSPhone = (value) => {
         if (!value) return value;
         const phoneNumber = value.replace(/[^\d]/g, "");
@@ -258,6 +206,7 @@ export default function FormSection() {
         }
         return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
     };
+
     return (
         <>
             <form
@@ -265,41 +214,35 @@ export default function FormSection() {
                 noValidate
                 className="bg-white w-full flex flex-col gap-3 min-h-[70vh]"
             >
-                {
-                    ticket?.ticket?.id && (
-                        <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
-                            <div>
-                                {t('form.previous_claim_notice')}
-
-                            </div>
-                            <div className='flex items-center justify-end'>
-                                <Button
-                                    onClick={() => window.open(`/resolution/search/${ticket?.ticket?.serial_number ?? ticket?.ticket?.ticket_id}`, '_blank')}
-                                    variant='primary'
-                                >
-                                    {t('form.check_ticket_status')}
-                                </Button>
-                            </div>
+                {ticket?.ticket?.id && (
+                    <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
+                        <div>
+                            {t('form.previous_claim_notice')}
                         </div>
-                    )
-                }
+                        <div className='flex items-center justify-end'>
+                            <Button
+                                onClick={() => window.open(`/resolution/search/${ticket?.ticket?.serial_number ?? ticket?.ticket?.ticket_id}`, '_blank')}
+                                variant='primary'
+                            >
+                                {t('form.check_ticket_status')}
+                            </Button>
+                        </div>
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <Input
                         id="serial_number"
                         label={t('form.serial_number_label')}
                         error={errors.serial_number?.message}
-                        // disabled={window.location.pathname.split('/')[3] != 'blank'}
                         maxLength={17}
                         required={true}
                         {...register("serial_number", {
                             required: t('form.serial_number_required'),
                             pattern: {
                                 value: /^A\d{16}$/,
-                                // Updated the message to say 16 digits to match the regex
                                 message: t('form.serial_number_invalid')
                             },
-                            // Move your custom onChange inside the register function!
                             onChange: search_serial_number
                         })}
                     />
@@ -323,8 +266,6 @@ export default function FormSection() {
                             }
                         }}
                     />
-
-
                 </div>
 
                 {!ticket?.ticket?.id && <>
@@ -344,21 +285,47 @@ export default function FormSection() {
                             {...register("lname", { required: t('form.last_name_required') })}
                         />
                     </div>
-                    <Input
-                        id="email"
-                        type="email"
-                        label={t('form.email_label')}
-                        error={errors.email?.message}
-                        required={true}
-                        {...register("email", {
-                            required: t('form.email_required'),
-                            pattern: {
-                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                message: t('form.email_invalid')
-                            }
-                        })}
-                    // onChange={validate_email}
-                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                        <Input
+                            id="email"
+                            type="email"
+                            label={t('form.email_label')}
+                            error={errors.email?.message}
+                            required={true}
+                            {...register("email", {
+                                required: t('form.email_required'),
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: t('form.email_invalid')
+                                },
+                                onChange: () => {
+                                    if (watchValues.verify_email) {
+                                        trigger("verify_email");
+                                    }
+                                }
+                            })}
+                        />
+
+                        <Input
+                            id="verify_email"
+                            type="email"
+                            label={t('form.verify_email_label')}
+                            error={errors.verify_email?.message}
+                            required={true}
+                            {...register("verify_email", {
+                                required: t('form.verify_email_required'),
+                                pattern: {
+                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                    message: t('form.verify_email_invalid')
+                                },
+                                validate: (value) =>
+                                    value === watchValues.email ||
+                                    t('form.emails_do_not_match') ||
+                                    'Email addresses do not match'
+                            })}
+                        />
+                    </div>
 
                     <>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -368,7 +335,7 @@ export default function FormSection() {
                                 label={t('form.phone_label')}
                                 error={errors.phone?.message}
                                 required={true}
-                                maxLength={14} // Restricts input to the exact length of (XXX) XXX-XXXX
+                                maxLength={14}
                                 {...register("phone", {
                                     required: t('form.phone_required'),
                                     pattern: {
@@ -399,9 +366,7 @@ export default function FormSection() {
                             />
                         </div>
 
-
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-
                             <Select
                                 label={t('form.model_number_label')}
                                 name="item_number"
@@ -466,7 +431,7 @@ export default function FormSection() {
                                         name="country"
                                         ref={ref}
                                         value={value}
-                                        onChange={onChange} // Pass the Controller's onChange directly to your component
+                                        onChange={onChange}
                                         error={error?.message}
                                         options={
                                             countries?.map((res) => ({
@@ -490,7 +455,7 @@ export default function FormSection() {
                                         name="state"
                                         ref={ref}
                                         value={value}
-                                        onChange={onChange} // Pass the Controller's onChange directly to your component
+                                        onChange={onChange}
                                         error={error?.message}
                                         options={
                                             states?.regions?.map((res) => ({
@@ -552,7 +517,7 @@ export default function FormSection() {
                                                 name="country_2"
                                                 ref={ref}
                                                 value={value}
-                                                onChange={onChange} // Pass the Controller's onChange directly to your component
+                                                onChange={onChange}
                                                 error={error?.message}
                                                 options={
                                                     countries?.map((res) => ({
@@ -576,7 +541,7 @@ export default function FormSection() {
                                                 name="state_2"
                                                 ref={ref}
                                                 value={value}
-                                                onChange={onChange} // Pass the Controller's onChange directly to your component
+                                                onChange={onChange}
                                                 error={error?.message}
                                                 options={
                                                     states?.regions?.map((res) => ({
@@ -616,7 +581,6 @@ export default function FormSection() {
                             />
                         </div>
 
-
                         <div className='flex flex-row gap-3 my-3'>
                             <Radio
                                 name="parts_issue"
@@ -624,7 +588,6 @@ export default function FormSection() {
                                 checked={watchValues.parts_issue === '["Missing Parts"]'}
                                 onChange={() => setValue("parts_issue", '["Missing Parts"]')}
                             />
-
 
                             <Radio
                                 name="parts_issue"
@@ -654,7 +617,7 @@ export default function FormSection() {
                             parts_issue={watchValues.parts_issue}
                             files={watchValues.files || {}}
                             setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
-                            error={errors.files} // <-- Pass the error object down
+                            error={errors.files}
                         />
                         <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
                             {t('form.spam_notice')}
@@ -678,9 +641,7 @@ export default function FormSection() {
                             </Button>
                         </div>
                     </>
-
-                </>
-                }
+                </>}
             </form>
         </>
     );
