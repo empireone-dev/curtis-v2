@@ -31,6 +31,7 @@ class AnalyticsController extends Controller
                     ]);
             }
         }
+        return 'success';
     }
     public function get_ticket_created(Request $request)
     {
