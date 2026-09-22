@@ -29,7 +29,6 @@ Route::get('/get_analytics', [AnalyticsController::class, 'get_analytics']);
 
 
 Route::get('/get_ticket_created', [AnalyticsController::class, 'get_ticket_created']);
-Route::post('/save_case_file_email_response', [AnalyticsController::class, 'save_case_file_email_response']);
 
 
 

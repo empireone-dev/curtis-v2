@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -39,6 +40,11 @@ Route::prefix('resolution')->group(function () {
         });
     }
 });
+
+
+Route::post('api/save_case_file_email_response', [AnalyticsController::class, 'save_case_file_email_response']);
+
+
 
 Route::prefix('/accounts/administrator')->middleware(['auth', 'verified'])->group(function () {
 
