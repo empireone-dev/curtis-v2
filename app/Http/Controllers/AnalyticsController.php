@@ -16,44 +16,20 @@ class AnalyticsController extends Controller
     {
         $ticketsData = $request->input('tickets', []);
 
-        if (empty($ticketsData)) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'No tickets provided.'
-            ], 400);
-        }
+        foreach ($ticketsData as $item) {
+            if (!empty($item['date'])) {
+                $emailDate = Carbon::parse($item['date'])->toDateTimeString();
 
-        try {
-            foreach ($ticketsData as $item) {
-                if (!empty($item['date'])) {
-                    try {
-                        $emailDate = Carbon::parse($item['date'])->toDateTimeString();
-
-                        Ticket::where('ticket_id', $item['ticketId'])
-                            ->whereNull('email_date')
-                            ->whereNotNull('cases_status')
-                            ->whereNull('is_reply')
-                            ->update([
-                                'email_date'   => $emailDate,
-                                'is_reply'     => 'true',
-                                'cases_status' => 'handled'
-                            ]);
-                    } catch (\Exception $e) {
-                        // Log invalid date formats and continue processing remaining tickets
-                    }
-                }
+                Ticket::where('ticket_id', $item['ticketId'])
+                    ->whereNull('email_date')
+                    ->whereNotNull('cases_status')
+                    ->whereNull('is_reply')
+                    ->update([
+                        'email_date'   => $emailDate,
+                        'is_reply'     => 'true',
+                        'cases_status' => 'handled'
+                    ]);
             }
-
-            return response()->json([
-                'status'  => 'success',
-                'message' => 'Ticket responses saved successfully.'
-            ], 200);
-        } catch (\Exception $e) {
-
-            return response()->json([
-                'status'  => 'error',
-                'message' => 'Failed to process ticket responses.'
-            ], 500);
         }
     }
     public function get_ticket_created(Request $request)
