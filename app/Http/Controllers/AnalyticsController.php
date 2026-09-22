@@ -12,6 +12,66 @@ class AnalyticsController extends Controller
     /**
      * Helper 1: Builds the base query and extracts the date range
      */
+    public function save_case_file_email_response(Request $request)
+    {
+        $ticketsData = $request->input('tickets', []);
+
+        if (empty($ticketsData)) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'No tickets provided.'
+            ], 400);
+        }
+
+        try {
+            foreach ($ticketsData as $item) {
+                // Perform update directly on matching records without an extra SELECT query
+                Ticket::where('ticket_id', $item['ticketId'])
+                    ->whereNull('email_date')
+                    ->whereNotNull('cases_status')
+                    ->whereNull('is_reply')
+                    ->update([
+                        'email_date'   => $item['date'],
+                        'is_reply'     => 'true', 
+                        'cases_status' => 'handled'
+                    ]);
+            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ticket responses saved successfully.'
+            ], 200);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Failed to process ticket responses.'
+            ], 500);
+        }
+    }
+    public function get_ticket_created(Request $request)
+    {
+        $startDate = Carbon::create(now()->year, 9, 8)->startOfDay();
+        $endDate   = Carbon::now();
+
+        // Fetch only the email column as a flat collection/array
+        $emails = Ticket::whereNull('email_date')
+            ->whereNull('is_reply')
+            ->whereNotNull('cases_status')
+            ->whereNotNull('ticket_id')
+            ->whereIn('call_type', [
+                'CF-Warranty Claim',
+                'Safety Issue',
+            ])
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->pluck('ticket_id'); // Replace 'email' with your actual email column name
+
+        return response()->json([
+            'status'        => 'success',
+            'tickets_found' => $emails->count(),
+            'emails'        => $emails,
+        ], 200);
+    }
+
     public function get_ticket(Request $request)
     {
         // Default to the last 7 days

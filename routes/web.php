@@ -52,6 +52,11 @@ Route::prefix('/accounts/administrator')->middleware(['auth', 'verified'])->grou
     Route::get('/analytics', function () {
         return Inertia::render('accounts/administrator/analytics/page');
     })->name('analytics');
+    
+    Route::get('/productivity', function () {
+        return Inertia::render('accounts/administrator/productivity/page');
+    })->name('productivity');
+    
     Route::get('/warranty', function () {
         return Inertia::render('accounts/administrator/resolutions/warranty/page');
     })->name('warranty');

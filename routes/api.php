@@ -28,6 +28,11 @@ Route::post('/add_review', [IOController::class, 'add_review']);
 Route::get('/get_analytics', [AnalyticsController::class, 'get_analytics']);
 
 
+Route::get('/get_ticket_created', [AnalyticsController::class, 'get_ticket_created']);
+Route::post('/save_case_file_email_response', [AnalyticsController::class, 'save_case_file_email_response']);
+
+
+
 
 Route::resource('tickets', TicketControlller::class);
 Route::post('/upload_lacking_information', [TicketControlller::class, 'upload_lacking_information']);
