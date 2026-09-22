@@ -25,19 +25,27 @@ class AnalyticsController extends Controller
 
         try {
             foreach ($ticketsData as $item) {
-                // Perform update directly on matching records without an extra SELECT query
-                Ticket::where('ticket_id', $item['ticketId'])
-                    ->whereNull('email_date')
-                    ->whereNotNull('cases_status')
-                    ->whereNull('is_reply')
-                    ->update([
-                        'email_date'   => $item['date'],
-                        'is_reply'     => 'true', 
-                        'cases_status' => 'handled'
-                    ]);
+                if (!empty($item['date'])) {
+                    try {
+                        $emailDate = Carbon::parse($item['date'])->toDateTimeString();
+
+                        Ticket::where('ticket_id', $item['ticketId'])
+                            ->whereNull('email_date')
+                            ->whereNotNull('cases_status')
+                            ->whereNull('is_reply')
+                            ->update([
+                                'email_date'   => $emailDate,
+                                'is_reply'     => 'true',
+                                'cases_status' => 'handled'
+                            ]);
+                    } catch (\Exception $e) {
+                        // Log invalid date formats and continue processing remaining tickets
+                    }
+                }
             }
+
             return response()->json([
-                'status' => 'success',
+                'status'  => 'success',
                 'message' => 'Ticket responses saved successfully.'
             ], 200);
         } catch (\Exception $e) {
