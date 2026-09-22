@@ -20,7 +20,7 @@ export default function FormSection() {
     const { t } = useTranslation();
     const { product_registration, products, ticket } = useSelector((store) => store.app);
 
-    const [isValidEmail, setIsValidEmail] = useState(false)
+    // const [isValidEmail, setIsValidEmail] = useState(false)
 
     const debounceTimer = useRef(null);
     const {
@@ -94,11 +94,11 @@ export default function FormSection() {
     useEffect(() => {
         if (ticket?.id) {
             const searching = ticket?.model === '' ? null : ticket?.model?.toLowerCase();
-            validate_email({
-                target: {
-                    value: ticket?.email
-                }
-            });
+            // validate_email({
+            //     target: {
+            //         value: ticket?.email
+            //     }
+            // });
             const searchProductsList = productFilter.find((product) =>
                 product.some((value) => typeof value === 'string' && value?.toLowerCase().includes(searching))
             );
@@ -202,39 +202,39 @@ export default function FormSection() {
     }
 
 
-    const validate_email = (e) => {
-        // 1. Maintain React Hook Form's native state tracking
-        register("email").onChange(e);
+    // const validate_email = (e) => {
+    //     // 1. Maintain React Hook Form's native state tracking
+    //     register("email").onChange(e);
 
-        const emailValue = e.target.value;
+    //     const emailValue = e.target.value;
 
-        // 2. Clear existing timer on every keystroke
-        if (debounceTimer.current) {
-            clearTimeout(debounceTimer.current);
-        }
+    //     // 2. Clear existing timer on every keystroke
+    //     if (debounceTimer.current) {
+    //         clearTimeout(debounceTimer.current);
+    //     }
 
-        debounceTimer.current = setTimeout(async () => {
-            if (emailValue) {
-                setIsValidEmail(false)
-                setError('email', {
-                    type: 'manual',
-                    message: 'Validating email, please wait...'
-                });
-                const result = await validate_email_service(emailValue);
-                console.log('resultresult', result.valid)
-                setIsValidEmail(result.valid)
-                if (!result.valid) {
-                    setError('email', {
-                        type: 'manual',
-                        message: 'Email address not found!'
-                    })
-                } else {
-                    clearErrors('email');
-                }
-            }
-        }, 3000); // 3000ms = 3 seconds
+    //     debounceTimer.current = setTimeout(async () => {
+    //         if (emailValue) {
+    //             setIsValidEmail(false)
+    //             setError('email', {
+    //                 type: 'manual',
+    //                 message: 'Validating email, please wait...'
+    //             });
+    //             const result = await validate_email_service(emailValue);
+    //             console.log('resultresult', result.valid)
+    //             setIsValidEmail(result.valid)
+    //             if (!result.valid) {
+    //                 setError('email', {
+    //                     type: 'manual',
+    //                     message: 'Email address not found!'
+    //                 })
+    //             } else {
+    //                 clearErrors('email');
+    //             }
+    //         }
+    //     }, 3000); // 3000ms = 3 seconds
 
-    };
+    // };
 
     const formatUSPhone = (value) => {
         if (!value) return value;
@@ -344,294 +344,292 @@ export default function FormSection() {
                                     message: t('form.email_invalid')
                                 }
                             })}
-                            onChange={validate_email}
+                        // onChange={validate_email}
                         />
-                        {
-                            isValidEmail && <>
+                        <>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                                    <Input
-                                        id="phone"
-                                        type="tel"
-                                        label={t('form.phone_label')}
-                                        error={errors.phone?.message}
-                                        required={true}
-                                        maxLength={14} // Restricts input to the exact length of (XXX) XXX-XXXX
-                                        {...register("phone", {
-                                            required: t('form.phone_required'),
-                                            pattern: {
-                                                value: /^\(\d{3}\) \d{3}-\d{4}$/,
-                                                message: t('form.phone_invalid'),
-                                            },
-                                            onChange: (e) => {
-                                                e.target.value = formatUSPhone(e.target.value);
-                                            },
-                                        })}
-                                    />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                <Input
+                                    id="phone"
+                                    type="tel"
+                                    label={t('form.phone_label')}
+                                    error={errors.phone?.message}
+                                    required={true}
+                                    maxLength={14} // Restricts input to the exact length of (XXX) XXX-XXXX
+                                    {...register("phone", {
+                                        required: t('form.phone_required'),
+                                        pattern: {
+                                            value: /^\(\d{3}\) \d{3}-\d{4}$/,
+                                            message: t('form.phone_invalid'),
+                                        },
+                                        onChange: (e) => {
+                                            e.target.value = formatUSPhone(e.target.value);
+                                        },
+                                    })}
+                                />
 
-                                    <Input
-                                        id="phone2"
-                                        type="tel"
-                                        label={t('form.phone2_label')}
-                                        error={errors.phone2?.message}
-                                        maxLength={14}
-                                        {...register("phone2", {
-                                            pattern: {
-                                                value: /^\(\d{3}\) \d{3}-\d{4}$/,
-                                                message: t('form.phone_invalid'),
-                                            },
-                                            onChange: (e) => {
-                                                e.target.value = formatUSPhone(e.target.value);
-                                            },
-                                        })}
-                                    />
-                                </div>
+                                <Input
+                                    id="phone2"
+                                    type="tel"
+                                    label={t('form.phone2_label')}
+                                    error={errors.phone2?.message}
+                                    maxLength={14}
+                                    {...register("phone2", {
+                                        pattern: {
+                                            value: /^\(\d{3}\) \d{3}-\d{4}$/,
+                                            message: t('form.phone_invalid'),
+                                        },
+                                        onChange: (e) => {
+                                            e.target.value = formatUSPhone(e.target.value);
+                                        },
+                                    })}
+                                />
+                            </div>
 
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
-                                    <Select
-                                        label={t('form.model_number_label')}
-                                        name="item_number"
-                                        options={
-                                            productFilter?.map((res) => ({
-                                                ...res,
-                                                label: res[1],
-                                                value: res[1],
-                                            })) || []
-                                        }
-                                        value={watchValues.item_number}
-                                        onChange={(val) =>
-                                            setValue("item_number", val)
-                                        }
-                                        error={errors.item_number?.message}
-                                    />
-                                    <Input
-                                        id="unit"
-                                        label={t('form.item_unit_label')}
-                                        error={errors.unit?.message}
-                                        disabled
-                                        {...register("unit")}
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                                    <Input
-                                        id="brand"
-                                        label={t('form.brand_label')}
-                                        disabled
-                                        error={errors.brand?.message}
-                                        {...register("brand")}
-                                    />
-                                    <Input
-                                        id="class"
-                                        disabled
-                                        label={t('form.item_class_label')}
-                                        error={errors.class?.message}
-                                        {...register("class")}
-                                    />
-                                </div>
-
-                                <div className="w-full">
-                                    <Input
-                                        id="address"
-                                        label={t('form.physical_address_label')}
-                                        error={errors.address?.message}
-                                        required={true}
-                                        {...register("address", { required: t('form.physical_address_required') })}
-                                    />
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                                    <Controller
-                                        name="country"
-                                        control={control}
-                                        rules={{ required: t('form.country_required') }}
-                                        render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                            <Select
-                                                label={t('form.country_label')}
-                                                required
-                                                name="country"
-                                                ref={ref}
-                                                value={value}
-                                                onChange={onChange} // Pass the Controller's onChange directly to your component
-                                                error={error?.message}
-                                                options={
-                                                    countries?.map((res) => ({
-                                                        ...res,
-                                                        label: res.name,
-                                                        value: res.value,
-                                                    })) || []
-                                                }
-                                            />
-                                        )}
-                                    />
-
-                                    <Controller
-                                        name="state"
-                                        control={control}
-                                        rules={{ required: t('form.state_required') }}
-                                        render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                            <Select
-                                                label={t('form.state_label')}
-                                                required
-                                                name="state"
-                                                ref={ref}
-                                                value={value}
-                                                onChange={onChange} // Pass the Controller's onChange directly to your component
-                                                error={error?.message}
-                                                options={
-                                                    states?.regions?.map((res) => ({
-                                                        ...res,
-                                                        label: res.name,
-                                                        value: res.value,
-                                                    })) || []
-                                                }
-                                            />
-                                        )}
-                                    />
-
-                                    <Input
-                                        id="city"
-                                        label={t('form.city_label')}
-                                        error={errors.city?.message}
-                                        required={true}
-                                        {...register("city", { required: t('form.city_required') })}
-                                    />
-                                    <Input
-                                        id="zip_code"
-                                        label={t('form.zip_code_label')}
-                                        error={errors.zip_code?.message}
-                                        required={true}
-                                        {...register("zip_code", { required: t('form.zip_code_required') })}
-                                    />
-                                </div>
-
-                                <Checkbox
-                                    id="has_address_2"
-                                    className='my-3'
-                                    checked={watchValues.has_address_2}
-                                    label={t('form.same_address_label')}
-                                    onChange={(val) =>
-                                        setValue("has_address_2", val.target.checked)
+                                <Select
+                                    label={t('form.model_number_label')}
+                                    name="item_number"
+                                    options={
+                                        productFilter?.map((res) => ({
+                                            ...res,
+                                            label: res[1],
+                                            value: res[1],
+                                        })) || []
                                     }
+                                    value={watchValues.item_number}
+                                    onChange={(val) =>
+                                        setValue("item_number", val)
+                                    }
+                                    error={errors.item_number?.message}
                                 />
-                                {
-                                    !watchValues.has_address_2 && <>
-                                        <div className="w-full">
-                                            <Input
-                                                id="address_2"
-                                                label={t('form.mailing_address_label')}
-                                                error={errors.address_2?.message}
-                                                required={true}
-                                                {...register("address_2", { required: t('form.mailing_address_required') })}
-                                            />
-                                        </div>
+                                <Input
+                                    id="unit"
+                                    label={t('form.item_unit_label')}
+                                    error={errors.unit?.message}
+                                    disabled
+                                    {...register("unit")}
+                                />
+                            </div>
 
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                                            <Controller
-                                                name="country_2"
-                                                control={control}
-                                                rules={{ required: t('form.country_required') }}
-                                                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                                    <Select
-                                                        label={t('form.country_label')}
-                                                        required
-                                                        name="country_2"
-                                                        ref={ref}
-                                                        value={value}
-                                                        onChange={onChange} // Pass the Controller's onChange directly to your component
-                                                        error={error?.message}
-                                                        options={
-                                                            countries?.map((res) => ({
-                                                                ...res,
-                                                                label: res.name,
-                                                                value: res.value,
-                                                            })) || []
-                                                        }
-                                                    />
-                                                )}
-                                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                <Input
+                                    id="brand"
+                                    label={t('form.brand_label')}
+                                    disabled
+                                    error={errors.brand?.message}
+                                    {...register("brand")}
+                                />
+                                <Input
+                                    id="class"
+                                    disabled
+                                    label={t('form.item_class_label')}
+                                    error={errors.class?.message}
+                                    {...register("class")}
+                                />
+                            </div>
 
-                                            <Controller
-                                                name="state_2"
-                                                control={control}
-                                                rules={{ required: t('form.state_required') }}
-                                                render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                                    <Select
-                                                        label={t('form.state_label')}
-                                                        required
-                                                        name="state_2"
-                                                        ref={ref}
-                                                        value={value}
-                                                        onChange={onChange} // Pass the Controller's onChange directly to your component
-                                                        error={error?.message}
-                                                        options={
-                                                            states?.regions?.map((res) => ({
-                                                                ...res,
-                                                                label: res.name,
-                                                                value: res.value,
-                                                            })) || []
-                                                        }
-                                                    />
-                                                )}
-                                            />
+                            <div className="w-full">
+                                <Input
+                                    id="address"
+                                    label={t('form.physical_address_label')}
+                                    error={errors.address?.message}
+                                    required={true}
+                                    {...register("address", { required: t('form.physical_address_required') })}
+                                />
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                <Controller
+                                    name="country"
+                                    control={control}
+                                    rules={{ required: t('form.country_required') }}
+                                    render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                        <Select
+                                            label={t('form.country_label')}
+                                            required
+                                            name="country"
+                                            ref={ref}
+                                            value={value}
+                                            onChange={onChange} // Pass the Controller's onChange directly to your component
+                                            error={error?.message}
+                                            options={
+                                                countries?.map((res) => ({
+                                                    ...res,
+                                                    label: res.name,
+                                                    value: res.value,
+                                                })) || []
+                                            }
+                                        />
+                                    )}
+                                />
 
-                                            <Input
-                                                id="city_2"
-                                                label={t('form.city_label')}
-                                                error={errors.city?.message}
-                                                required={true}
-                                                {...register("city_2", { required: t('form.city_required') })}
-                                            />
-                                            <Input
-                                                id="zip_code_2"
-                                                label={t('form.zip_code_label')}
-                                                error={errors.zip_code?.message}
-                                                required={true}
-                                                {...register("zip_code_2", { required: t('form.zip_code_required') })}
-                                            />
-                                        </div>
-                                    </>
+                                <Controller
+                                    name="state"
+                                    control={control}
+                                    rules={{ required: t('form.state_required') }}
+                                    render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                        <Select
+                                            label={t('form.state_label')}
+                                            required
+                                            name="state"
+                                            ref={ref}
+                                            value={value}
+                                            onChange={onChange} // Pass the Controller's onChange directly to your component
+                                            error={error?.message}
+                                            options={
+                                                states?.regions?.map((res) => ({
+                                                    ...res,
+                                                    label: res.name,
+                                                    value: res.value,
+                                                })) || []
+                                            }
+                                        />
+                                    )}
+                                />
+
+                                <Input
+                                    id="city"
+                                    label={t('form.city_label')}
+                                    error={errors.city?.message}
+                                    required={true}
+                                    {...register("city", { required: t('form.city_required') })}
+                                />
+                                <Input
+                                    id="zip_code"
+                                    label={t('form.zip_code_label')}
+                                    error={errors.zip_code?.message}
+                                    required={true}
+                                    {...register("zip_code", { required: t('form.zip_code_required') })}
+                                />
+                            </div>
+
+                            <Checkbox
+                                id="has_address_2"
+                                className='my-3'
+                                checked={watchValues.has_address_2}
+                                label={t('form.same_address_label')}
+                                onChange={(val) =>
+                                    setValue("has_address_2", val.target.checked)
                                 }
+                            />
+                            {
+                                !watchValues.has_address_2 && <>
+                                    <div className="w-full">
+                                        <Input
+                                            id="address_2"
+                                            label={t('form.mailing_address_label')}
+                                            error={errors.address_2?.message}
+                                            required={true}
+                                            {...register("address_2", { required: t('form.mailing_address_required') })}
+                                        />
+                                    </div>
 
-                                <div className="w-full">
-                                    <Textarea
-                                        name="detailed_explanation_issue"
-                                        label={t('form.issue_explanation_label')}
-                                        {...register("detailed_explanation_issue", { required: t('form.issue_explanation_required') })}
-                                        error={errors.detailed_explanation_issue?.message}
-                                    />
-                                </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                        <Controller
+                                            name="country_2"
+                                            control={control}
+                                            rules={{ required: t('form.country_required') }}
+                                            render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                                <Select
+                                                    label={t('form.country_label')}
+                                                    required
+                                                    name="country_2"
+                                                    ref={ref}
+                                                    value={value}
+                                                    onChange={onChange} // Pass the Controller's onChange directly to your component
+                                                    error={error?.message}
+                                                    options={
+                                                        countries?.map((res) => ({
+                                                            ...res,
+                                                            label: res.name,
+                                                            value: res.value,
+                                                        })) || []
+                                                    }
+                                                />
+                                            )}
+                                        />
 
-                                <UploadFileSection
-                                    files={watchValues.files || {}}
-                                    setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
-                                    error={errors.files} // <-- Pass the error object down
+                                        <Controller
+                                            name="state_2"
+                                            control={control}
+                                            rules={{ required: t('form.state_required') }}
+                                            render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                                <Select
+                                                    label={t('form.state_label')}
+                                                    required
+                                                    name="state_2"
+                                                    ref={ref}
+                                                    value={value}
+                                                    onChange={onChange} // Pass the Controller's onChange directly to your component
+                                                    error={error?.message}
+                                                    options={
+                                                        states?.regions?.map((res) => ({
+                                                            ...res,
+                                                            label: res.name,
+                                                            value: res.value,
+                                                        })) || []
+                                                    }
+                                                />
+                                            )}
+                                        />
+
+                                        <Input
+                                            id="city_2"
+                                            label={t('form.city_label')}
+                                            error={errors.city?.message}
+                                            required={true}
+                                            {...register("city_2", { required: t('form.city_required') })}
+                                        />
+                                        <Input
+                                            id="zip_code_2"
+                                            label={t('form.zip_code_label')}
+                                            error={errors.zip_code?.message}
+                                            required={true}
+                                            {...register("zip_code_2", { required: t('form.zip_code_required') })}
+                                        />
+                                    </div>
+                                </>
+                            }
+
+                            <div className="w-full">
+                                <Textarea
+                                    name="detailed_explanation_issue"
+                                    label={t('form.issue_explanation_label')}
+                                    {...register("detailed_explanation_issue", { required: t('form.issue_explanation_required') })}
+                                    error={errors.detailed_explanation_issue?.message}
                                 />
-                                <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
-                                    {t('form.spam_notice')}
-                                </div>
+                            </div>
+
+                            <UploadFileSection
+                                files={watchValues.files || {}}
+                                setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
+                                error={errors.files} // <-- Pass the error object down
+                            />
+                            <div className='border border-red-500 rounded-md p-2 text-red-500 shadow-sm mb-4 bg-red-100'>
+                                {t('form.spam_notice')}
+                            </div>
 
 
-                                <Checkbox
-                                    name="isAgree"
-                                    label={t('form.agree_warranty')}
-                                    checked={watchValues.isAgree}
-                                    onChange={(e) => setValue("isAgree", e.target.checked)}
-                                />
-                                <div className="flex justify-center pt-2 md:pt-4 mt-12">
-                                    <Button
-                                        loading={isSubmitting}
-                                        disabled={!watchValues.isAgree || !isValidEmail}
-                                        className="w-full sm:w-auto px-12"
-                                        variant="primary"
-                                        type="submit"
-                                    >
-                                        {t('form.submit')}
-                                    </Button>
-                                </div>
-                            </>
-                        }
+                            <Checkbox
+                                name="isAgree"
+                                label={t('form.agree_warranty')}
+                                checked={watchValues.isAgree}
+                                onChange={(e) => setValue("isAgree", e.target.checked)}
+                            />
+                            <div className="flex justify-center pt-2 md:pt-4 mt-12">
+                                <Button
+                                    loading={isSubmitting}
+                                    disabled={!watchValues.isAgree}
+                                    className="w-full sm:w-auto px-12"
+                                    variant="primary"
+                                    type="submit"
+                                >
+                                    {t('form.submit')}
+                                </Button>
+                            </div>
+                        </>
 
                     </>
                 }

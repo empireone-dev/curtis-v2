@@ -128,39 +128,39 @@ export default function ProductRegistrationFormSection() {
     // Unified check for whether a ticket is registered
     const isTicketRegistered = ticket?.id || ticket?.ticket?.id;
 
-    const validate_email = (e) => {
-        // 1. Maintain React Hook Form's native state tracking
-        register("email").onChange(e);
+    // const validate_email = (e) => {
+    //     // 1. Maintain React Hook Form's native state tracking
+    //     register("email").onChange(e);
 
-        const emailValue = e.target.value;
+    //     const emailValue = e.target.value;
 
-        // 2. Clear existing timer on every keystroke
-        if (debounceTimer.current) {
-            clearTimeout(debounceTimer.current);
-        }
+    //     // 2. Clear existing timer on every keystroke
+    //     if (debounceTimer.current) {
+    //         clearTimeout(debounceTimer.current);
+    //     }
 
-        debounceTimer.current = setTimeout(async () => {
-            if (emailValue) {
-                setIsValidEmail(false)
-                setError('email', {
-                    type: 'manual',
-                    message: 'Validating email, please wait...'
-                });
-                const result = await validate_email_service(emailValue);
-                console.log('resultresult', result.valid)
-                setIsValidEmail(result.valid)
-                if (!result.valid) {
-                    setError('email', {
-                        type: 'manual',
-                        message: 'Email address not found!'
-                    })
-                } else {
-                    clearErrors('email');
-                }
-            }
-        }, 3000); // 3000ms = 3 seconds
+    //     debounceTimer.current = setTimeout(async () => {
+    //         if (emailValue) {
+    //             setIsValidEmail(false)
+    //             setError('email', {
+    //                 type: 'manual',
+    //                 message: 'Validating email, please wait...'
+    //             });
+    //             const result = await validate_email_service(emailValue);
+    //             console.log('resultresult', result.valid)
+    //             setIsValidEmail(result.valid)
+    //             if (!result.valid) {
+    //                 setError('email', {
+    //                     type: 'manual',
+    //                     message: 'Email address not found!'
+    //                 })
+    //             } else {
+    //                 clearErrors('email');
+    //             }
+    //         }
+    //     }, 3000); // 3000ms = 3 seconds
 
-    };
+    // };
 
     return (
         <>
@@ -291,136 +291,133 @@ export default function ProductRegistrationFormSection() {
                                     }
                                 })}
 
-                                onChange={validate_email}
+                            // onChange={validate_email}
                             />
 
                         </div>
 
-                        {
-                            isValidEmail &&
-                            <>
+                        <>
 
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                    <Controller
-                                        name="country"
-                                        control={control}
-                                        rules={{ required: t('form.country_required') }}
-                                        render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                            <Select
-                                                label={t('form.country_label')}
-                                                required
-                                                name="country"
-                                                ref={ref}
-                                                value={value}
-                                                onChange={onChange}
-                                                error={error?.message}
-                                                options={
-                                                    countries?.map((res) => ({
-                                                        ...res,
-                                                        label: res.name,
-                                                        value: res.value,
-                                                    })) || []
-                                                }
-                                            />
-                                        )}
-                                    />
-
-                                    <Controller
-                                        name="state"
-                                        control={control}
-                                        rules={{ required: t('form.state_required') }}
-                                        render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
-                                            <Select
-                                                label={t('form.state_label')}
-                                                required
-                                                name="state"
-                                                ref={ref}
-                                                value={value}
-                                                onChange={onChange}
-                                                error={error?.message}
-                                                options={
-                                                    states?.regions?.map((res) => ({
-                                                        ...res,
-                                                        label: res.name,
-                                                        value: res.value,
-                                                    })) || []
-                                                }
-                                            />
-                                        )}
-                                    />
-
-                                    <Input
-                                        id="city"
-                                        label={t('form.city_label')}
-                                        error={errors.city?.message}
-                                        required={true}
-                                        {...register("city", { required: t('form.city_required') })}
-                                    />
-
-                                    <Input
-                                        id="zipcode"
-                                        label={t('form.zip_code_label')}
-                                        error={errors.zipcode?.message}
-                                        required={true}
-                                        {...register("zipcode", { required: t('form.zip_code_required') })}
-                                    />
-
-
-                                </div>
-
-                                <Input
-                                    id="address1"
-                                    label={t('form.physical_address_label')}
-                                    error={errors.address1?.message}
-                                    required={true}
-                                    {...register("address1", { required: t('form.physical_address_required') })}
-                                />
-
-                                <Input
-                                    id="address2"
-                                    label={t('form.mailing_address_label')}
-                                    error={errors.address2?.message}
-                                    {...register("address2")}
-                                />
-
-                                <div className="mt-4 flex flex-col gap-2 text-sm text-gray-700">
-                                    <p>
-                                        {t('form.receipt_instructions')}
-                                    </p>
-                                    <p className="text-red-500 font-medium">
-                                        {t('form.receipt_readable_notice')}
-                                    </p>
-                                    <p className="text-red-500 font-medium">
-                                        {t('form.receipt_format_notice')}
-                                    </p>
-
-                                    <div className="mt-2">
-                                        <UploadFileSection
-                                            buttonText={t('form.upload_receipt_button')}
-                                            files={watchValues.files || {}}
-                                            setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
-                                            error={errors.files}
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <Controller
+                                    name="country"
+                                    control={control}
+                                    rules={{ required: t('form.country_required') }}
+                                    render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                        <Select
+                                            label={t('form.country_label')}
+                                            required
+                                            name="country"
+                                            ref={ref}
+                                            value={value}
+                                            onChange={onChange}
+                                            error={error?.message}
+                                            options={
+                                                countries?.map((res) => ({
+                                                    ...res,
+                                                    label: res.name,
+                                                    value: res.value,
+                                                })) || []
+                                            }
                                         />
-                                        {errors.files?.message && (
-                                            <span className="text-red-500 text-sm mt-1">{errors.files.message}</span>
-                                        )}
-                                    </div>
-                                </div>
+                                    )}
+                                />
 
-                                {/* Submit Button */}
-                                <div className="mt-6 w-full">
-                                    <Button
-                                        loading={isSubmitting}
-                                        disabled={!isValidEmail}
-                                        className="w-full bg-[#3B82F6] hover:bg-blue-600 text-white font-medium py-3 rounded uppercase"
-                                        variant="primary"
-                                        type="submit"
-                                    >
-                                        {t('form.register')}
-                                    </Button>
+                                <Controller
+                                    name="state"
+                                    control={control}
+                                    rules={{ required: t('form.state_required') }}
+                                    render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
+                                        <Select
+                                            label={t('form.state_label')}
+                                            required
+                                            name="state"
+                                            ref={ref}
+                                            value={value}
+                                            onChange={onChange}
+                                            error={error?.message}
+                                            options={
+                                                states?.regions?.map((res) => ({
+                                                    ...res,
+                                                    label: res.name,
+                                                    value: res.value,
+                                                })) || []
+                                            }
+                                        />
+                                    )}
+                                />
+
+                                <Input
+                                    id="city"
+                                    label={t('form.city_label')}
+                                    error={errors.city?.message}
+                                    required={true}
+                                    {...register("city", { required: t('form.city_required') })}
+                                />
+
+                                <Input
+                                    id="zipcode"
+                                    label={t('form.zip_code_label')}
+                                    error={errors.zipcode?.message}
+                                    required={true}
+                                    {...register("zipcode", { required: t('form.zip_code_required') })}
+                                />
+
+
+                            </div>
+
+                            <Input
+                                id="address1"
+                                label={t('form.physical_address_label')}
+                                error={errors.address1?.message}
+                                required={true}
+                                {...register("address1", { required: t('form.physical_address_required') })}
+                            />
+
+                            <Input
+                                id="address2"
+                                label={t('form.mailing_address_label')}
+                                error={errors.address2?.message}
+                                {...register("address2")}
+                            />
+
+                            <div className="mt-4 flex flex-col gap-2 text-sm text-gray-700">
+                                <p>
+                                    {t('form.receipt_instructions')}
+                                </p>
+                                <p className="text-red-500 font-medium">
+                                    {t('form.receipt_readable_notice')}
+                                </p>
+                                <p className="text-red-500 font-medium">
+                                    {t('form.receipt_format_notice')}
+                                </p>
+
+                                <div className="mt-2">
+                                    <UploadFileSection
+                                        buttonText={t('form.upload_receipt_button')}
+                                        files={watchValues.files || {}}
+                                        setFiles={(newFiles) => setValue('files', newFiles, { shouldValidate: true })}
+                                        error={errors.files}
+                                    />
+                                    {errors.files?.message && (
+                                        <span className="text-red-500 text-sm mt-1">{errors.files.message}</span>
+                                    )}
                                 </div>
-                            </>
-                        }
+                            </div>
+
+                            {/* Submit Button */}
+                            <div className="mt-6 w-full">
+                                <Button
+                                    loading={isSubmitting}
+                                    // disabled={!isValidEmail}
+                                    className="w-full bg-[#3B82F6] hover:bg-blue-600 text-white font-medium py-3 rounded uppercase"
+                                    variant="primary"
+                                    type="submit"
+                                >
+                                    {t('form.register')}
+                                </Button>
+                            </div>
+                        </>
                     </>
                 }
 
