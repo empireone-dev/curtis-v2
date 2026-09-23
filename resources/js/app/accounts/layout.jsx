@@ -6,16 +6,15 @@ import TopbarSection from './_sections/topbar-section';
 export default function Layout({ children }) {
     const { desktopCollapsed } = useSelector((store) => store.app);
     return (
-         <div className="h-full bg-white ">
+        <div className="h-full bg-white ">
             <SidebarSection />
             <div
-                className={`${
-                    desktopCollapsed ? "" : "lg:pl-72"
-                } flex flex-col min-h-screen transition-all duration-300`}
+                className={`${desktopCollapsed ? "" : "lg:pl-72"
+                    } flex flex-col min-h-screen transition-all duration-300`}
             >
                 <TopbarSection />
                 <main
-                    className={`flex-1 p-6 bg-gray-100 mt-24  ${desktopCollapsed ? "ml-20" : ""}`}
+                    className={`flex-1 p-6  w-full   ${desktopCollapsed ? "ml-20" : ""}`}
                 >
                     {children}
                 </main>

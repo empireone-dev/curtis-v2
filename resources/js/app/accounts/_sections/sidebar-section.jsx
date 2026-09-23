@@ -3,12 +3,13 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSidebarOpen } from "@/app/_redux/app-slice";
 
-import { 
-    FcBullish, 
-    FcFeedback, 
-    FcBarChart, 
-    FcConferenceCall, 
-    FcTodoList 
+import {
+    FcBullish,
+    FcFeedback,
+    FcBarChart,
+    FcConferenceCall,
+    FcTodoList,
+    FcDataSheet
 } from "react-icons/fc";
 import Tooltip from "@/app/_components/tooltip";
 import { Link, router } from "@inertiajs/react";
@@ -32,6 +33,13 @@ export default function SidebarSection() {
             href: "/accounts/administrator/dashboard",
             icon: FcBullish,
             current: path == "dashboard",
+            is_incoming: false,
+        },
+          {
+            name: "Tickets",
+            href: "/accounts/administrator/tickets",
+            icon: FcDataSheet, // Kept for Tickets (often represented as an envelope/message)
+            current: path == "tickets",
             is_incoming: false,
         },
         {
@@ -62,201 +70,10 @@ export default function SidebarSection() {
             current: path == "productivity",
             is_incoming: false,
         },
-        // {
-        //     name: "Job Openings",
-        //     href: `/accounts/${account_role}/job_openings`,
-        //     icon: FcBriefcase,
-        //     current: path == "job_openings",
-        //     is_incoming: false,
-        // },
-        // {
-        //     name: "My Applications",
-        //     href: `/accounts/${account_role}/my_applications`,
-        //     icon: FcDocument,
-        //     current: path == "my_applications",
-        //     is_incoming: false,
-        // },
-        // {
-        //     name: "My Documents",
-        //     href: `/accounts/${account_role}/my_documents`,
-        //     icon: FcOpenedFolder,
-        //     current: path == "my_documents",
-        //     is_incoming: false,
-        // },
 
-        // {
-        //     name: "Messages",
-        //     href: `/accounts/${account_role}/messages`,
-        //     icon: FcVoicePresentation,
-        //     current: path == "messages",
-        //     is_incoming: true,
-        // },
-        // ...(data?.user?.leader != null
-        //     ? [
-        //         {
-        //             name: "My Job Requisition",
-        //             href: `/accounts/${account_role}/my_requisition`,
-        //             icon: FcFeedback,
-        //             current: path == "my_requisition",
-        //             is_incoming: false,
-        //         },
-        //         { is_label: true, name: "Leader Hub" },
-        //         {
-        //             name: "My Team",
-        //             href: `/accounts/${account_role}/my_team`,
-        //             icon: FcConferenceCall,
-        //             current: path === "my_team",
-        //             is_incoming: false,
-        //         },
-        //     ]
-        //     : []),
-        // ...(account_role == "administrator"
-        //     ? [
-        //         { is_label: true, name: "Administration" },
-        //         //   {
-        //         //       name: "Users",
-        //         //       href: `/accounts/${account_role}/users`,
-        //         //       icon: FcConferenceCall,
-        //         //       current: path == "users",
-        //         //       is_incoming: true,
-        //         //   },
-        //         {
-        //             name: "Talent Acquisition",
-        //             href: `/accounts/${account_role}/talent_acquisition/dashboard`,
-        //             icon: FcPortraitMode,
-        //             current: path == "talent_acquisition",
-        //             is_incoming: false,
-        //         },
-
-        //         {
-        //             name: "Human Resources",
-        //             href: `/accounts/${account_role}/human_resources/employees`,
-        //             icon: FcPodiumWithAudience,
-        //             current: path == "human_resources",
-        //             is_incoming: false,
-        //         },
-        //         {
-        //             name: "Timekeeping",
-        //             href: `/accounts/${account_role}/time_keeping/dashboard`,
-        //             icon: FcOvertime,
-        //             current: path == "time_keeping",
-        //             is_incoming: false,
-        //         },
-        //         {
-        //             name: "Ticketing",
-        //             href: `/accounts/${account_role}/ticketing`,
-        //             icon: FcCustomerSupport,
-        //             current: path == "ticketing",
-        //             is_incoming: true,
-        //         },
-        //         {
-        //             name: "Activities",
-        //             href: `/accounts/${account_role}/activities`,
-        //             icon: FcSportsMode,
-        //             current: path == "activities",
-        //             is_incoming: false,
-        //         },
-
-
-        //         {
-        //             name: "R & R",
-        //             href: `/accounts/${account_role}/rnr/grand_rewards`,
-        //             icon: FcDiploma1,
-        //             current: path == "rnr",
-        //             is_incoming: true,
-        //         },
-        //         {
-        //             name: "E-Store",
-        //             href: `/accounts/${account_role}/e_store/rewards_items`,
-        //             icon: FcShop,
-        //             current: path == "e_store",
-        //             is_incoming: true,
-        //         },
-        //         {
-        //             name: "Finance",
-        //             href: `/accounts/${account_role}/finance/dashboard`,
-        //             icon: FcSalesPerformance,
-        //             current: path == "finance",
-        //             is_incoming: true,
-        //         },
-        //           {
-        //             name: "Asset & Inventory",
-        //             href: `/accounts/${account_role}/asset_inventory`,
-        //             icon: PackageIcon,
-        //             current: path == "asset_inventory",
-        //             is_incoming: false,
-        //         },
-        //     ]
-        //     : []),
-
-        // ...(account_role == "employee"
-        //     ? [
-        //         { is_label: true, name: "Employee Hub" },
-        //         {
-        //             name: "Activities",
-        //             href: `/accounts/${account_role}/activities`,
-        //             icon: FcSportsMode,
-        //             current: path == "activities",
-        //             is_incoming: true,
-        //         },
-        //         {
-        //             name: "HR Services",
-        //             href: `/accounts/${account_role}/hr_services`,
-        //             icon: FcPortraitMode,
-        //             current: path == "hr_services",
-        //             is_incoming: true,
-        //         },
-        //         {
-        //             name: "RNR",
-        //             href: `/accounts/${account_role}/rnr`,
-        //             icon: FcCloseUpMode,
-        //             current: path == "rnr",
-        //             is_incoming: true,
-        //         },
-        //         {
-        //             name: "Reward Store",
-        //             href: `/accounts/${account_role}/rewards_store`,
-        //             icon: FcShop,
-        //             current: path == "rewards_store",
-        //             is_incoming: true,
-        //         },
-        //         {
-        //             name: "Loan",
-        //             href: `/accounts/${account_role}/loan`,
-        //             icon: () => (
-        //                 <FaMoneyBillWave className="text-blue-600" />
-        //             ),
-        //             current: path == "loan",
-        //             is_incoming: true,
-        //         },
-        //         {
-        //             name: "Payroll",
-        //             href: `/accounts/${account_role}/payroll`,
-        //             icon: () => (
-        //                 <FaMoneyCheckAlt className="text-green-600" />
-        //             ),
-        //             current: path == "payroll",
-        //             is_incoming: true,
-        //         },
-        //     ]
-        //     : []),
     ];
 
-    // 2. ...from the bottom navigation items.
-    // const bottomNavigation = [
-    //     {
-    //         name: "My Profile",
-    //         href: `/accounts/${account_role}/my_profile/personal`,
-    //         icon: FcBusinessman,
-    //         current: path == "my_profile",
-    //     },
-    //     {
-    //         name: "Settings",
-    //         href: `/accounts/${account_role}/settings`,
-    //         icon: FcSettings,
-    //         current: path == "settings",
-    //     },
-    // ];
+
 
     const sidebarWidth = desktopCollapsed
         ? "w-20 flex items-center justify-center"
@@ -299,11 +116,11 @@ export default function SidebarSection() {
                         >
                             <Dialog.Panel className="relative flex w-full flex-1 flex-col bg-white">
                                 <div className="flex items-start justify-between top-0 right-0 px-5 pt-5 border-b border-gray-300 pb-2">
-                                    <div className="flex h-16 items-center">
+                                    <div className="flex h-16 items-center justify-center w-full">
                                         <img
-                                            alt="Logo"
                                             src="/images/logo.png"
-                                            className="h-16 w-full "
+                                            alt="Logo"
+                                            className="h-20 transition-transform group-hover:scale-105"
                                         />
                                     </div>
                                     <button
@@ -316,6 +133,7 @@ export default function SidebarSection() {
                                 </div>
                                 <div className="flex flex-col h-full p-6 pb-4">
                                     {/* Main Mobile Navigation */}
+
                                     <nav className="flex-1 overflow-y-auto no-scrollbar">
                                         <ul className="space-y-4">
                                             {mainNavigation.map((item, i) =>
@@ -435,6 +253,11 @@ export default function SidebarSection() {
                             src="/images/logo.png"
                             className={`h-16 w-full hidden ${sidebarText}`}
                         /> */}
+                        <img
+                            src="/images/logo.png"
+                            alt="Logo"
+                            className="h-20 transition-transform group-hover:scale-105"
+                        />
                     </div>
                     <hr className="my-3 border-gray-200" />
 

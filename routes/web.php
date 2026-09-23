@@ -52,17 +52,26 @@ Route::prefix('/accounts/administrator')->middleware(['auth', 'verified'])->grou
     Route::get('/dashboard', function () {
         return Inertia::render('accounts/administrator/dashboard/page');
     })->name('dashboard');
+
+    Route::get('/ticket_creation', function () {
+        return Inertia::render('accounts/administrator/ticket_creation/page');
+    })->name('ticket_creation');
+
+     Route::get('/tickets', function () {
+        return Inertia::render('accounts/administrator/tickets/page');
+    })->name('tickets');
+
     Route::get('/emails', function () {
         return Inertia::render('accounts/administrator/emails/page');
     })->name('emails');
     Route::get('/analytics', function () {
         return Inertia::render('accounts/administrator/analytics/page');
     })->name('analytics');
-    
+
     Route::get('/productivity', function () {
         return Inertia::render('accounts/administrator/productivity/page');
     })->name('productivity');
-    
+
     Route::get('/warranty', function () {
         return Inertia::render('accounts/administrator/resolutions/warranty/page');
     })->name('warranty');

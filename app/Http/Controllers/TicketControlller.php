@@ -18,6 +18,15 @@ use Illuminate\Support\Facades\Storage;
 class TicketControlller extends Controller
 {
 
+    public function index(Request $request)
+    {
+        // Reads per_page query parameter, defaults to 5 if not provided
+        $perPage = $request->query('per_page', 10);
+
+        $tickets = Ticket::paginate($perPage);
+
+        return response()->json($tickets, 200);
+    }
     private function formatPhoneNumber($phone)
     {
         $cleaned = preg_replace('/[^0-9]/', '', $phone);
