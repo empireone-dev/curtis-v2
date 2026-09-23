@@ -11,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -20,10 +21,22 @@ class TicketControlller extends Controller
 
     public function index(Request $request)
     {
-        // Reads per_page query parameter, defaults to 5 if not provided
         $perPage = $request->query('per_page', 10);
+        $search = trim($request->query('search'));
 
-        $tickets = Ticket::paginate($perPage);
+        // Use Ticket::when() directly (no need for ::query())
+        $tickets = Ticket::with(['files','activities'])->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('ticket_id', 'like', "%{$search}%")
+                    ->orWhere('fname', 'like', "%{$search}%")
+                    ->orWhere('lname', 'like', "%{$search}%")
+                    ->orWhere(DB::raw("CONCAT(fname, ' ', lname)"), 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        })
+            ->latest()
+            ->paginate($perPage)
+            ->appends($request->query());
 
         return response()->json($tickets, 200);
     }

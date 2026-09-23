@@ -16,6 +16,28 @@ export async function create_ticket_service(data) {
     }
 }
 
+export const upload_files_service = async (ticketId, category, files) => {
+    const formData = new FormData();
+    formData.append("id", ticketId);
+    formData.append("type", category.replace(/_/g, ' '));
+
+    files.forEach((file) => {
+        formData.append(`${category}[]`, file);
+    });
+
+    const response = await fetch("/api/files", {
+        method: "POST",
+        body: formData,
+    });
+
+    if (!response.ok) {
+        throw new Error(`Upload failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+};
+
 export async function get_tickets_service() {
     try {
         const response = await fetch(`/api/tickets${window.location.search}`, {

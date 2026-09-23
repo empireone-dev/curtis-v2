@@ -5,6 +5,7 @@ import LoadingPage from '@/app/_components/loading-page'
 import store from '@/app/store/store'
 import { get_tickets_thunk } from '@/app/_redux/tickets-thunk'
 import TicketPaginationSection from './_sections/ticket-pagination-section'
+import TicketHeaderSection from './_sections/ticket-header-section'
 
 export default function Page() {
     const [loading, setLoading] = useState(true)
@@ -33,16 +34,7 @@ export default function Page() {
         <Layout>
             <div className="w-full space-y-6">
                 {/* Page Title Section */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-2 border-b border-slate-200">
-                    <div>
-                        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-                            Ticket Management
-                        </h1>
-                        <p className="text-sm text-slate-500 mt-1">
-                            Manage, monitor, and resolve all support tickets in one place.
-                        </p>
-                    </div>
-                </div>
+                <TicketHeaderSection />
 
                 {/* Content Section */}
                 {loading ? (

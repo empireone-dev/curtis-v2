@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Clock } from 'lucide-react';
+import moment from 'moment';
 
 export default function TicketActivitiesContent({ props_data }) {
     const ticketData = props_data?.ticket || props_data || {};
@@ -12,12 +13,13 @@ export default function TicketActivitiesContent({ props_data }) {
     };
 
     // Activities State with default fallback data
-    const [activities] = useState(props_data?.activities || [
-        { id: 1, user: 'System Intake', text: 'Case File created via Web Form intake portal', time: '1 day ago', type: 'system' },
-        { id: 2, user: `${getFullName()} (Customer)`, text: 'Uploaded proof of purchase bill of sale and serial plate photo', time: '1 day ago', type: 'customer' },
-        { id: 3, user: 'Support Agent', text: 'Verified Store Name and Purchase Date validity on receipt', time: '2 hours ago', type: 'agent' }
-    ]);
+    const [activities, setActivities] = useState(props_data?.activities);
 
+    useEffect(() => {
+        setActivities(props_data?.activities
+
+        )
+    }, [props_data?.activities?.length])
     return (
         <>
             <style>{`
@@ -54,10 +56,10 @@ export default function TicketActivitiesContent({ props_data }) {
 
                             <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
                                 <div className="flex justify-between items-center text-xs text-slate-500 mb-1">
-                                    <span className="font-bold text-slate-700">{item.user}</span>
-                                    <span>{item.time}</span>
+                                    <span className="font-bold text-slate-700">{item?.user?.name}</span>
+                                    <span>{moment(item.created_at).format('LLL')}</span>
                                 </div>
-                                <p className="text-sm font-medium text-slate-800">{item.text}</p>
+                                <p className="text-sm font-medium text-slate-800">{item.type}</p>
                             </div>
                         </div>
                     ))}

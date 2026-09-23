@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
 import {
-    CheckCircle2,
     Clock,
     Folder,
-    ImageIcon,
     ListTodo,
     MessageSquare,
-    Upload,
-    FileText,
-    Headphones,
-    Wrench,
-    Plus,
-    Trash2,
-    Copy,
     X,
-    Loader2
 } from 'lucide-react';
 import TicketFilesContent from './contents/ticket-files-content';
 import TicketActivitiesContent from './contents/ticket-activities-content';

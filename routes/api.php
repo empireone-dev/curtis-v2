@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\AutomaticSendingEmailController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\IOController;
 use App\Http\Controllers\ProductRegistrationControlller;
 use App\Http\Controllers\TicketControlller;
@@ -41,3 +42,8 @@ Route::get('/get_ticket_by_serial_number/{id}', [TicketControlller::class, 'get_
 Route::get('/get_product_registration_by_serial_number/{id}', [TicketControlller::class, 'get_product_registration_by_serial_number']);
 Route::resource('product_registration', ProductRegistrationControlller::class);
 Route::get('/verify_serial_number/{id}', [ProductRegistrationControlller::class, 'verify_serial_number']);
+
+
+Route::prefix('')->middleware(['auth'])->group(function () {
+    Route::resource('files', FileController::class);
+});

@@ -76,7 +76,7 @@ class Ticket extends Model
 
     public function activities(): HasMany
     {
-        return $this->hasMany(Activity::class, 'ticket_id', 'id');
+        return $this->hasMany(Activity::class, 'ticket_id', 'id')->with(['user']);
     }
     public function approved_claims(): HasMany
     {
