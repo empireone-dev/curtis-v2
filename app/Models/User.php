@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -40,8 +41,34 @@ class User extends Authenticatable
         ];
     }
 
+    /* ==========================================
+       RELATIONSHIPS
+    ========================================== */
+
     public function tickets()
     {
         return $this->hasMany(Ticket::class, 'user_id', 'id');
+    }
+
+    public function casesLogs()
+    {
+        return $this->hasMany(CasesLog::class, 'user_id', 'id');
+    }
+
+    public function directEmails()
+    {
+        return $this->hasMany(DirectEmail::class);
+    }
+    public function handledCasesLogs()
+    {
+        return $this->hasMany(CasesLog::class)->where('log_from', 'handled');
+    }
+    public function role(): HasOne
+    {
+        return $this->hasOne(Role::class, 'id', 'role_id');
+    }
+    public function handledDirectEmailsLogs()
+    {
+        return $this->hasMany(CasesLog::class)->where('log_from', 'direct_emails');
     }
 }

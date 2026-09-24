@@ -35,11 +35,19 @@ export default function SidebarSection() {
             current: path == "dashboard",
             is_incoming: false,
         },
-          {
+        {
             name: "Tickets",
             href: "/accounts/administrator/tickets",
             icon: FcDataSheet, // Kept for Tickets (often represented as an envelope/message)
             current: path == "tickets",
+            is_incoming: false,
+        },
+
+        {
+            name: "Productivity",
+            href: "/accounts/administrator/productivity",
+            icon: FcTodoList, // Changed to a checklist/todo list
+            current: path == "productivity",
             is_incoming: false,
         },
         {
@@ -61,13 +69,6 @@ export default function SidebarSection() {
             href: "/accounts/administrator/users",
             icon: FcConferenceCall, // Changed to a group of people
             current: path == "users",
-            is_incoming: false,
-        },
-        {
-            name: "Productivity",
-            href: "/accounts/administrator/productivity",
-            icon: FcTodoList, // Changed to a checklist/todo list
-            current: path == "productivity",
             is_incoming: false,
         },
 

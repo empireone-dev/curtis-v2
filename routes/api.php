@@ -6,6 +6,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\IOController;
 use App\Http\Controllers\ProductRegistrationControlller;
 use App\Http\Controllers\TicketControlller;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\EnsureValidApiKey;
@@ -46,4 +47,5 @@ Route::get('/verify_serial_number/{id}', [ProductRegistrationControlller::class,
 
 Route::prefix('')->middleware(['auth'])->group(function () {
     Route::resource('files', FileController::class);
+    Route::resource('users', UserController::class);
 });
