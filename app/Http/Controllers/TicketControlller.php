@@ -25,7 +25,7 @@ class TicketControlller extends Controller
         $search = trim($request->query('search'));
 
         // Use Ticket::when() directly (no need for ::query())
-        $tickets = Ticket::with(['files','activities'])->when($search, function ($query, $search) {
+        $tickets = Ticket::with(['files','activities','cases_logs','agent_notes'])->when($search, function ($query, $search) {
             $query->where(function ($q) use ($search) {
                 $q->where('ticket_id', 'like', "%{$search}%")
                     ->orWhere('fname', 'like', "%{$search}%")

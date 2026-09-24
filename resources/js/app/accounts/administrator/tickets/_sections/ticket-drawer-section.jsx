@@ -41,43 +41,6 @@ function TicketDrawerContent({ ticket, getFullName, getIssueText }) {
     const [toast, setToast] = useState(null);
     const [lightboxImage, setLightboxImage] = useState(null);
 
-    // Bill of Sale Checklist State
-    const [checklist, setChecklist] = useState({
-        storeName: true,
-        purchaseDate: true,
-        itemDesc: true,
-        unitPrice: false,
-        totalPaid: true
-    });
-
-    // Attached Warranty Documents State
-    const [files, setFiles] = useState(ticket?.files || [
-        {
-            id: 1,
-            name: 'Bill_Of_Sale_Receipt_BestBuy.png',
-            size: '2.4 MB',
-            type: 'image',
-            url: 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&q=80&w=800',
-            status: 'Verified',
-            uploadedAt: 'Yesterday 14:22'
-        },
-        {
-            id: 2,
-            name: 'Fridge_Serial_Number_Plate.jpg',
-            size: '1.8 MB',
-            type: 'image',
-            url: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800',
-            status: 'Pending Review',
-            uploadedAt: 'Yesterday 14:25'
-        }
-    ]);
-
-    // Agent internal notes
-    const [agentNotes, setAgentNotes] = useState(
-        ticket?.agent_notes || 'Customer reported cooling failure after sudden power outage. Serial code validated with regional distributor. Compressor failure suspected.'
-    );
-    const [lastSaved, setLastSaved] = useState('Just now');
-    const [isSaving, setIsSaving] = useState(false);
 
     // Audit activity logs
     const [activities, setActivities] = useState([
@@ -133,73 +96,13 @@ function TicketDrawerContent({ ticket, getFullName, getIssueText }) {
         setModalRemark('');
     };
 
-    const toggleChecklist = (key) => {
-        setChecklist(prev => {
-            const updated = { ...prev, [key]: !prev[key] };
-            addActivity(`Updated Bill of Sale checklist criteria: ${key}`);
-            return updated;
-        });
-    };
 
-    const handleFileUpload = (e) => {
-        const uploadedFiles = Array.from(e.target.files || []);
-        if (uploadedFiles.length === 0) return;
-
-        uploadedFiles.forEach(f => {
-            const newFile = {
-                id: Date.now() + Math.random(),
-                name: f.name,
-                size: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
-                type: f.type.includes('image') ? 'image' : 'document',
-                url: URL.createObjectURL(f),
-                status: 'Pending Review',
-                uploadedAt: 'Just now'
-            };
-            setFiles(prev => [newFile, ...prev]);
-            addActivity(`Uploaded new attachment: ${f.name}`);
-        });
-
-        showToast(`${uploadedFiles.length} file(s) attached successfully`, 'success');
-    };
-
-    const deleteFile = (id, name) => {
-        setFiles(prev => prev.filter(f => f.id !== id));
-        addActivity(`Deleted document attachment: ${name}`);
-        showToast('File removed', 'info');
-    };
-
-    const toggleFileStatus = (id) => {
-        setFiles(prev => prev.map(f => {
-            if (f.id === id) {
-                const nextStatus = f.status === 'Verified' ? 'Pending Review' : 'Verified';
-                showToast(`Document marked as ${nextStatus}`, 'info');
-                return { ...f, status: nextStatus };
-            }
-            return f;
-        }));
-    };
-
-    const insertQuickTag = (tag) => {
-        setAgentNotes(prev => `${prev}\n[TAG: ${tag}]`);
-        showToast(`Appended issue tag: ${tag}`, 'info');
-    };
-
-    const handleSaveNotes = () => {
-        setIsSaving(true);
-        setTimeout(() => {
-            setIsSaving(false);
-            setLastSaved(new Date().toLocaleTimeString());
-            addActivity('Saved agent evaluation remarks');
-            showToast('Internal notes saved', 'success');
-        }, 450);
-    };
-
+  
     const copyToClipboard = (text, label = 'Text') => {
         navigator.clipboard.writeText(text);
         showToast(`${label} copied to clipboard!`, 'success');
     };
 
-    const wordCount = agentNotes.trim() ? agentNotes.trim().split(/\s+/).length : 0;
     const ticketId = ticket?.ticket_id || ticket?.id || 'CF060826173956';
     const issueExplanation = getIssueText();
 

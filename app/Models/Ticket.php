@@ -74,6 +74,15 @@ class Ticket extends Model
         return $this->hasMany(File::class, 'ticket_id', 'id')->where('type', '<>', 'upload');
     }
 
+    public function cases_logs(): HasMany
+    {
+        return $this->hasMany(CasesLog::class, 'ticket_id', 'id')->with(['user']);
+    }
+
+    public function agent_notes(): HasMany
+    {
+        return $this->hasMany(AgentNote::class, 'ticket_id', 'id')->with('user');
+    }
     public function activities(): HasMany
     {
         return $this->hasMany(Activity::class, 'ticket_id', 'id')->with(['user']);

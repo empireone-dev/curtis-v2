@@ -15,115 +15,6 @@ export default function TicketTabsDetailsSection({ props_data }) {
     const [activeTab, setActiveTab] = useState('files');
     const [lightboxImage, setLightboxImage] = useState(null);
 
-    // Dynamic Safe Extractors
-    const ticketData = props_data?.ticket || props_data || {};
-
-    const getFullName = () => {
-        const fname = ticketData?.fname || ticketData?.user?.fname || ticketData?.customer?.fname || '';
-        const lname = ticketData?.lname || ticketData?.user?.lname || ticketData?.customer?.lname || '';
-        const name = `${fname} ${lname}`.trim();
-        return name || ticketData?.fullname || 'Marcus Vance';
-    };
-
-    // Checklist State
-    const [checklist, setChecklist] = useState({
-        storeName: true,
-        purchaseDate: true,
-        itemDesc: true,
-        unitPrice: false,
-        totalPaid: true
-    });
-
-    // File Attachments State
-    const [files, setFiles] = useState(props_data?.files || ticketData?.files || [
-        {
-            id: 1,
-            name: 'Bill_Of_Sale_Receipt_BestBuy.png',
-            size: '2.4 MB',
-            type: 'image',
-            url: 'https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?auto=format&fit=crop&q=80&w=800',
-            status: 'Verified',
-            uploadedAt: 'Yesterday 14:22'
-        },
-        {
-            id: 2,
-            name: 'Fridge_Serial_Number_Plate.jpg',
-            size: '1.8 MB',
-            type: 'image',
-            url: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800',
-            status: 'Pending Review',
-            uploadedAt: 'Yesterday 14:25'
-        }
-    ]);
-
-    // Audit Activities State
-    const [activities, setActivities] = useState([
-        { id: 1, user: 'System Intake', text: 'Case File created via Web Form intake portal', time: '1 day ago', type: 'system' },
-        { id: 2, user: `${getFullName()} (Customer)`, text: 'Uploaded proof of purchase bill of sale and serial plate photo', time: '1 day ago', type: 'customer' },
-        { id: 3, user: 'Support Agent', text: 'Verified Store Name and Purchase Date validity on receipt', time: '2 hours ago', type: 'agent' }
-    ]);
-
-    // Agent Technical Notes State
-    const [agentNotes, setAgentNotes] = useState(
-        ticketData?.agent_notes || 'Customer reported cooling failure after sudden power outage. Serial code validated with regional distributor. Compressor failure suspected.'
-    );
-    const [lastSaved, setLastSaved] = useState('Just now');
-    const [isSaving, setIsSaving] = useState(false);
-
-    // Event Handlers
-    const toggleChecklist = (key) => {
-        setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
-    };
-
-    const handleFileUpload = (e) => {
-        const uploadedFiles = Array.from(e.target.files || []);
-        if (uploadedFiles.length === 0) return;
-
-        uploadedFiles.forEach(f => {
-            const newFile = {
-                id: Date.now() + Math.random(),
-                name: f.name,
-                size: `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
-                type: f.type.includes('image') ? 'image' : 'document',
-                url: URL.createObjectURL(f),
-                status: 'Pending Review',
-                uploadedAt: 'Just now'
-            };
-            setFiles(prev => [newFile, ...prev]);
-        });
-    };
-
-    const deleteFile = (id) => {
-        setFiles(prev => prev.filter(f => f.id !== id));
-    };
-
-    const toggleFileStatus = (id) => {
-        setFiles(prev => prev.map(f => {
-            if (f.id === id) {
-                return { ...f, status: f.status === 'Verified' ? 'Pending Review' : 'Verified' };
-            }
-            return f;
-        }));
-    };
-
-    const insertQuickTag = (tag) => {
-        setAgentNotes(prev => `${prev}\n[TAG: ${tag}]`);
-    };
-
-    const handleSaveNotes = () => {
-        setIsSaving(true);
-        setTimeout(() => {
-            setIsSaving(false);
-            setLastSaved(new Date().toLocaleTimeString());
-        }, 450);
-    };
-
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text);
-    };
-
-    const wordCount = agentNotes.trim() ? agentNotes.trim().split(/\s+/).length : 0;
-
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
             {/* Inline CSS animation styles for fallback guaranteed transition */}
@@ -156,7 +47,7 @@ export default function TicketTabsDetailsSection({ props_data }) {
                         <Folder className="w-4 h-4" />
                         <span>Files</span>
                         <span className="px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-700 font-bold transition-all">
-                            {files.length}
+                            {props_data?.files?.length}
                         </span>
                     </button>
 
@@ -170,7 +61,7 @@ export default function TicketTabsDetailsSection({ props_data }) {
                         <Clock className="w-4 h-4" />
                         <span>Activities</span>
                         <span className="px-2 py-0.5 text-xs rounded-full bg-slate-200 text-slate-700 font-bold transition-all">
-                            {activities.length}
+                            {props_data?.activities?.length}
                         </span>
                     </button>
 

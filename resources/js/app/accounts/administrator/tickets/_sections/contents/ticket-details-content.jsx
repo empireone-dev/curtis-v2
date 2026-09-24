@@ -69,19 +69,33 @@ export default function TicketDetailsContent({ props_data }) {
                             <div className="flex justify-between border-b border-slate-200/60 pb-2">
                                 <span className="text-slate-500">Email Address</span>
                                 <span className="font-bold text-blue-600">
-                                    {ticketData?.email || ticketData?.customer?.email || ticketData?.user?.email || 'm.vance@example.com'}
+                                    {ticketData?.email}
                                 </span>
                             </div>
+
                             <div className="flex justify-between border-b border-slate-200/60 pb-2">
                                 <span className="text-slate-500">Phone Number</span>
                                 <span className="font-bold text-slate-800">
-                                    {ticketData?.phone || ticketData?.customer?.phone || ticketData?.user?.phone || '+1 (555) 019-2834'}
+                                    {ticketData?.phone}
+                                </span>
+                            </div>
+                            <div className="flex justify-between border-b border-slate-200/60 pb-2">
+                                <span className="text-slate-500">Phone Number 2</span>
+                                <span className="font-bold text-slate-800">
+                                    {ticketData?.phone2}
+                                </span>
+                            </div>
+
+                            <div className="flex justify-between border-b border-slate-200/60 pb-2">
+                                <span className="text-slate-500">Physical Address</span>
+                                <span className="font-bold text-slate-800 text-right max-w-[200px]">
+                                    {`${ticketData?.address ?? ''} ${ticketData?.city ?? ''} ${ticketData?.state ?? ''} ${ticketData?.zip_code ?? ''}`}
                                 </span>
                             </div>
                             <div className="flex justify-between">
-                                <span className="text-slate-500">Delivery Address</span>
+                                <span className="text-slate-500">Mailing Address</span>
                                 <span className="font-bold text-slate-800 text-right max-w-[200px]">
-                                    {ticketData?.address || ticketData?.customer?.address || ticketData?.user?.address || '742 Evergreen Terrace, Springfield, IL'}
+                                    {`${ticketData?.address2 ?? ''} ${ticketData?.city2 ?? ''} ${ticketData?.state2 ?? ''} ${ticketData?.zip_code2 ?? ''}`}
                                 </span>
                             </div>
                         </div>
@@ -97,33 +111,39 @@ export default function TicketDetailsContent({ props_data }) {
 
                         <div className="space-y-3 text-sm">
                             <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                                <span className="text-slate-500">Appliance Name</span>
+                                <span className="text-slate-500">Product</span>
                                 <span className="font-bold text-slate-800">
-                                    {ticketData?.product || ticketData?.product_name || 'ArcticCool French Door Refrigerator 26 cu. ft.'}
+                                    {ticketData?.unit}
+                                </span>
+                            </div>
+                             <div className="flex justify-between border-b border-slate-200/60 pb-2">
+                                <span className="text-slate-500">Brand</span>
+                                <span className="font-mono font-bold text-slate-800">
+                                    {ticketData?.brand}
                                 </span>
                             </div>
                             <div className="flex justify-between border-b border-slate-200/60 pb-2">
                                 <span className="text-slate-500">Model Number</span>
                                 <span className="font-mono font-bold text-slate-800">
-                                    {ticketData?.model || ticketData?.model_number || 'AC-RF26-SLV'}
+                                    {ticketData?.item_number}
                                 </span>
                             </div>
                             <div className="flex justify-between border-b border-slate-200/60 pb-2">
                                 <span className="text-slate-500">Serial Number</span>
                                 <span className="font-mono font-bold text-slate-800">
-                                    {ticketData?.serial || ticketData?.serial_number || 'SN98320492811A'}
+                                    {ticketData?.serial_number}
                                 </span>
                             </div>
                             <div className="flex justify-between border-b border-slate-200/60 pb-2">
-                                <span className="text-slate-500">Retail Outlet</span>
+                                <span className="text-slate-500">Class</span>
                                 <span className="font-bold text-slate-800">
-                                    {ticketData?.store || ticketData?.store_name || 'Home Appliance Superstore - Chicago, IL'}
+                                    {ticketData?.class}
                                 </span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-500">Warranty Status</span>
                                 <span className="font-bold text-emerald-600 flex items-center gap-1">
-                                    <CheckCircle2 className="w-4 h-4 text-emerald-600" /> {ticketData?.warrantyStatus || ticketData?.warranty_status || 'Active (2-Year Limited)'}
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-600" /> {ticketData?.call_type}
                                 </span>
                             </div>
                         </div>
