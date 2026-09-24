@@ -56,7 +56,7 @@ export default function TicketActivitiesContent({ props_data }) {
 
                             <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
                                 <div className="flex justify-between items-center text-xs text-slate-500 mb-1">
-                                    <span className="font-bold text-slate-700">{item?.user?.name}</span>
+                                    <span className="font-bold text-slate-700">{item?.user?.name ?? 'Customer'}</span>
                                     <span>{moment(item.created_at).format('LLL')}</span>
                                 </div>
                                 <p className="text-sm font-medium text-slate-800">{item.type}</p>
