@@ -15,7 +15,7 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
             id: 'readable_serial_section',
             label: t('upload.model_serial_label'),
             description: t('upload.model_serial_description'),
-            accept: '.jpg,.jpeg,.png',
+            accept: '.jpg,.jpeg,.png,.pdf',
             notes: t('upload.model_serial_notes'),
             icon: <FaFileImage className="w-6 h-6 text-blue-500" />,
             required: true
@@ -26,7 +26,7 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
             id: 'bill_of_sale',
             label: t('upload.bill_of_sale_label'),
             description: t('upload.bill_of_sale_description'),
-            accept: '.jpg,.jpeg,.png',
+            accept: '.jpg,.jpeg,.png,.pdf',
             notes: t('upload.bill_of_sale_notes'),
             icon: <FaFileImage className="w-6 h-6 text-green-500" />,
             required: call_type === "safety_issue" || parts_issue == '["Want to buy Parts"]' ? false : true
@@ -43,7 +43,7 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
                         * {t('upload.parts_description_line2')}
                     </>
                 ),
-                accept: '.jpg,.jpeg,.png,.mp4,.mov',
+                accept: '.jpg,.jpeg,.png,.mp4,.mov,.pdf',
                 notes: t('upload.parts_notes'),
                 icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
                 required: true
@@ -53,7 +53,7 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
                     id: 'defect_issue',
                     label: t('upload.defect_label'),
                     description: t('upload.defect_description'),
-                    accept: '.jpg,.jpeg,.png,.mp4,.mov',
+                    accept: '.jpg,.jpeg,.png,.mp4,.mov,.pdf',
                     notes: t('upload.defect_notes'),
                     icon: <FaFileVideo className="w-6 h-6 text-purple-500" />,
                     required: true
@@ -65,34 +65,28 @@ const UploadFileSection = ({ files = {}, setFiles, error, parts_issue }) => {
         const selectedFiles = Array.from(e.target.files);
         const currentCategoryFiles = files[req.id] || [];
 
-        // Definition sa mga valid formats
-        const allowedImageExtensions = ['.jpg', '.jpeg', '.png'];
-        const allowedVideoExtensions = ['.mp4', '.mov'];
+        // Kuhaon ang tanang gitugot nga extensions direkta gikan sa req.accept
+        // Pananglitan: ['.jpg', '.jpeg', '.png', '.pdf']
+        const allowedExtensions = (req.accept || '')
+            .split(',')
+            .map(ext => ext.trim().toLowerCase());
 
         let hasInvalidFile = false;
 
         const validFiles = selectedFiles.filter(file => {
             const extension = '.' + file.name.split('.').pop().toLowerCase();
+            const isValid = allowedExtensions.includes(extension);
 
-            // Atong tan-awon kung unsa ra dapat ang dawaton base sa "accept" property sa requirement
-            if (req.accept === '.jpg,.jpeg,.png') {
-                const isValidImg = allowedImageExtensions.includes(extension);
-                if (!isValidImg) hasInvalidFile = true;
-                return isValidImg;
-            } else {
-                // Modawat og Image ug Video
-                const isValidImg = allowedImageExtensions.includes(extension);
-                const isValidVid = allowedVideoExtensions.includes(extension);
-                if (!isValidImg && !isValidVid) hasInvalidFile = true;
-                return isValidImg || isValidVid;
+            if (!isValid) {
+                hasInvalidFile = true;
             }
+            return isValid;
         });
 
         if (hasInvalidFile) {
-            // Mao kini ang error message nga mugawas
             setFormatError(t('upload.unsupported_format'));
         } else {
-            setFormatError(''); // Clear error kung sakto ang format
+            setFormatError('');
         }
 
         if (validFiles.length > 0) {
